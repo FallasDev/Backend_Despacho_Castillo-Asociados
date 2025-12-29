@@ -6,12 +6,19 @@ public class Type {
     private String name;
     private boolean isActive;
 
-
     public Type(int id, String name, boolean isActive) {
         this.id = id;
         this.name = name;
         this.isActive = isActive;
     }
+
+    public Type() {
+        this.id = 0;
+        this.name = "";
+        this.isActive = false;
+    }
+
+
 
     public int getId() {
         return id;

@@ -1,10 +1,10 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.repository.impl.Type;
 
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
+import com.accountancy.despacho_castillo_asociados.domain.model.Type.TypeRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Type.TypeRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.TypeEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Type.JPATypeRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,28 +20,27 @@ public class TypeRepositoryImpl implements TypeRepository {
     }
 
     @Override
-    public Type create(Type type) {
+    public Type create(TypeRequest request) {
 
-        TypeEntity typeEntity = new TypeEntity(
-                0,
-                type.getName(),
-                type.isActive()
-        );
+        TypeEntity typeEntity = new TypeEntity();
+        typeEntity.setName(request.getName());
+        typeEntity.setActive(true);
 
-        jpaTypeRepository.save(typeEntity);
-        type.setId(typeEntity.getId());
-        return type;
+        TypeEntity entity = jpaTypeRepository.save(typeEntity);
+
+
+        return new Type(entity.getId(), entity.getName(), entity.isActive());
+
     }
 
     @Override
-    public Type update(Type type, int id) {
+    public Type update(TypeRequest type, int id) {
 
         TypeEntity existingType = jpaTypeRepository.findById(id).orElse(null);
         if (existingType != null) {
             existingType.setName(type.getName());
-            jpaTypeRepository.save(existingType);
-            type.setId(existingType.getId());
-            return type;
+            TypeEntity entity = jpaTypeRepository.save(existingType);
+            return new Type(entity.getId(), entity.getName(), entity.isActive());
         }
 
         return null;
@@ -52,14 +51,28 @@ public class TypeRepositoryImpl implements TypeRepository {
     public boolean deactivate(int id) {
 
         TypeEntity type = jpaTypeRepository.findById(id).orElse(null);
-        if (type != null && type.is_active()) {
-            type.set_active(false);
+        if (type != null && type.isActive()) {
+            type.setActive(false);
             jpaTypeRepository.save(type);
             return true;
         }
 
         return false;
 
+    }
+
+    @Override
+    public void activate(int id) {
+
+        TypeEntity type = jpaTypeRepository.findById(id).orElse(null);
+
+        if (type == null) {
+            return;
+        }
+
+
+        type.setActive(true);
+        jpaTypeRepository.save(type);
     }
 
     @Override
@@ -71,7 +84,7 @@ public class TypeRepositoryImpl implements TypeRepository {
             return Optional.empty();
         }
 
-        Type result = new Type(type.getId(), type.getName(), type.is_active());
+        Type result = new Type(type.getId(), type.getName(), type.isActive());
 
         return Optional.of(result);
 
@@ -80,10 +93,11 @@ public class TypeRepositoryImpl implements TypeRepository {
     @Override
     public Optional<Type> findByName(String name) {
         TypeEntity type = jpaTypeRepository.findByName(name);
+        if (type == null) {
+            return Optional.empty();
+        }
 
-
-
-        Type result = new Type(type.getId(), type.getName(), type.is_active());
+        Type result = new Type(type.getId(), type.getName(), type.isActive());
 
         return Optional.of(result);
     }
@@ -91,17 +105,49 @@ public class TypeRepositoryImpl implements TypeRepository {
     @Override
     public List<Type> findAll() {
 
-        List<Type> types = jpaTypeRepository.findAll().stream().map(typeEntity ->
+        return jpaTypeRepository.findAll().stream().map(typeEntity ->
             new Type(
                     typeEntity.getId(),
                     typeEntity.getName(),
-                    typeEntity.is_active()
+                    typeEntity.isActive()
             )
 
         ).filter(Type::isActive).toList();
-
-
-
-        return types;
     }
+
+    @Override
+    public boolean existsByNameAndIsActive(String name) {
+        return jpaTypeRepository.existsByNameAndActive(name, true);
+    }
+
+    @Override
+    public boolean existsByNameAndIsInactive(String name) {
+        return jpaTypeRepository.existsByNameAndActive(name, false);
+    }
+
+    @Override
+    public Optional<Type> findByNameAndIsActive(String name) {
+        TypeEntity type = jpaTypeRepository.findByNameAndActiveIsTrue(name).orElse(null);
+        if (type == null) {
+            return Optional.empty();
+        }
+
+        Type result = new Type(type.getId(), type.getName(), type.isActive());
+
+        return Optional.of(result);
+    }
+
+    @Override
+    public Optional<Type> findByNameAndIsInactive(String name) {
+        TypeEntity type = jpaTypeRepository.findByNameAndActiveIsFalse(name).orElse(null);
+        if (type == null) {
+            return Optional.empty();
+        }
+
+        Type result = new Type(type.getId(), type.getName(), type.isActive());
+
+        return Optional.of(result);
+    }
+
+
 }

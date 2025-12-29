@@ -1,8 +1,9 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.controller;
 
 
-import com.accountancy.despacho_castillo_asociados.application.service.Type.ServiceType;
+import com.accountancy.despacho_castillo_asociados.application.service.Type.TypeService;
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
+import com.accountancy.despacho_castillo_asociados.domain.model.Type.TypeRequest;
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import java.util.List;
 public class TypeController {
 
     @Autowired
-    private ServiceType serviceType;
+    private TypeService serviceType;
 
 
     @GetMapping
@@ -65,7 +66,7 @@ public class TypeController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Type>> createType(@RequestBody Type type) {
+    public ResponseEntity<ApiResponse<Type>> createType(@RequestBody TypeRequest type) {
         Type createdType = serviceType.createType(type);
 
         if (createdType != null) {
@@ -82,7 +83,7 @@ public class TypeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Type>>  updateType(@RequestBody Type type, @PathVariable int id
+    public ResponseEntity<ApiResponse<Type>>  updateType(@RequestBody TypeRequest type, @PathVariable int id
     ) {
         Type updatedType = serviceType.updateType(type, id);
 

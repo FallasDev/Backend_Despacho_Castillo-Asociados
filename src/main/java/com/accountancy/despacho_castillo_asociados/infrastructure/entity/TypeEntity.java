@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -20,11 +18,26 @@ public class TypeEntity {
     private int id;
 
 
-    @Column(name = "name", nullable = false, unique = true, length = 40)
+    @Column(name = "name", nullable = false, length = 40)
     private String name;
 
     @Column(name = "active", nullable = false)
-    private boolean is_active = true;
+    private boolean active = true;
 
+
+    public TypeEntity(String name, boolean active) {
+        this.name = name;
+        this.active = active;
+    }
+
+    public TypeEntity(int id, String name, boolean active) {
+        this.id = id;
+        this.name = name;
+        this.active = active;
+    }
+
+    public TypeEntity() {
+
+    }
 
 }

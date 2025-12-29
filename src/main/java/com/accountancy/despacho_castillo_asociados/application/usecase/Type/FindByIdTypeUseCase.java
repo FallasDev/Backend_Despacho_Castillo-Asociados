@@ -18,7 +18,6 @@ public class FindByIdTypeUseCase {
         Optional<Type> type = typeRepository.findById(id);
 
         if (type.isEmpty() || !type.get().isActive()) {
-            System.out.println("type is empty or not active");
             throw new EntityNotFoundException("Type with id " + id + " not found");
         }
 

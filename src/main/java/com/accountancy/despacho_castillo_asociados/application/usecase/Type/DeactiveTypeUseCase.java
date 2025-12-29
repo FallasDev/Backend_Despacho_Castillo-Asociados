@@ -1,6 +1,7 @@
 package com.accountancy.despacho_castillo_asociados.application.usecase.Type;
 
 import com.accountancy.despacho_castillo_asociados.domain.repository.Type.TypeRepository;
+import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 import jakarta.persistence.EntityNotFoundException;
 
 public class DeactiveTypeUseCase {
@@ -15,7 +16,7 @@ public class DeactiveTypeUseCase {
         boolean result = typeRepository.deactivate(id);
 
         if (!result) {
-            throw new EntityNotFoundException("Failed to deactivate Type with id " + id);
+            throw new BadRequestException("Failed to deactivate Type with id " + id);
         }
     }
 

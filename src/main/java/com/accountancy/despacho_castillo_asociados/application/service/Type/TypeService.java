@@ -2,12 +2,13 @@ package com.accountancy.despacho_castillo_asociados.application.service.Type;
 
 import com.accountancy.despacho_castillo_asociados.application.usecase.Type.*;
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
+import com.accountancy.despacho_castillo_asociados.domain.model.Type.TypeRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ServiceType {
+public class TypeService {
 
     private final CreateTypeUseCase createTypeUseCase;
     private final FindByIdTypeUseCase findByIdTypeUseCase;
@@ -16,7 +17,7 @@ public class ServiceType {
     private final FindByNameTypeUseCase findByNameTypeUseCase;
     private final FindAllTypeUseCase findAllTypeUseCase;
 
-    public ServiceType(
+    public TypeService(
             CreateTypeUseCase createTypeUseCase,
             FindByIdTypeUseCase findByIdTypeUseCase,
             DeactiveTypeUseCase deactiveTypeUseCase,
@@ -32,7 +33,7 @@ public class ServiceType {
         this.findAllTypeUseCase = findAllTypeUseCase;
     }
 
-    public Type createType(Type type) {
+    public Type createType(TypeRequest type) {
         return createTypeUseCase.execute(type);
     }
 
@@ -43,7 +44,7 @@ public class ServiceType {
     public void deactiveType(int id) {
         deactiveTypeUseCase.execute(id);
     }
-    public Type updateType(Type type, int id) {
+    public Type updateType(TypeRequest type, int id) {
         return updateTypeUseCase.execute(type, id);
     }
     public Type findByNameType(String name) {

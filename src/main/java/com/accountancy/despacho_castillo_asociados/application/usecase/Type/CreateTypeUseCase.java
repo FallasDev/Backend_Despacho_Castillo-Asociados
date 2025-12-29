@@ -1,10 +1,11 @@
 package com.accountancy.despacho_castillo_asociados.application.usecase.Type;
 
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
+import com.accountancy.despacho_castillo_asociados.domain.model.Type.TypeRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Type.TypeRepository;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
+
+import java.util.Optional;
 
 
 public class CreateTypeUseCase {
@@ -16,14 +17,32 @@ public class CreateTypeUseCase {
         this.typeRepository = typeRepository;
     }
 
-    public Type execute(Type type) {
-        Type createdType = typeRepository.create(type);
+    public Type execute(TypeRequest type) {
 
-        if (createdType == null) {
-            throw new EntityNotFoundException("Failed to create Type");
+        if (type == null) {
+            throw new BadRequestException("Type cannot be null");
         }
 
-        return createdType;
+        if (type.getName() == null || type.getName().isEmpty()) {
+            throw new BadRequestException("Type name cannot be null or empty");
+        }
+
+        boolean existingType = typeRepository.existsByNameAndIsActive(type.getName());
+
+        if (existingType) {
+            throw new BadRequestException("Type with name " + type.getName() + " already exists");
+        }
+
+        Optional<Type> inactiveType = typeRepository.findByNameAndIsInactive(type.getName());
+
+        if (inactiveType.isPresent()) {
+            Type reactivatedType = inactiveType.get();
+            reactivatedType.setActive(true);
+            typeRepository.activate(reactivatedType.getId());
+            return reactivatedType;
+        }
+
+        return typeRepository.create(type);
     }
 
 }
