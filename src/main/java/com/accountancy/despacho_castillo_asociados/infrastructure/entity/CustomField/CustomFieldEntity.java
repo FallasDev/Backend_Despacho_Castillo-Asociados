@@ -1,7 +1,7 @@
-package com.accountancy.despacho_castillo_asociados.infrastructure.entity;
+package com.accountancy.despacho_castillo_asociados.infrastructure.entity.CustomField;
 
 
-import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.CustomField;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Type.TypeEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

@@ -3,8 +3,11 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.repository.im
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.TypeRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Type.TypeRepository;
-import com.accountancy.despacho_castillo_asociados.infrastructure.entity.TypeEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Type.TypeEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Type.JPATypeRepository;
+import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -103,16 +106,25 @@ public class TypeRepositoryImpl implements TypeRepository {
     }
 
     @Override
-    public List<Type> findAll() {
+    public PageResult<Type> findAll(int page, int size) {
 
-        return jpaTypeRepository.findAll().stream().map(typeEntity ->
-            new Type(
-                    typeEntity.getId(),
-                    typeEntity.getName(),
-                    typeEntity.isActive()
-            )
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        Page<TypeEntity> typePage = jpaTypeRepository.findAll(pageable);
 
-        ).filter(Type::isActive).toList();
+        List<TypeEntity> types = typePage.getContent();
+
+        return new PageResult<>(
+                types.stream().map(entity -> new Type(
+                        entity.getId(),
+                        entity.getName(),
+                        entity.isActive()
+                )).filter(Type::isActive).toList(),
+                page,
+                size,
+                typePage.getTotalElements(),
+                typePage.getTotalPages()
+        );
+
     }
 
     @Override

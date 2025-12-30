@@ -2,6 +2,7 @@ package com.accountancy.despacho_castillo_asociados.domain.repository.Type;
 
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.TypeRequest;
+import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,7 @@ public interface TypeRepository {
     Optional<Type> findByName(String name);
     Optional<Type> findByNameAndIsActive(String name);
     Optional<Type> findByNameAndIsInactive(String name);
-    List<Type> findAll();
+    PageResult<Type> findAll(int page, int size);
 
     boolean existsByNameAndIsActive(String name);
     boolean existsByNameAndIsInactive(String name);

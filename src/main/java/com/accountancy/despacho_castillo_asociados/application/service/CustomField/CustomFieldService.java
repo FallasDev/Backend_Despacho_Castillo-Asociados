@@ -3,6 +3,7 @@ package com.accountancy.despacho_castillo_asociados.application.service.CustomFi
 import com.accountancy.despacho_castillo_asociados.application.usecase.CustomField.*;
 import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.CustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.CustomFieldRequest;
+import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,8 +43,8 @@ public class CustomFieldService {
         deactiveCustomFieldUseCase.execute(id);
     }
 
-    public List<CustomField> findAllCustomFields() {
-        return findAllCustomFieldUseCase.execute();
+    public PageResult<CustomField> findAllCustomFields(int page, int size) {
+        return findAllCustomFieldUseCase.execute(page, size);
     }
 
     public CustomField findByIdCustomField(int id) {

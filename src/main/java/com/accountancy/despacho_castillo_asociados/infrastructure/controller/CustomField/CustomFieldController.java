@@ -1,11 +1,11 @@
-package com.accountancy.despacho_castillo_asociados.infrastructure.controller;
+package com.accountancy.despacho_castillo_asociados.infrastructure.controller.CustomField;
 
 
 import com.accountancy.despacho_castillo_asociados.application.service.CustomField.CustomFieldService;
 import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.CustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.CustomFieldRequest;
-import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
+import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +20,12 @@ public class CustomFieldController {
     private CustomFieldService customFieldService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CustomField>>> getCustomFields() {
+    public ResponseEntity<ApiResponse<PageResult<CustomField>>> getCustomFields(@RequestParam (defaultValue = "0") int page, @RequestParam (defaultValue = "10") int size) {
 
-        List<CustomField> customFields = customFieldService.findAllCustomFields();
+        PageResult<CustomField> customFields = customFieldService.findAllCustomFields(page, size);
 
-        if (customFields == null || customFields.isEmpty()) {
+
+        if (customFields == null || customFields.content().isEmpty()) {
             return ResponseEntity.ok().body(
                     new ApiResponse<>(false, "No custom fields found", null)
             );

@@ -3,6 +3,7 @@ package com.accountancy.despacho_castillo_asociados.application.service.Type;
 import com.accountancy.despacho_castillo_asociados.application.usecase.Type.*;
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.TypeRequest;
+import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,8 +51,8 @@ public class TypeService {
     public Type findByNameType(String name) {
         return findByNameTypeUseCase.execute(name);
     }
-    public List<Type> findAllType() {
-        return findAllTypeUseCase.execute();
+    public PageResult<Type> findAllType(int page, int size) {
+        return findAllTypeUseCase.execute(page, size);
     }
 
 }

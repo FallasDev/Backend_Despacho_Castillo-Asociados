@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class FindByIdCustomFieldUseCase {
 
-    private CustomFieldRepository customFieldRepository;
+    private final CustomFieldRepository customFieldRepository;
 
     public FindByIdCustomFieldUseCase(CustomFieldRepository customFieldRepository) {
         this.customFieldRepository = customFieldRepository;

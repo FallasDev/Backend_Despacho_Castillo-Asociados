@@ -1,10 +1,8 @@
-package com.accountancy.despacho_castillo_asociados.infrastructure.entity;
+package com.accountancy.despacho_castillo_asociados.infrastructure.entity.Type;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter

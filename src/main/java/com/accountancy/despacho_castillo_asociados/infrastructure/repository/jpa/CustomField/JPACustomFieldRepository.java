@@ -1,6 +1,6 @@
-package com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Type;
+package com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.CustomField;
 
-import com.accountancy.despacho_castillo_asociados.infrastructure.entity.CustomFieldEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.CustomField.CustomFieldEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

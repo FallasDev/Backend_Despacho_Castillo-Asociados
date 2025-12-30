@@ -1,4 +1,4 @@
-package com.accountancy.despacho_castillo_asociados.infrastructure.repository.impl.Type;
+package com.accountancy.despacho_castillo_asociados.infrastructure.repository.impl.CustomField;
 
 
 import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.CustomField;
@@ -6,10 +6,13 @@ import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.Cust
 import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.CustomFieldRequest;
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
 import com.accountancy.despacho_castillo_asociados.domain.repository.CustomField.CustomFieldRepository;
-import com.accountancy.despacho_castillo_asociados.infrastructure.entity.CustomFieldEntity;
-import com.accountancy.despacho_castillo_asociados.infrastructure.entity.TypeEntity;
-import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Type.JPACustomFieldRepository;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.CustomField.CustomFieldEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Type.TypeEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.CustomField.JPACustomFieldRepository;
+import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import org.jspecify.annotations.NonNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -53,27 +56,26 @@ public class CustomFieldRepositoryImpl implements CustomFieldRepository {
 
         CustomFieldEntity existingCustomField = jPACustomFieldRepository.findById(id).orElse(null);
 
-        if (existingCustomField != null) {
-            existingCustomField.setName(customField.getName());
-            existingCustomField.setRequired(customField.isRequired());
-            existingCustomField.setExclusive(customField.isExclusive());
-
-
-
-            existingCustomField.setType(
-                    new TypeEntity(
-                            type.getId(),
-                            type.getName(),
-                            type.isActive()
-                    )
-            );
-
-            CustomFieldEntity entity = jPACustomFieldRepository.save(existingCustomField);
-
-            return getCustomField(entity).orElse(null);
+        if (existingCustomField == null) {
+            return null;
         }
 
-        return null;
+        existingCustomField.setName(customField.getName());
+        existingCustomField.setRequired(customField.isRequired());
+        existingCustomField.setExclusive(customField.isExclusive());
+
+
+        existingCustomField.setType(
+                new TypeEntity(
+                        type.getId(),
+                        type.getName(),
+                        type.isActive()
+                )
+        );
+
+        CustomFieldEntity entity = jPACustomFieldRepository.save(existingCustomField);
+
+        return getCustomField(entity).orElse(null);
 
     }
 
@@ -142,12 +144,25 @@ public class CustomFieldRepositoryImpl implements CustomFieldRepository {
     }
 
     @Override
-    public List<CustomField> findAll() {
+    public PageResult<CustomField> findAll(int page, int size) {
 
-        return jPACustomFieldRepository.findAll().stream()
-                .map(customFieldEntity -> getCustomField(customFieldEntity).orElse(null)).filter(Objects::nonNull)
-                .filter(CustomField::isActive)
-                .toList();
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        Page<CustomFieldEntity> customFields = jPACustomFieldRepository.findAll(pageable);
+
+        List<CustomFieldEntity> customFieldList = customFields.getContent();
+
+        return new PageResult<>(
+                customFieldList.stream()
+                        .map(this::getCustomField)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .filter(CustomField::isActive)
+                        .toList(),
+                page,
+                size,
+                customFields.getTotalElements(),
+                customFields.getTotalPages()
+        );
 
     }
 

@@ -1,11 +1,13 @@
-package com.accountancy.despacho_castillo_asociados.infrastructure.controller;
+package com.accountancy.despacho_castillo_asociados.infrastructure.controller.Type;
 
 
 import com.accountancy.despacho_castillo_asociados.application.service.Type.TypeService;
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.TypeRequest;
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
+import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,12 +22,12 @@ public class TypeController {
 
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Type>>> getAllTypes() {
+    public ResponseEntity<ApiResponse<PageResult<Type>>> getAllTypes(@RequestParam (defaultValue = "0") int page, @RequestParam (defaultValue = "10") int size) {
 
-        List<Type> types = serviceType.findAllType();
+        PageResult<Type> types = serviceType.findAllType(page, size);
 
 
-        if (types == null || types.isEmpty()) {
+        if (types == null || types.content().isEmpty()) {
             return ResponseEntity.ok().body(
                     new ApiResponse<>(false, "No types found", null)
             );
@@ -57,7 +59,7 @@ public class TypeController {
         if (type != null) {
             return ResponseEntity.ok(
                     new ApiResponse<Type>(true, "Type found", type)
-            );
+             );
         } else {
             return ResponseEntity.ok(
                     new ApiResponse<Type>(false, "Type not found", null
@@ -69,15 +71,15 @@ public class TypeController {
     public ResponseEntity<ApiResponse<Type>> createType(@RequestBody TypeRequest type) {
         Type createdType = serviceType.createType(type);
 
-        if (createdType != null) {
+        if (createdType == null) {
             return ResponseEntity.ok(
-                    new ApiResponse<Type>(true, "Type created successfully", createdType)
-            );
-        } else {
-            return ResponseEntity.ok(
-                    new ApiResponse<Type>(false, "Failed to create Type", null)
+                    new ApiResponse<Type>(false, "Type could not be created", null)
             );
         }
+
+        return ResponseEntity.ok(
+                new ApiResponse<Type>(true, "Type created successfully", createdType)
+        );
 
 
     }
@@ -87,15 +89,15 @@ public class TypeController {
     ) {
         Type updatedType = serviceType.updateType(type, id);
 
-        if (updatedType != null) {
+        if (updatedType == null) {
             return ResponseEntity.ok(
-                    new ApiResponse<Type>(true, "Type updated successfully", updatedType)
-            );
-        } else {
-            return ResponseEntity.ok(
-                    new ApiResponse<Type>(false, "Failed to update Type", null)
+                    new ApiResponse<Type>(false, "Type could not be updated", null)
             );
         }
+
+        return ResponseEntity.ok(
+                new ApiResponse<Type>(true, "Type updated successfully", updatedType)
+        );
     }
 
     @PutMapping("/deactivate/{id}")
