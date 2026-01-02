@@ -2,9 +2,11 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.repository.jp
 
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.CustomField.CustomFieldEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+@Repository
 public interface JPACustomFieldRepository extends JpaRepository<CustomFieldEntity, Integer> {
 
     Optional<CustomFieldEntity> findByName(String name);

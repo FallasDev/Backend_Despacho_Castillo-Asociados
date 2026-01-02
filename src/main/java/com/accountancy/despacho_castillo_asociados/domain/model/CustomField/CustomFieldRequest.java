@@ -7,14 +7,12 @@ public class CustomFieldRequest {
 
     private String name;
     private boolean isRequired;
-    private boolean isActive;
     private boolean isExclusive;
     private int typeId;
 
-    public CustomFieldRequest(String name, boolean isRequired, boolean isActive, boolean isExclusive, int typeId) {
+    public CustomFieldRequest(String name, boolean isRequired, boolean isExclusive, int typeId) {
         this.name = name;
         this.isRequired = isRequired;
-        this.isActive = isActive;
         this.isExclusive = isExclusive;
         this.typeId = typeId;
     }
@@ -33,14 +31,6 @@ public class CustomFieldRequest {
 
     public void setRequired(boolean isRequired) {
         this.isRequired = isRequired;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean isActive) {
-        this.isActive = isActive;
     }
 
     public boolean isExclusive() {

@@ -9,12 +9,11 @@ import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
+import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Repository
 public class ServiceRepositoryImpl implements ServiceRepository {
 
     private final JPAServiceRepository jpaServiceRepository;
@@ -30,7 +29,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         ServiceEntity serviceEntity = new ServiceEntity();
         serviceEntity.setName(serviceRequest.getName());
         serviceEntity.setDescription(serviceRequest.getDescription());
-        serviceEntity.setActive(serviceRequest.isActive());
+        serviceEntity.setActive(true);
 
         ServiceEntity savedEntity = jpaServiceRepository.save(serviceEntity);
 
@@ -54,7 +53,6 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
         existingEntity.setName(serviceRequest.getName());
         existingEntity.setDescription(serviceRequest.getDescription());
-        existingEntity.setActive(serviceRequest.isActive());
         ServiceEntity updatedEntity = jpaServiceRepository.save(existingEntity);
         return new DomainService(
                 updatedEntity.getId(),
@@ -67,6 +65,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     @Override
     public boolean deactivate(int id) {
+
         ServiceEntity existingEntity = jpaServiceRepository.findById(id).orElse(null);
 
         if (existingEntity == null) {
@@ -77,7 +76,6 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         jpaServiceRepository.save(existingEntity);
         return true;
     }
-
     @Override
     public void activate(int id) {
 

@@ -4,12 +4,10 @@ public class ServiceRequest {
 
     private String name;
     private String description;
-    private boolean active;
 
-    public ServiceRequest(String name, String description, boolean active) {
+    public ServiceRequest(String name, String description) {
         this.name = name;
         this.description = description;
-        this.active = active;
     }
 
     public String getName() {
@@ -20,10 +18,6 @@ public class ServiceRequest {
         return description;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -32,9 +26,6 @@ public class ServiceRequest {
         this.description = description;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 
 
 }

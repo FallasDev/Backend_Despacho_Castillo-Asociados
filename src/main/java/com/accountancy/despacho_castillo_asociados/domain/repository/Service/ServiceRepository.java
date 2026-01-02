@@ -24,6 +24,6 @@ public interface ServiceRepository {
     PageResult<DomainService> findAll(int page, int size);
 
     boolean existsByNameAndIsActive(String name);
-    boolean existsByNameAndIsInactive(String name);
 
+    boolean existsByNameAndIsInactive(String name);
 }
