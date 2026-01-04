@@ -167,6 +167,11 @@ public class CustomFieldRepositoryImpl implements CustomFieldRepository {
     }
 
     @Override
+    public PageResult<CustomField> findByTypeId(int typeId, int page, int size) {
+        return null;
+    }
+
+    @Override
     public boolean existsByNameAndIsActive(String name) {
         return jPACustomFieldRepository.existsByNameAndActive(name,true);
     }
@@ -175,6 +180,30 @@ public class CustomFieldRepositoryImpl implements CustomFieldRepository {
     public boolean existsByNameAndIsInactive(String name) {
 
         return jPACustomFieldRepository.existsByNameAndActive(name,false);
+    }
+
+
+
+    @Override
+    public PageResult<CustomField> findByIsRequired(boolean isRequired, int page, int size) {
+//        Pageable pageable = Pageable.ofSize(size).withPage(page);
+//        Page<CustomFieldEntity> customFields = jPACustomFieldRepository.findByIsRequired(isRequired, pageable);
+//
+//        List<CustomFieldEntity> customFieldList = customFields.getContent();
+//
+//        return new PageResult<>(
+//                customFieldList.stream()
+//                        .map(this::getCustomField)
+//                        .filter(Optional::isPresent)
+//                        .map(Optional::get)
+//                        .filter(CustomField::isActive)
+//                        .toList(),
+//                page,
+//                size,
+//                customFields.getTotalElements(),
+//                customFields.getTotalPages()
+//        );
+        return null;
     }
 
 

@@ -20,7 +20,9 @@ public class ServiceController {
     private DomainServiceService domainServiceService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResult<DomainService>>> getAllServices(@RequestParam (required = false) String name, @RequestParam (defaultValue = "0") int page, @RequestParam (defaultValue = "10") int size) {
+    public ResponseEntity<ApiResponse<PageResult<DomainService>>> getAllServices(@RequestParam (required = false) String name,
+                                                                                 @RequestParam (defaultValue = "0") int page,
+                                                                                 @RequestParam (defaultValue = "10") int size) {
 
 
         PageResult<DomainService> domainServices = domainServiceService.findServices(name, page, size);

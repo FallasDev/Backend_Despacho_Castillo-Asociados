@@ -24,5 +24,21 @@ public class ServiceEntity {
         @Column(nullable = false)
         private boolean active;
 
+        public ServiceEntity() {
+        }
+
+        public ServiceEntity(String name, String description, boolean active) {
+            this.name = name;
+            this.description = description;
+            this.active = active;
+        }
+
+        public ServiceEntity(int id, String name, String description, boolean active) {
+            this.id = id;
+            this.name = name;
+            this.description = description;
+            this.active = active;
+        }
+
 
 }
