@@ -18,28 +18,28 @@ public class UpdateServiceUseCase {
     public DomainService execute(ServiceRequest service, int id) {
 
         if (service == null) {
-            throw new BadRequestException("Service cannot be null");
+            throw new BadRequestException("service.exception.update.cannot_be_null");
         }
 
         if (service.getName() == null || service.getName().isEmpty()) {
-            throw new BadRequestException("Service name cannot be null or empty");
+            throw new BadRequestException("service.exception.update.name.cannot_be_null");
         }
 
         Optional<DomainService> existingService = serviceRepository.findById(id);
 
 
         if (existingService.isEmpty()) {
-            throw new BadRequestException("Service with id " + id + " does not exist");
+            throw new BadRequestException("service.exception.update.notfound");
         }
 
         if (!existingService.get().isActive()) {
-            throw new BadRequestException("Service with id " + id + " is not active");
+            throw new BadRequestException("service.exception.update.is_not_active");
         }
 
         DomainService updatedDomainService = serviceRepository.update(service, id);
 
         if (updatedDomainService == null) {
-            throw new BadRequestException("Service to update Type with id " + id);
+            throw new BadRequestException("service.exception.update.failed");
         }
 
 

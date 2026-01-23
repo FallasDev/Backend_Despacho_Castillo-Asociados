@@ -18,17 +18,17 @@ public class CreateServiceUseCase {
     public DomainService execute(ServiceRequest service) {
 
         if (service == null) {
-            throw new BadRequestException("Service cannot be null");
+            throw new BadRequestException("service.exception.create.cannot_be_null");
         }
 
         if (service.getName() == null || service.getName().isEmpty()) {
-            throw new BadRequestException("Service name cannot be null or empty");
+            throw new BadRequestException("service.exception.create.name.cannot_be_null");
         }
 
         boolean existingService = serviceRepository.existsByNameAndIsActive(service.getName());
 
         if (existingService) {
-            throw new BadRequestException("Service with name " + service.getName() + " already exists");
+            throw new BadRequestException("service.exception.create.already.exists");
         }
 
         Optional<DomainService> inactiveService = serviceRepository.findByNameAndIsInactive(service.getName());

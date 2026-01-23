@@ -14,7 +14,7 @@ public class DeactiveServiceUseCase {
         boolean result = serviceRepository.deactivate(id);
 
         if (!result) {
-            throw new RuntimeException("Failed to deactivate service with id " + id);
+            throw new RuntimeException("service.exception.deactive");
         }
     }
 

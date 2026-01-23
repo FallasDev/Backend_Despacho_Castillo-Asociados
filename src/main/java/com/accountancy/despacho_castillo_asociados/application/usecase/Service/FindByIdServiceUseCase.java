@@ -16,7 +16,7 @@ public class FindByIdServiceUseCase  {
         DomainService domainService = serviceRepository.findById(id).orElse(null);
 
         if (domainService == null || !domainService.isActive()) {
-            throw new EntityNotFoundException("Service with id " + id + " not found");
+            throw new EntityNotFoundException("services.exception.fetch.by_id.notfound");
         }
 
         return domainService;

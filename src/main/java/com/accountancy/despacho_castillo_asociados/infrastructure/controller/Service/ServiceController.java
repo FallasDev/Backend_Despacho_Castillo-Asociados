@@ -29,12 +29,12 @@ public class ServiceController {
 
         if (domainServices == null || domainServices.content().isEmpty()) {
             return ResponseEntity.ok().body(
-                    new ApiResponse<>(false, "No services found", null)
+                    new ApiResponse<>(false, "services.exception.fetch.all.none", null)
             );
         }
 
         return ResponseEntity.ok().body(
-                new ApiResponse<>(true, "Services retrieved successfully", domainServices)
+                new ApiResponse<>(true, "services.success.fetch_all", domainServices)
         );
 
     }
@@ -45,11 +45,11 @@ public class ServiceController {
         DomainService domainService = domainServiceService.findByIdService(id);
         if (domainService != null) {
             return ResponseEntity.ok(
-                    new ApiResponse<DomainService>(true, "Service found", domainService)
+                    new ApiResponse<DomainService>(true, "services.exception.fetch.by_id.notfound", domainService)
             );
         } else {
             return ResponseEntity.ok(
-                    new ApiResponse<DomainService>(false, "Service not found", null
+                    new ApiResponse<DomainService>(false, "service.success.fetch_by_id", null
             ));
         }
     }
@@ -60,12 +60,12 @@ public class ServiceController {
 
         if (createdService == null) {
             return ResponseEntity.ok(
-                    new ApiResponse<DomainService>(false, "Service could not be created", null)
+                    new ApiResponse<DomainService>(false, "service.exception.create.failed", null)
             );
         }
 
         return ResponseEntity.ok(
-                new ApiResponse<DomainService>(true, "Service created successfully", createdService)
+                new ApiResponse<DomainService>(true, "service.success.create", createdService)
         );
     }
 
@@ -76,12 +76,12 @@ public class ServiceController {
 
         if (updatedService == null) {
             return ResponseEntity.ok(
-                    new ApiResponse<DomainService>(false, "Service could not be updated", null)
+                    new ApiResponse<DomainService>(false, "service.exception.update.failed", null)
             );
         }
 
         return ResponseEntity.ok(
-                new ApiResponse<DomainService>(true, "Service updated successfully", updatedService)
+                new ApiResponse<DomainService>(true, "service.success.update", updatedService)
         );
     }
 
@@ -89,7 +89,7 @@ public class ServiceController {
     public ResponseEntity<ApiResponse<Void>> deactivateService(@PathVariable int id) {
         domainServiceService.deactiveService(id);
         return ResponseEntity.ok(
-                new ApiResponse<Void>(true, "Service deactivated successfully", null)
+                new ApiResponse<Void>(true, "service.success.deactive", null)
         );
     }
 

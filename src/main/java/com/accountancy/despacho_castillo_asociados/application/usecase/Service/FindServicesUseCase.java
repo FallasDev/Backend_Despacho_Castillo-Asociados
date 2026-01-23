@@ -22,7 +22,7 @@ public class FindServicesUseCase {
             PageResult<DomainService> servicesByName = serviceRepository.findByContainsNameLetterUseCase(name, page, size);
 
             if (servicesByName.content().isEmpty()) {
-                throw new EmptyListException("No services found with name containing: " + name);
+                throw new EmptyListException("services.exception.fetch.by_name_like.none");
             }
 
             return servicesByName;
@@ -31,7 +31,7 @@ public class FindServicesUseCase {
         PageResult<DomainService> domainServices = serviceRepository.findAll(page, size);
 
         if (domainServices.content().isEmpty()) {
-            throw new EmptyListException("No services found");
+            throw new EmptyListException("services.exception.fetch.all.none");
         }
 
         return domainServices;

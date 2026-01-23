@@ -19,7 +19,7 @@ public class FindByContainsNameLetterUseCase {
         PageResult<DomainService> domainServices = serviceRepository.findByContainsNameLetterUseCase(rgxName,page,size);
 
         if (domainServices.content().isEmpty()) {
-            throw new EmptyListException("No services found");
+            throw new EmptyListException("services.exception.fetch.all.none");
         }
 
         return domainServices;
