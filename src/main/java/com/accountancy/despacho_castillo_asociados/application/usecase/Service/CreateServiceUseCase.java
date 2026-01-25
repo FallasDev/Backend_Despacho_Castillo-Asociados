@@ -3,6 +3,7 @@ package com.accountancy.despacho_castillo_asociados.application.usecase.Service;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.ServiceRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Service.ServiceRepository;
+import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 
 import java.util.Optional;
@@ -11,24 +12,28 @@ public class CreateServiceUseCase {
 
     private final ServiceRepository serviceRepository;
 
-    public CreateServiceUseCase(ServiceRepository serviceRepository) {
+    private final Messages messages;
+
+
+    public CreateServiceUseCase(ServiceRepository serviceRepository, Messages messages) {
         this.serviceRepository = serviceRepository;
+        this.messages = messages;
     }
 
     public DomainService execute(ServiceRequest service) {
 
         if (service == null) {
-            throw new BadRequestException("service.exception.create.cannot_be_null");
+            throw new BadRequestException(messages.get("service.exception.create.cannot_be_null"));
         }
 
         if (service.getName() == null || service.getName().isEmpty()) {
-            throw new BadRequestException("service.exception.create.name.cannot_be_null");
+            throw new BadRequestException(messages.get("service.exception.create.name.cannot_be_null"));
         }
 
         boolean existingService = serviceRepository.existsByNameAndIsActive(service.getName());
 
         if (existingService) {
-            throw new BadRequestException("service.exception.create.already.exists");
+            throw new BadRequestException(messages.get("service.exception.create.already.exists"));
         }
 
         Optional<DomainService> inactiveService = serviceRepository.findByNameAndIsInactive(service.getName());

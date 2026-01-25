@@ -22,32 +22,24 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleNotFound(EntityNotFoundException ex, Locale locale) {
-
-        String localizedMessage = messageSource.getMessage(ex.getMessage(), null, locale);
-
-
+    public ResponseEntity<ApiResponse<Void>> handleNotFound(EntityNotFoundException ex) {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ApiResponse<>(false, localizedMessage, null));
+                .body(new ApiResponse<>(false, ex.getMessage(), null));
     }
 
     @ExceptionHandler(EmptyListException.class)
-    public ResponseEntity<ApiResponse<ArrayList<Object>>> handleEmptyList(EmptyListException ex, Locale locale) {
-
-        String localizedMessage = messageSource.getMessage(ex.getMessage(), null, locale);
+    public ResponseEntity<ApiResponse<ArrayList<Object>>> handleEmptyList(EmptyListException ex) {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ApiResponse<>(false, localizedMessage, new ArrayList<>()));
+                .body(new ApiResponse<>(false, ex.getMessage(), new ArrayList<>()));
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ApiResponse<Void>> handleBadRequest(BadRequestException ex, Locale locale) {
-
-        String localizedMessage = messageSource.getMessage(ex.getMessage(), null, locale);
+    public ResponseEntity<ApiResponse<Void>> handleBadRequest(BadRequestException ex) {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ApiResponse<>(false, localizedMessage, null));
+                .body(new ApiResponse<>(false, ex.getMessage(), null));
     }
 
 

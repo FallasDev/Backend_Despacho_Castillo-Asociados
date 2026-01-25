@@ -5,12 +5,16 @@ import com.accountancy.despacho_castillo_asociados.application.service.Service.D
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.ServiceRequest;
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
+import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import org.apache.logging.log4j.message.LocalizedMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/services")
@@ -19,22 +23,30 @@ public class ServiceController {
     @Autowired
     private DomainServiceService domainServiceService;
 
+
+    private Messages messages;
+
+    public ServiceController(Messages messages) {
+        this.messages = messages;
+    }
+
     @GetMapping
     public ResponseEntity<ApiResponse<PageResult<DomainService>>> getAllServices(@RequestParam (required = false) String name,
                                                                                  @RequestParam (defaultValue = "0") int page,
                                                                                  @RequestParam (defaultValue = "10") int size) {
 
-
         PageResult<DomainService> domainServices = domainServiceService.findServices(name, page, size);
 
         if (domainServices == null || domainServices.content().isEmpty()) {
             return ResponseEntity.ok().body(
-                    new ApiResponse<>(false, "services.exception.fetch.all.none", null)
+                    new ApiResponse<>(false, messages.get("service.exception.fetch.all.none"), null)
             );
         }
 
+
+
         return ResponseEntity.ok().body(
-                new ApiResponse<>(true, "services.success.fetch_all", domainServices)
+                new ApiResponse<>(true, messages.get("service.success.fetch_all"), domainServices)
         );
 
     }
