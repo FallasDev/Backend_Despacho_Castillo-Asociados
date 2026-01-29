@@ -1,10 +1,9 @@
 package com.accountancy.despacho_castillo_asociados.domain.model.Report;
 
-import java.awt.*;
 import java.net.URL;
 import java.time.LocalDate;
 
-public class DomainService {
+public class DomainReport {
 
     private int id;
     private String title;
@@ -14,7 +13,7 @@ public class DomainService {
     private LocalDate date;
     private boolean active;
 
-    public DomainService(int id, String title, String description, URL image, String category, LocalDate date, boolean active) {
+    public DomainReport(int id, String title, String description, URL image, String category, LocalDate date, boolean active) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -24,7 +23,7 @@ public class DomainService {
         this.active = active;
     }
 
-    public DomainService(){
+    public DomainReport(){
 
     }
 

@@ -3,7 +3,7 @@ package com.accountancy.despacho_castillo_asociados.domain.model.Report;
 import java.net.URL;
 import java.time.LocalDate;
 
-public class ServiceRequest {
+public class ReportRequest {
 
     private String title;
     private String description;
@@ -11,7 +11,7 @@ public class ServiceRequest {
     private String category;
     private LocalDate date;
 
-    public ServiceRequest(String title, String description, URL image, String category, LocalDate date) {
+    public ReportRequest(String title, String description, URL image, String category, LocalDate date) {
         this.title = title;
         this.description = description;
         this.image = image;

@@ -1,13 +1,13 @@
-package com.accountancy.despacho_castillo_asociados.domain.model.ReportCategories;
+package com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory;
 
 import java.time.LocalDate;
 
-public class ServiceRequest {
+public class ReportCategoryRequest {
 
     private String category;
     private LocalDate date;
 
-    public ServiceRequest(String category, LocalDate date) {
+    public ReportCategoryRequest(String category, LocalDate date) {
         this.category = category;
         this.date = date;
     }
