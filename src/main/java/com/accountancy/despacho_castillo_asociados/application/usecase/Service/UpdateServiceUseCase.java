@@ -44,8 +44,6 @@ public class UpdateServiceUseCase {
         if (updatedDomainService == null) {
             throw new BadRequestException(messages.get("service.exception.update.failed"));
         }
-
-
         return updatedDomainService;
     }
 

@@ -20,5 +20,12 @@ public interface ReportRepository {
     void activate(int id);
 
     Optional<DomainReport> findById(int id);
-    Optional<DomainReport> findAll(int page, int size);
+    Optional<DomainReport> findByTitleAndIsActive(String title);
+    Optional<DomainReport> findByTitleAndIsInactive(String title);
+    PageResult<DomainReport> findAll(int page, int size);
+    PageResult<DomainReport> findByContainsTitleLetterUseCase(String name, int page, int size);
+
+    boolean existsByTitleAndIsActive(String title);
+
+    boolean existsByTitleAndIsInactive(String title);
 }

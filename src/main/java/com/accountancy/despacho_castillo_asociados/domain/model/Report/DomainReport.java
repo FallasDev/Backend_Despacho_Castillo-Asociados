@@ -23,8 +23,7 @@ public class DomainReport {
         this.active = active;
     }
 
-    public DomainReport(){
-
+    public DomainReport() {
     }
 
     public int getId() {
@@ -48,7 +47,7 @@ public class DomainReport {
     }
 
     public void setDescription(String description) {
-        description = description;
+        this.description = description;
     }
 
     public URL getImage() {
