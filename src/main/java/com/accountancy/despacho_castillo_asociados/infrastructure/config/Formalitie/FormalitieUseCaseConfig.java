@@ -5,6 +5,7 @@ import com.accountancy.despacho_castillo_asociados.application.usecase.Formaliti
 import com.accountancy.despacho_castillo_asociados.application.usecase.Formalitie.FindFormalitiesUseCase;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Formalitie.FormalitieRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Service.ServiceRepository;
+import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,24 +14,24 @@ public class FormalitieUseCaseConfig {
 
 
     @Bean
-    public CreateFormalitieUseCase createFormalitieUseCase(FormalitieRepository formalitieRepository, ServiceRepository serviceRepository) {
-        return new CreateFormalitieUseCase(formalitieRepository, serviceRepository);
+    public CreateFormalitieUseCase createFormalitieUseCase(FormalitieRepository formalitieRepository, ServiceRepository serviceRepository, Messages messages) {
+        return new CreateFormalitieUseCase(formalitieRepository, serviceRepository, messages);
 
     }
 
     @Bean
-    public ChangeFormalitieStateUseCase changeFormalitieStateUseCase(FormalitieRepository formalitieRepository) {
-        return new ChangeFormalitieStateUseCase(formalitieRepository);
+    public ChangeFormalitieStateUseCase changeFormalitieStateUseCase(FormalitieRepository formalitieRepository, Messages messages) {
+        return new ChangeFormalitieStateUseCase(formalitieRepository, messages);
     }
 
     @Bean
-    public FindFormalitiesUseCase findFormalitiesUseCase(FormalitieRepository formalitieRepository) {
-        return new FindFormalitiesUseCase(formalitieRepository);
+    public FindFormalitiesUseCase findFormalitiesUseCase(FormalitieRepository formalitieRepository, Messages messages) {
+        return new FindFormalitiesUseCase(formalitieRepository, messages);
     }
 
     @Bean
-    public FindByIdFormalitieUseCase findByIdFormalitieUseCase(FormalitieRepository formalitieRepository) {
-        return new FindByIdFormalitieUseCase(formalitieRepository);
+    public FindByIdFormalitieUseCase findByIdFormalitieUseCase(FormalitieRepository formalitieRepository, Messages messages) {
+        return new FindByIdFormalitieUseCase(formalitieRepository, messages);
     }
 
 }

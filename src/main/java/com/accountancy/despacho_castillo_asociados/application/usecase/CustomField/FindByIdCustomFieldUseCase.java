@@ -2,6 +2,7 @@ package com.accountancy.despacho_castillo_asociados.application.usecase.CustomFi
 
 import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.CustomField;
 import com.accountancy.despacho_castillo_asociados.domain.repository.CustomField.CustomFieldRepository;
+import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.Optional;
@@ -9,8 +10,10 @@ import java.util.Optional;
 public class FindByIdCustomFieldUseCase {
 
     private final CustomFieldRepository customFieldRepository;
+    private final Messages messages;
 
-    public FindByIdCustomFieldUseCase(CustomFieldRepository customFieldRepository) {
+    public FindByIdCustomFieldUseCase(CustomFieldRepository customFieldRepository, Messages messages) {
+        this.messages = messages;
         this.customFieldRepository = customFieldRepository;
     }
 
@@ -19,7 +22,7 @@ public class FindByIdCustomFieldUseCase {
         Optional<CustomField> customField = customFieldRepository.findById(id);
 
         if (customField.isEmpty() || !customField.get().isActive()) {
-            throw new EntityNotFoundException("Custom field with id " + id + " not found");
+            throw new EntityNotFoundException(messages.get("customfield.exception.fetch.by_id.notfound", new Object[]{id}));
         }
 
 

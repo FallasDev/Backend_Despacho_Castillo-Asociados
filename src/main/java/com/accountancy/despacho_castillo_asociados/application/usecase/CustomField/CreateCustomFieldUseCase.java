@@ -5,6 +5,7 @@ import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.Cust
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
 import com.accountancy.despacho_castillo_asociados.domain.repository.CustomField.CustomFieldRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Type.TypeRepository;
+import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -14,32 +15,36 @@ public class CreateCustomFieldUseCase {
 
     private final CustomFieldRepository customFieldRepository;
     private final TypeRepository typeRepository;
+    private Messages messages;
 
-    public CreateCustomFieldUseCase(CustomFieldRepository customFieldRepository, TypeRepository typeRepository) {
+    public CreateCustomFieldUseCase(CustomFieldRepository customFieldRepository,
+                                    TypeRepository typeRepository,
+                                    Messages messages) {
         this.customFieldRepository = customFieldRepository;
         this.typeRepository = typeRepository;
+        this.messages = messages;
     }
 
     public CustomField execute(CustomFieldRequest customField) {
 
         if (customField == null) {
-            throw new BadRequestException("CustomField cannot be null");
+            throw new BadRequestException(messages.get("customfield.exception.create.cannot_be_null"));
         }
 
         if (customField.getName() == null || customField.getName().isEmpty()) {
-            throw new BadRequestException("CustomField name cannot be null or empty");
+            throw new BadRequestException(messages.get("customfield.exception.create.name.cannot_be_null"));
         }
 
         Type type = typeRepository.findById(customField.getTypeId()).orElse(null);
 
         if (type == null || !type.isActive()) {
-            throw new BadRequestException("CustomField type cannot be null or inactive");
+            throw new BadRequestException(messages.get("customfield.exception.create.type.invalid"));
         }
 
         boolean existingCustomField = customFieldRepository.existsByNameAndIsActive(customField.getName());
 
         if (existingCustomField) {
-            throw new BadRequestException("CustomField with name " + customField.getName() + " already exists");
+            throw new BadRequestException(messages.get("customfield.exception.create.already.exists"));
         }
 
         Optional<CustomField> inactiveCustomField = customFieldRepository.findByNameAndIsInactive(customField.getName());
