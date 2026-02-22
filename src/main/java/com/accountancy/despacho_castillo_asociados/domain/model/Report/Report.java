@@ -3,7 +3,7 @@ package com.accountancy.despacho_castillo_asociados.domain.model.Report;
 import java.net.URL;
 import java.time.LocalDate;
 
-public class DomainReport {
+public class Report {
 
     private int id;
     private String title;
@@ -13,7 +13,7 @@ public class DomainReport {
     private LocalDate date;
     private boolean active;
 
-    public DomainReport(int id, String title, String description, URL image, String category, LocalDate date, boolean active) {
+    public Report(int id, String title, String description, URL image, String category, LocalDate date, boolean active) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -23,7 +23,7 @@ public class DomainReport {
         this.active = active;
     }
 
-    public DomainReport() {
+    public Report() {
     }
 
     public int getId() {

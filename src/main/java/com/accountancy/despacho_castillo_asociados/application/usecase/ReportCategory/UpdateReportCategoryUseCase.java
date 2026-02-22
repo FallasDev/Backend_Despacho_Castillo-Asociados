@@ -1,12 +1,11 @@
 package com.accountancy.despacho_castillo_asociados.application.usecase.ReportCategory;
 
-import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.DomainReportCategory;
+import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.ReportCategory;
 import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.ReportCategoryRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.ReportCategory.ReportCategoryRepository;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 
-import java.util.Locale;
 import java.util.Optional;
 
 public class UpdateReportCategoryUseCase {
@@ -19,7 +18,7 @@ public class UpdateReportCategoryUseCase {
         this.messages = messages;
     }
 
-    public DomainReportCategory execute(ReportCategoryRequest reportCategory, int id) {
+    public ReportCategory execute(ReportCategoryRequest reportCategory, int id) {
 
         if (reportCategory == null) {
             throw new BadRequestException(messages.get("reportCategory.exception.update.cannot_be_null"));
@@ -29,7 +28,7 @@ public class UpdateReportCategoryUseCase {
             throw new BadRequestException(messages.get("reportCategory.exception.update.category.cannot_be_null"));
         }
 
-        Optional<DomainReportCategory> existingReportCategory = reportCategoryRepository.findById(id);
+        Optional<ReportCategory> existingReportCategory = reportCategoryRepository.findById(id);
 
         if (existingReportCategory.isEmpty()) {
             throw new BadRequestException(messages.get("reportCategory.exception.update.notfound", new Object[]{id}));
@@ -39,13 +38,13 @@ public class UpdateReportCategoryUseCase {
             throw new BadRequestException(messages.get("reportCategory.exception.update.is_not_active", new Object[]{id}));
         }
 
-        DomainReportCategory updatedDomainReportCategory = reportCategoryRepository.update(reportCategory, id);
+        ReportCategory updatedReportCategory = reportCategoryRepository.update(reportCategory, id);
 
-        if (updatedDomainReportCategory == null) {
+        if (updatedReportCategory == null) {
             throw new BadRequestException(messages.get("reportCategory.exception.update.failed"));
         }
 
-        return updatedDomainReportCategory;
+        return updatedReportCategory;
     }
 
 }

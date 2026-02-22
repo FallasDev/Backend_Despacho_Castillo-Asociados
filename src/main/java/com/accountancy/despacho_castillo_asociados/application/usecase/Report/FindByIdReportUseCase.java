@@ -1,9 +1,7 @@
 package com.accountancy.despacho_castillo_asociados.application.usecase.Report;
 
-import com.accountancy.despacho_castillo_asociados.domain.model.Report.DomainReport;
-import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
+import com.accountancy.despacho_castillo_asociados.domain.model.Report.Report;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Report.ReportRepository;
-import com.accountancy.despacho_castillo_asociados.domain.repository.Service.ServiceRepository;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -17,14 +15,14 @@ public class FindByIdReportUseCase {
         this.messages = messages;
     }
 
-    public DomainReport execute(int id) {
-        DomainReport domainReport = reportRepository.findById(id).orElse(null);
+    public Report execute(int id) {
+        Report report = reportRepository.findById(id).orElse(null);
 
-        if (domainReport == null || !domainReport.isActive()) {
+        if (report == null || !report.isActive()) {
             throw new EntityNotFoundException(messages.get("report.exception.fetch.by_id.notfound", new Object[]{id}));
         }
 
-        return domainReport;
+        return report;
     }
 
 }

@@ -2,30 +2,46 @@ package com.accountancy.despacho_castillo_asociados.domain.repository.ReportCate
 
 
 
-import com.accountancy.despacho_castillo_asociados.domain.model.Report.DomainReport;
+import com.accountancy.despacho_castillo_asociados.domain.model.Report.Report;
 import com.accountancy.despacho_castillo_asociados.domain.model.Report.ReportRequest;
-import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.DomainReportCategory;
+import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.ReportCategory;
 import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.ReportCategoryRequest;
-import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
-import com.accountancy.despacho_castillo_asociados.domain.model.Service.ServiceRequest;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 
 import java.util.Optional;
 
 public interface ReportCategoryRepository {
 
-    DomainReportCategory create(ReportCategoryRequest reportCategoryRequest);
+    ReportCategory create(ReportCategoryRequest reportCategoryRequest);
 
-    DomainReportCategory update(ReportCategoryRequest reportCategoryRequest, int id);
+    ReportCategory update(ReportCategoryRequest reportCategoryRequest, int id);
+
+    Report create(ReportRequest reportRequest);
+
+    Report update(ReportRequest reportRequest, int id);
 
     boolean deactivate(int id);
 
     void activate(int id);
 
-    PageResult<DomainReportCategory> findByContainsCategoryLetterUseCase(String category, int page, int size);
-    Optional<DomainReportCategory> findByCategoryAndIsInactive(String category);
-    Optional<DomainReportCategory> findById(int id);
-    PageResult<DomainReportCategory> findAll(int page, int size);
+    PageResult<ReportCategory> findByContainsCategoryLetterUseCase(String category, int page, int size);
+
+    Optional<ReportCategory> findByTitleAndIsActive(String title);
+
+    Optional<ReportCategory> findByTitleAndIsInactive(String title);
+
+    Optional<ReportCategory> findByTitle(String title);
+
+    Optional<ReportCategory> findByCategoryAndIsActive(String category);
+
+    Optional<ReportCategory> findByCategoryAndIsInactive(String category);
+    Optional<ReportCategory> findById(int id);
+
+    Optional<ReportCategory> findByCategory(String category);
+
+    PageResult<ReportCategory> findByContainsCategory(String category, int page, int size);
+
+    PageResult<ReportCategory> findAll(int page, int size);
 
     boolean existsByCategoryAndIsActive(String category);
 

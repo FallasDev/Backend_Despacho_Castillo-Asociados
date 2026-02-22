@@ -1,9 +1,7 @@
 package com.accountancy.despacho_castillo_asociados.application.usecase.Report;
 
-import com.accountancy.despacho_castillo_asociados.application.service.Report.ReportService;
-import com.accountancy.despacho_castillo_asociados.domain.model.Report.DomainReport;
+import com.accountancy.despacho_castillo_asociados.domain.model.Report.Report;
 import com.accountancy.despacho_castillo_asociados.domain.model.Report.ReportRequest;
-import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Report.ReportRepository;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
@@ -21,7 +19,7 @@ public class CreateReportUseCase {
         this.messages = messages;
     }
 
-    public DomainReport execute(ReportRequest report) {
+    public Report execute(ReportRequest report) {
 
         if (report == null){
             throw new BadRequestException(messages.get("report.exception.create.cannot_be_null"));
@@ -37,13 +35,13 @@ public class CreateReportUseCase {
             throw new BadRequestException(messages.get("report.exception.create.already.exists"));
         }
 
-        Optional<DomainReport> inactiveReport = reportRepository.findByTitleAndIsInactive(report.getTitle());
+        Optional<Report> inactiveReport = reportRepository.findByTitleAndIsInactive(report.getTitle());
 
         if (inactiveReport.isPresent()) {
-            DomainReport reactivatedDomainReport = inactiveReport.get();
-            reactivatedDomainReport.setActive(true);
-            reportRepository.activate(reactivatedDomainReport.getId());
-            return reactivatedDomainReport;
+            Report reactivatedReport = inactiveReport.get();
+            reactivatedReport.setActive(true);
+            reportRepository.activate(reactivatedReport.getId());
+            return reactivatedReport;
         }
 
         return reportRepository.create(report);

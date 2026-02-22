@@ -4,11 +4,12 @@ import com.accountancy.despacho_castillo_asociados.application.usecase.Report.Cr
 import com.accountancy.despacho_castillo_asociados.application.usecase.Report.DeactiveReportUseCase;
 import com.accountancy.despacho_castillo_asociados.application.usecase.Report.FindByIdReportUseCase;
 import com.accountancy.despacho_castillo_asociados.application.usecase.Report.FindReportsUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.ReportCategory.CreateReportCategoryUseCase;
-import com.accountancy.despacho_castillo_asociados.domain.model.Report.DomainReport;
+import com.accountancy.despacho_castillo_asociados.domain.model.Report.Report;
 import com.accountancy.despacho_castillo_asociados.domain.model.Report.ReportRequest;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ReportService {
 
     private CreateReportUseCase createReportUseCase;
@@ -16,14 +17,19 @@ public class ReportService {
     private FindReportsUseCase findReportUseCase;
     private FindByIdReportUseCase findByIdReportUseCase;
 
-    public ReportService(CreateReportUseCase createReportUseCase, DeactiveReportUseCase deactiveReportUseCase, FindReportsUseCase findReportUseCase, FindByIdReportUseCase findByIdReportUseCase) {
+    public ReportService(
+            CreateReportUseCase createReportUseCase,
+            DeactiveReportUseCase deactiveReportUseCase,
+            FindReportsUseCase findReportUseCase,
+            FindByIdReportUseCase findByIdReportUseCase
+    ) {
         this.createReportUseCase = createReportUseCase;
         this.deactiveReportUseCase = deactiveReportUseCase;
         this.findReportUseCase = findReportUseCase;
         this.findByIdReportUseCase = findByIdReportUseCase;
     }
 
-    public DomainReport createReport(ReportRequest reportRequest) {
+    public Report createReport(ReportRequest reportRequest) {
         return createReportUseCase.execute(reportRequest);
     }
 
@@ -31,12 +37,11 @@ public class ReportService {
         deactiveReportUseCase.execute(id);
     }
 
-    public PageResult<DomainReport> findReport(String title, int page, int size) {
+    public PageResult<Report> findReport(String title, int page, int size) {
         return findReportUseCase.execute(title, page, size);
     }
 
-    public DomainReport findByIdReport(int id) {
+    public Report findByIdReport(int id) {
         return findByIdReportUseCase.execute(id);
     }
-
 }

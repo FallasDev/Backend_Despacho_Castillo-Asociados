@@ -1,31 +1,39 @@
 package com.accountancy.despacho_castillo_asociados.application.service.ReportCategory;
 
 import com.accountancy.despacho_castillo_asociados.application.usecase.ReportCategory.*;
-import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.DomainReportCategory;
+import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.ReportCategory;
 import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.ReportCategoryRequest;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ReportCategoryService {
 
     private CreateReportCategoryUseCase createReportCategoryUseCase;
     private UpdateReportCategoryUseCase updateReportCategoryUseCase;
     private DeactiveReportCategoryUseCase deactiveReportCategoryUseCase;
-    private FindReportCategoryUseCase findReportCategoryUseCase;
+    private FindReportsCategoryUseCase findReportsCategoryUseCase;
     private FindByIdReportCategoryUseCase findByIdReportCategoryUseCase;
 
-    public ReportCategoryService(CreateReportCategoryUseCase createReportCategoryUseCase, UpdateReportCategoryUseCase updateReportCategoryUseCase, DeactiveReportCategoryUseCase deactiveReportCategoryUseCase, FindReportCategoryUseCase findReportCategoryUseCase, FindByIdReportCategoryUseCase findByIdReportCategoryUseCase) {
+    public ReportCategoryService(
+            CreateReportCategoryUseCase createReportCategoryUseCase,
+            UpdateReportCategoryUseCase updateReportCategoryUseCase,
+            DeactiveReportCategoryUseCase deactiveReportCategoryUseCase,
+            FindReportsCategoryUseCase findReportsCategoryUseCase,
+            FindByIdReportCategoryUseCase findByIdReportCategoryUseCase
+    ) {
         this.createReportCategoryUseCase = createReportCategoryUseCase;
         this.updateReportCategoryUseCase = updateReportCategoryUseCase;
         this.deactiveReportCategoryUseCase = deactiveReportCategoryUseCase;
-        this.findReportCategoryUseCase = findReportCategoryUseCase;
+        this.findReportsCategoryUseCase = findReportsCategoryUseCase;
         this.findByIdReportCategoryUseCase = findByIdReportCategoryUseCase;
     }
 
-    public DomainReportCategory createReportCategory(ReportCategoryRequest reportCategoryRequest) {
+    public ReportCategory createReportCategory(ReportCategoryRequest reportCategoryRequest) {
         return createReportCategoryUseCase.execute(reportCategoryRequest);
     }
 
-    public DomainReportCategory updateReportCategory(ReportCategoryRequest reportCategoryRequest, int id) {
+    public ReportCategory updateReportCategory(ReportCategoryRequest reportCategoryRequest, int id) {
         return updateReportCategoryUseCase.execute(reportCategoryRequest, id);
     }
 
@@ -33,12 +41,11 @@ public class ReportCategoryService {
         deactiveReportCategoryUseCase.execute(id);
     }
 
-    public PageResult<DomainReportCategory> findByContainsCategoryLetterUseCase(String category, int page, int size) {
-        return findReportCategoryUseCase.execute(category, page, size);
+    public PageResult<ReportCategory> findByContainsCategoryLetterUseCase(String category, int page, int size) {
+        return findReportsCategoryUseCase.execute(category, page, size);
     }
 
-    public DomainReportCategory findByIdReportCategory(int id) {
+    public ReportCategory findByIdReportCategory(int id) {
         return findByIdReportCategoryUseCase.execute(id);
     }
-
 }

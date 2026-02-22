@@ -2,7 +2,7 @@ package com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory;
 
 import java.time.LocalDate;
 
-public class DomainReportCategory {
+public class ReportCategory {
 
     private int id;
     private String category;
@@ -10,7 +10,7 @@ public class DomainReportCategory {
     private boolean active;
     private int visibility;
 
-    public DomainReportCategory(int id, String category, LocalDate date, boolean active, int visibility){
+    public ReportCategory(int id, String category, LocalDate date, boolean active, int visibility){
         this.id = id;
         this.category = category;
         this.date = date;
@@ -18,7 +18,7 @@ public class DomainReportCategory {
         this.visibility = visibility;
     }
 
-    public DomainReportCategory(){
+    public ReportCategory(){
 
     }
 

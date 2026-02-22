@@ -1,6 +1,6 @@
 package com.accountancy.despacho_castillo_asociados.application.usecase.ReportCategory;
 
-import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.DomainReportCategory;
+import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.ReportCategory;
 import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.ReportCategoryRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.ReportCategory.ReportCategoryRepository;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
@@ -19,7 +19,7 @@ public class CreateReportCategoryUseCase {
         this.messages = messages;
     }
 
-    public DomainReportCategory execute(ReportCategoryRequest reportCategory) {
+    public ReportCategory execute(ReportCategoryRequest reportCategory) {
 
         if (reportCategory == null){
             throw new BadRequestException(messages.get("reportCategory.exception.create.cannot_be_null"));
@@ -35,13 +35,13 @@ public class CreateReportCategoryUseCase {
             throw new BadRequestException(messages.get("reportCategory.exception.create.already.exists"));
         }
 
-        Optional<DomainReportCategory> inactiveReportCategory = reportCategoryRepository.findByCategoryAndIsInactive(reportCategory.getCategory());
+        Optional<ReportCategory> inactiveReportCategory = reportCategoryRepository.findByCategoryAndIsInactive(reportCategory.getCategory());
 
         if (inactiveReportCategory.isPresent()) {
-            DomainReportCategory reactivatedDomainReportCategory = inactiveReportCategory.get();
-            reactivatedDomainReportCategory.setActive(true);
-            reportCategoryRepository.activate(reactivatedDomainReportCategory.getId());
-            return reactivatedDomainReportCategory;
+            ReportCategory reactivatedReportCategory = inactiveReportCategory.get();
+            reactivatedReportCategory.setActive(true);
+            reportCategoryRepository.activate(reactivatedReportCategory.getId());
+            return reactivatedReportCategory;
         }
 
         return reportCategoryRepository.create(reportCategory);
