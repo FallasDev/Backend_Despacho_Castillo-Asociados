@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,12 +27,15 @@ public class ReportRepositoryImpl implements ReportRepository {
 
     @Override
     public Report create(ReportRequest reportRequest) {
-
         ReportEntity reportEntity = new ReportEntity();
 
         reportEntity.setTitle(reportRequest.getTitle());
         reportEntity.setDescription(reportRequest.getDescription());
-        reportEntity.setImage(reportRequest.getImage());
+
+        if (reportRequest.getImage() != null) {
+            reportEntity.setImage(reportRequest.getImage().toString());
+        }
+
         reportEntity.setCategory(reportRequest.getCategory());
         reportEntity.setDate(reportRequest.getDate());
         reportEntity.setActive(true);
@@ -42,7 +47,6 @@ public class ReportRepositoryImpl implements ReportRepository {
 
     @Override
     public Report update(ReportRequest reportRequest, int id) {
-
         ReportEntity existingEntity = jpaReportRepository.findById(id).orElse(null);
 
         if (existingEntity == null) {
@@ -51,7 +55,11 @@ public class ReportRepositoryImpl implements ReportRepository {
 
         existingEntity.setTitle(reportRequest.getTitle());
         existingEntity.setDescription(reportRequest.getDescription());
-        existingEntity.setImage(reportRequest.getImage());
+
+        if (reportRequest.getImage() != null) {
+            existingEntity.setImage(reportRequest.getImage().toString());
+        }
+
         existingEntity.setCategory(reportRequest.getCategory());
         existingEntity.setDate(reportRequest.getDate());
 
@@ -62,38 +70,25 @@ public class ReportRepositoryImpl implements ReportRepository {
 
     @Override
     public boolean deactivate(int id) {
-
         ReportEntity existingEntity = jpaReportRepository.findById(id).orElse(null);
-
-        if (existingEntity == null) {
-            return false;
-        }
-
+        if (existingEntity == null) return false;
         existingEntity.setActive(false);
-
         jpaReportRepository.save(existingEntity);
-
         return true;
     }
 
     @Override
     public void activate(int id) {
-
         ReportEntity existingEntity = jpaReportRepository.findById(id).orElse(null);
-
         if (existingEntity != null) {
-
             existingEntity.setActive(true);
-
             jpaReportRepository.save(existingEntity);
         }
     }
 
     @Override
     public Optional<Report> findById(int id) {
-
-        return jpaReportRepository.findById(id)
-                .map(this::mapToDomain);
+        return jpaReportRepository.findById(id).map(this::mapToDomain);
     }
 
     @Override
@@ -108,89 +103,72 @@ public class ReportRepositoryImpl implements ReportRepository {
 
     @Override
     public Optional<Report> findByTitle(String title) {
-
-        return jpaReportRepository.findByTitle(title)
-                .map(this::mapToDomain);
+        return jpaReportRepository.findByTitle(title).map(this::mapToDomain);
     }
 
     @Override
     public PageResult<Report> findByContainsTitle(String title, int page, int size) {
-
         Pageable pageable = Pageable.ofSize(size).withPage(page);
-
-        Page<ReportEntity> reportPage =
-                jpaReportRepository.findByTitleContainingIgnoreCase(title, pageable);
-
-        List<ReportEntity> entities = reportPage.getContent();
-
-        return new PageResult<>(
-
-                entities.stream()
-                        .map(this::mapToDomain)
-                        .filter(Report::isActive)
-                        .toList(),
-
-                page,
-                size,
-                reportPage.getTotalElements(),
-                reportPage.getTotalPages()
-        );
+        Page<ReportEntity> reportPage = jpaReportRepository.findByTitleContainingIgnoreCase(title, pageable);
+        return getReportPageResult(page, size, reportPage);
     }
 
     @Override
     public PageResult<Report> findAll(int page, int size) {
-
         Pageable pageable = Pageable.ofSize(size).withPage(page);
-
         Page<ReportEntity> reportPage = jpaReportRepository.findAll(pageable);
+        return getReportPageResult(page, size, reportPage);
+    }
 
+    private PageResult<Report> getReportPageResult(int page, int size, Page<ReportEntity> reportPage) {
         List<ReportEntity> entities = reportPage.getContent();
-
         return new PageResult<>(
-
                 entities.stream()
                         .map(this::mapToDomain)
                         .filter(Report::isActive)
                         .toList(),
-
-                page,
-                size,
-                reportPage.getTotalElements(),
-                reportPage.getTotalPages()
+                page, size, reportPage.getTotalElements(), reportPage.getTotalPages()
         );
     }
 
     @Override
     public PageResult<Report> findByContainsTitleLetterUseCase(String name, int page, int size) {
-        return null;
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+
+        Page<ReportEntity> reportPage =
+                jpaReportRepository.findByTitleContainingIgnoreCase(name, pageable);
+
+        return getReportPageResult(page, size, reportPage);
     }
 
     @Override
     public boolean existsByTitleAndIsActive(String title) {
-
         return jpaReportRepository.existsByTitleAndActive(title, true);
     }
 
     @Override
     public boolean existsByTitleAndIsInactive(String title) {
-
         return jpaReportRepository.existsByTitleAndActive(title, false);
     }
 
-
     private Report mapToDomain(ReportEntity entity) {
+        URL urlImage = null;
+        try {
+            if (entity.getImage() != null && !entity.getImage().isEmpty()) {
+                urlImage = URI.create(entity.getImage()).toURL();
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
 
         return new Report(
-
                 entity.getId(),
                 entity.getTitle(),
                 entity.getDescription(),
-                entity.getImage(),
+                urlImage,
                 entity.getCategory(),
                 entity.getDate(),
                 entity.isActive()
-
         );
     }
-
 }

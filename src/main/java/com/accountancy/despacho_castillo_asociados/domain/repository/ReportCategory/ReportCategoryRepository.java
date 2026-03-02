@@ -16,10 +16,6 @@ public interface ReportCategoryRepository {
 
     ReportCategory update(ReportCategoryRequest reportCategoryRequest, int id);
 
-    Report create(ReportRequest reportRequest);
-
-    Report update(ReportRequest reportRequest, int id);
-
     boolean deactivate(int id);
 
     void activate(int id);

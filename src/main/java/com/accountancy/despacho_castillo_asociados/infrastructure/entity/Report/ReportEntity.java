@@ -1,42 +1,42 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.entity.Report;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.net.URL;
 import java.time.LocalDate;
 
 @Getter
 @Setter
+@NoArgsConstructor // Genera el constructor vacío automáticamente
 @Entity
 @Table(name = "reports")
 public class ReportEntity {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-        @Column(nullable = false, unique = true)
-        private String title;
+    @Column(nullable = false, unique = true)
+    private String title;
 
-        @Column(nullable = false)
-        private String description;
+    @Column(nullable = false)
+    private String description;
 
-        @Column(nullable = false)
-        private URL image;
+    @Column(nullable = false)
+    private String image; // Cambiado de URL a String
 
-        @Column(nullable = false)
-        private String category;
+    @Column(nullable = false)
+    private String category;
 
-        @Column(nullable = false)
-        private LocalDate date;
+    @Column(nullable = false)
+    private LocalDate date;
 
-        @Column(nullable = false)
-        private boolean active;
+    @Column(nullable = false)
+    private boolean active;
 
-    public ReportEntity(int id, String title, String description, URL image, String category, LocalDate date, boolean active) {
+    public ReportEntity(int id, String title, String description, String image, String category, LocalDate date, boolean active) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -44,9 +44,6 @@ public class ReportEntity {
         this.category = category;
         this.date = date;
         this.active = active;
-    }
-
-    public ReportEntity() {
     }
 
     public int getId() {
@@ -73,11 +70,11 @@ public class ReportEntity {
         this.description = description;
     }
 
-    public URL getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(URL image) {
+    public void setImage(String image) {
         this.image = image;
     }
 

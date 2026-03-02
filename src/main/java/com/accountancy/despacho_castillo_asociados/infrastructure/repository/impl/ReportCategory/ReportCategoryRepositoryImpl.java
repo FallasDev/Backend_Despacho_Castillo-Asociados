@@ -58,16 +58,6 @@ public class ReportCategoryRepositoryImpl implements ReportCategoryRepository {
     }
 
     @Override
-    public Report create(ReportRequest reportRequest) {
-        return null;
-    }
-
-    @Override
-    public Report update(ReportRequest reportRequest, int id) {
-        return null;
-    }
-
-    @Override
     public boolean deactivate(int id) {
 
         ReportCategoryEntity existingEntity = jpaReportCategoryRepository.findById(id).orElse(null);
@@ -160,8 +150,28 @@ public class ReportCategoryRepositoryImpl implements ReportCategoryRepository {
     }
 
     @Override
-    public PageResult<ReportCategory> findByContainsCategoryLetterUseCase(String name, int page, int size) {
-        return null;
+    public PageResult<ReportCategory> findByContainsCategoryLetterUseCase(String category, int page, int size) {
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+
+        Page<ReportCategoryEntity> categoryPage =
+                jpaReportCategoryRepository.findByCategoryContainingIgnoreCase(category, pageable);
+
+        return getCategoryPageResult(page, size, categoryPage);
+    }
+
+    private PageResult<ReportCategory> getCategoryPageResult(int page, int size, Page<ReportCategoryEntity> categoryPage) {
+        List<ReportCategoryEntity> entities = categoryPage.getContent();
+
+        return new PageResult<>(
+                entities.stream()
+                        .map(this::mapToDomain)
+                        .filter(ReportCategory::isActive)
+                        .toList(),
+                page,
+                size,
+                categoryPage.getTotalElements(),
+                categoryPage.getTotalPages()
+        );
     }
 
     @Override
