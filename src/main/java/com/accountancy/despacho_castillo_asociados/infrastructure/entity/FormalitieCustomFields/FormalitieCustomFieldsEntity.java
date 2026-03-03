@@ -1,6 +1,8 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.entity.FormalitieCustomFields;
 
 
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.CustomField.CustomFieldEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Formalitie.FormalitieEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,5 +28,6 @@ public class FormalitieCustomFieldsEntity {
 
     @Column(nullable = false)
     private boolean active;
+
 
 }

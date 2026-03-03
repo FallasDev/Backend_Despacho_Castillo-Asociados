@@ -15,7 +15,9 @@ import java.util.Optional;
 public interface FormalitieRepository {
 
     Formalitie create(FormalitieRequest formalitieRequest, DomainService domainService);
+    Formalitie update(FormalitieRequest formalitieRequest, int id);
     boolean changeFormalitieState(int id, FormalitiesState state);
+
 
     Optional<Formalitie> findById(int id);
     PageResult<Formalitie> findAll(int page, int size);

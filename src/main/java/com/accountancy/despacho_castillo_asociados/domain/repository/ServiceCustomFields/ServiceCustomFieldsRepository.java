@@ -12,6 +12,8 @@ public interface ServiceCustomFieldsRepository {
     ServiceCustomField create(ServiceCustomFieldRequest request);
     ServiceCustomField update(ServiceCustomFieldRequest request, int id);
     boolean deactivate(int id);
+    boolean deactivateByServiceId(int serviceId);
+    boolean deactivateByCustomFieldId(int customFieldId);
     void activate(int id);
 
     Optional<ServiceCustomField> findById(int id);

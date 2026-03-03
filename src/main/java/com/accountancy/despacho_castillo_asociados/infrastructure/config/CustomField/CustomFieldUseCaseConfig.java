@@ -4,6 +4,8 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.config.Custom
 import com.accountancy.despacho_castillo_asociados.application.usecase.CustomField.*;
 import com.accountancy.despacho_castillo_asociados.application.usecase.Type.*;
 import com.accountancy.despacho_castillo_asociados.domain.repository.CustomField.CustomFieldRepository;
+import com.accountancy.despacho_castillo_asociados.domain.repository.FormalitieCustomFields.FormalitieCustomFieldRepository;
+import com.accountancy.despacho_castillo_asociados.domain.repository.ServiceCustomFields.ServiceCustomFieldsRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Type.TypeRepository;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import org.springframework.context.annotation.Bean;
@@ -23,8 +25,11 @@ public class CustomFieldUseCaseConfig {
     }
 
     @Bean
-    public DeactiveCustomFieldUseCase deactiveCustomFieldUseCase(CustomFieldRepository customFieldRepository, Messages messages) {
-        return new DeactiveCustomFieldUseCase(customFieldRepository, messages);
+    public DeactiveCustomFieldUseCase deactiveCustomFieldUseCase(CustomFieldRepository customFieldRepository,
+                                                                 ServiceCustomFieldsRepository serviceCustomFieldsRepository,
+                                                                 FormalitieCustomFieldRepository formalitieCustomFieldRepository,
+                                                                 Messages messages) {
+        return new DeactiveCustomFieldUseCase(customFieldRepository,serviceCustomFieldsRepository, formalitieCustomFieldRepository, messages);
     }
 
     @Bean

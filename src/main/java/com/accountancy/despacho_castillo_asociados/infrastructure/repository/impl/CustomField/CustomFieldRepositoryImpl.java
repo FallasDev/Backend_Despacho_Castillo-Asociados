@@ -151,16 +151,18 @@ public class CustomFieldRepositoryImpl implements CustomFieldRepository {
 
         List<CustomFieldEntity> customFieldList = customFields.getContent();
 
+        List<CustomField> customFieldResultList = customFieldList.stream()
+                .map(this::getCustomField)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .filter(CustomField::isActive)
+                .toList();
+
         return new PageResult<>(
-                customFieldList.stream()
-                        .map(this::getCustomField)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .filter(CustomField::isActive)
-                        .toList(),
+                customFieldResultList,
                 page,
                 size,
-                customFields.getTotalElements(),
+                customFieldResultList.size(),
                 customFields.getTotalPages()
         );
 

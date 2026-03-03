@@ -34,4 +34,10 @@ public class FormalitieUseCaseConfig {
         return new FindByIdFormalitieUseCase(formalitieRepository, messages);
     }
 
+    @Bean
+    public UpdateFormalitieUseCase updateFormalitieUseCase(FormalitieRepository formalitieRepository
+            , Messages messages) {
+        return new UpdateFormalitieUseCase(formalitieRepository, messages);
+    }
+
 }

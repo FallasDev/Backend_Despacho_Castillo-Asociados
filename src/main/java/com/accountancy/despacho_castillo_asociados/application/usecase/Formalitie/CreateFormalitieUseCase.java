@@ -30,20 +30,32 @@ public class CreateFormalitieUseCase {
         }
 
         if (formalitie.getServiceId() <= 0) {
-            throw new BadRequestException(messages.get("formality.exception.create.service.invalid"));
+            throw new BadRequestException(messages.get("formality.exception.create.service.invalid", new Object[]{formalitie.getServiceId()}));
         }
 
         if (formalitie.getClientId() <= 0) {
-            throw new BadRequestException(messages.get("formality.exception.create.client.invalid"));
+            throw new BadRequestException(messages.get("formality.exception.create.client.invalid", new Object[]{formalitie.getClientId()}));
         }
 
         Optional<DomainService> service = serviceRepository.findById(formalitie.getServiceId());
 
         if (service.isEmpty()) {
-            throw new BadRequestException(messages.get("formality.exception.create.service.not_found"));
+            throw new BadRequestException(messages.get("formality.exception.create.service.not_found", new Object[]{formalitie.getServiceId()}));
         }
 
-        return formalitieRepository.create(formalitie, service.get());
+        if (!service.get().isActive()) {
+            throw new BadRequestException(messages.get("formality.exception.create.service.not_found", new Object[]{formalitie.getServiceId()}));
+        }
+
+        // Additional validation for client existence can be added here if a ClientRepository is available
+
+        Formalitie createdFormalitie = formalitieRepository.create(formalitie, service.get());
+
+        if (createdFormalitie == null) {
+            throw new BadRequestException(messages.get("formality.exception.create.failed"));
+        }
+
+        return createdFormalitie;
 
     }
 

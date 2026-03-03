@@ -9,6 +9,7 @@ import com.accountancy.despacho_castillo_asociados.domain.model.ServiceCustomFie
 import com.accountancy.despacho_castillo_asociados.domain.repository.CustomField.CustomFieldRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Service.ServiceRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.ServiceCustomFields.ServiceCustomFieldsRepository;
+import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 
 import java.util.Optional;
@@ -18,10 +19,13 @@ public class CreateServiceCustomFieldsUseCase {
     private final ServiceCustomFieldsRepository repository;
     private final ServiceRepository serviceRepository;
     private final CustomFieldRepository customFieldRepository;
+    private final Messages messages;
 
     public CreateServiceCustomFieldsUseCase(ServiceCustomFieldsRepository repository,
                                             ServiceRepository serviceRepository,
-                                            CustomFieldRepository customFieldRepository) {
+                                            CustomFieldRepository customFieldRepository,
+                                            Messages messages) {
+        this.messages = messages;
         this.repository = repository;
         this.serviceRepository = serviceRepository;
         this.customFieldRepository = customFieldRepository;
@@ -30,7 +34,7 @@ public class CreateServiceCustomFieldsUseCase {
     public ServiceCustomField execute(ServiceCustomFieldRequest request) {
 
         if (request == null) {
-            throw new BadRequestException("Service Custom Field cannot be null");
+            throw new BadRequestException(messages.get("servicecustomfield.exception.create.cannot_be_null"));
         }
 
 
@@ -41,24 +45,27 @@ public class CreateServiceCustomFieldsUseCase {
         Optional<CustomField> customField = customFieldRepository.findById(request.getCustomFieldId());
 
         if (existingRelation.isPresent() && existingRelation.get().isActive()) {
-            throw new BadRequestException("Service Custom Field relation already exists for " +
-                    "service ID " + request.getServiceId() + " and custom field ID " + request.getCustomFieldId());
+            throw new BadRequestException(messages.get("servicecustomfield.exception.create.name.relation.already.exists"));
         }
 
         if (service.isEmpty()) {
-            throw new BadRequestException("Service with ID " + request.getServiceId() + " does not exist");
+            throw new BadRequestException(messages.get("servicecustomfield.exception.create.service.not_found",
+                    new Object[]{request.getServiceId()}));
         }
 
         if (customField.isEmpty()) {
-            throw new BadRequestException("Custom Field with ID " + request.getCustomFieldId() + " does not exist");
+            throw new BadRequestException(messages.get("servicecustomfield.exception.create.customfield.not_found",
+                    new Object[]{request.getCustomFieldId()}));
         }
 
         if (!service.get().isActive()) {
-            throw new BadRequestException("Service with ID " + request.getServiceId() + " is not active");
+            throw new BadRequestException(messages.get("servicecustomfield.exception.create.service.not_found",
+                    new Object[]{request.getServiceId()}));
         }
 
         if (!customField.get().isActive()) {
-            throw new BadRequestException("Custom Field with ID " + request.getCustomFieldId() + " is not active");
+            throw new BadRequestException(messages.get("servicecustomfield.exception.create.customfield.not_found",
+                    new Object[]{request.getCustomFieldId()}));
         }
 
         Optional<ServiceCustomField> inactive = repository.findByServiceIdAndCustomFieldIdAndIsInactive(request.getServiceId(), request.getCustomFieldId());
@@ -70,7 +77,13 @@ public class CreateServiceCustomFieldsUseCase {
             return reactivatedServiceCustomField;
         }
 
-        return repository.create(request);
+        ServiceCustomField created = repository.create(request);
+
+        if (created == null) {
+            throw new BadRequestException(messages.get("servicecustomfield.exception.create.failed"));
+        }
+
+        return created;
 
     }
 

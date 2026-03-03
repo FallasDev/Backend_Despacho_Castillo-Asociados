@@ -7,6 +7,7 @@ import com.accountancy.despacho_castillo_asociados.domain.repository.Service.Ser
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Service.ServiceEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Service.JPAServiceRepository;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -72,6 +73,10 @@ public class ServiceRepositoryImpl implements ServiceRepository {
             return false;
         }
 
+        if (!existingEntity.isActive()) {
+            return false;
+        }
+
         existingEntity.setActive(false);
         jpaServiceRepository.save(existingEntity);
         return true;
@@ -115,22 +120,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         Page<ServiceEntity> serviceEntityPage = jpaServiceRepository.findByNameContainingIgnoreCase(name, pageable);
 
-        List<ServiceEntity> serviceEntities = serviceEntityPage.getContent();
-
-
-
-        return new PageResult<>(
-                serviceEntities.stream().map(entity -> new DomainService(
-                        entity.getId(),
-                        entity.getName(),
-                        entity.getDescription(),
-                        entity.isActive()
-                )).filter(DomainService::isActive).toList(),
-                page,
-                size,
-                serviceEntityPage.getTotalElements(),
-                serviceEntityPage.getTotalPages()
-        );
+        return getDomainServicePageResult(page, size, serviceEntityPage);
     }
 
     @Override
@@ -175,20 +165,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         Page<ServiceEntity> serviceEntityPage = jpaServiceRepository.findAll(pageable);
 
-        List<ServiceEntity> serviceEntities = serviceEntityPage.getContent();
-
-        return new PageResult<>(
-                serviceEntities.stream().map(entity -> new DomainService(
-                        entity.getId(),
-                        entity.getName(),
-                        entity.getDescription(),
-                        entity.isActive()
-                )).filter(DomainService::isActive).toList(),
-                page,
-                size,
-                serviceEntityPage.getTotalElements(),
-                serviceEntityPage.getTotalPages()
-        );
+        return getDomainServicePageResult(page, size, serviceEntityPage);
     }
 
     @Override
@@ -199,5 +176,25 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     @Override
     public boolean existsByNameAndIsInactive(String name) {
         return jpaServiceRepository.existsByNameAndActive(name, false);
+    }
+
+    @NonNull
+    private PageResult<DomainService> getDomainServicePageResult(int page, int size, Page<ServiceEntity> serviceEntityPage) {
+        List<ServiceEntity> serviceEntities = serviceEntityPage.getContent();
+
+        List<DomainService> domainServices = serviceEntities.stream().map(entity -> new DomainService(
+                entity.getId(),
+                entity.getName(),
+                entity.getDescription(),
+                entity.isActive()
+        )).filter(DomainService::isActive).toList();
+
+        return new PageResult<>(
+                domainServices,
+                page,
+                size,
+                domainServices.size(),
+                serviceEntityPage.getTotalPages()
+        );
     }
 }

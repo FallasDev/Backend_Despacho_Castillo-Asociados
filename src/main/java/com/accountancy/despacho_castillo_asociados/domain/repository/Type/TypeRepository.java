@@ -24,6 +24,8 @@ public interface TypeRepository {
     boolean existsByNameAndIsActive(String name);
     boolean existsByNameAndIsInactive(String name);
 
+    boolean hasActiveAssociations(int id);
+
 
 
 }

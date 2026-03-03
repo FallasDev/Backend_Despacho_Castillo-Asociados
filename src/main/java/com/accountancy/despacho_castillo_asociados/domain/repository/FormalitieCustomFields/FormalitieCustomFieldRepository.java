@@ -11,6 +11,7 @@ public interface FormalitieCustomFieldRepository {
     FormalitieCustomField create(FormalitieCustomFieldRequest request);
     FormalitieCustomField update(FormalitieCustomFieldRequest request, int id);
     boolean deactivate(int id);
+    boolean deactivateByCustomFieldId(int customFieldId);
     void activate(int id);
 
     Optional<FormalitieCustomField> findById(int id);

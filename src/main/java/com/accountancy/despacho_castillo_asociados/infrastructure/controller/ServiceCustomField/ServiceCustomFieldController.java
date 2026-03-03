@@ -5,53 +5,59 @@ import com.accountancy.despacho_castillo_asociados.application.service.ServiceCu
 import com.accountancy.despacho_castillo_asociados.domain.model.ServiceCustomFields.ServiceCustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.ServiceCustomFields.ServiceCustomFieldRequest;
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
+import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/service-custom-fields")
+@RequiredArgsConstructor
 public class ServiceCustomFieldController {
 
-
-    @Autowired
-    private ServiceCustomFieldsService service;
+    private final ServiceCustomFieldsService service;
+    private final Messages messages;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResult<ServiceCustomField>>> getServicesCustomFields(@RequestParam (defaultValue = "0")
-                                                                                                     int serviceId,
-                                                                                                 @RequestParam (defaultValue = "0")
-                                                                                                    int page,
-                                                                                                 @RequestParam (defaultValue = "10")
-                                                                                                     int size) {
-        PageResult<ServiceCustomField> result = service.findServicesCustomFields(serviceId, page, size);
+    public ResponseEntity<ApiResponse<PageResult<ServiceCustomField>>> getServicesCustomFields(
+            @RequestParam(defaultValue = "0") int serviceId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        if (result == null || result.content().isEmpty()) {
-            ApiResponse<PageResult<ServiceCustomField>> response = new ApiResponse<>(false, "No service custom " +
-                    "fields found", null);
-            return ResponseEntity.ok(response);
-        }
+        PageResult<ServiceCustomField> result =
+                service.findServicesCustomFields(serviceId, page, size);
 
-        ApiResponse<PageResult<ServiceCustomField>> response = new ApiResponse<>(true, "Service custom " +
-                "fields retrieved successfully", result);
-        return ResponseEntity.ok(response);
-
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,
+                        messages.get("servicecustomfield.success.fetch_all"),
+                        result));
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ServiceCustomField>> createServiceCustomField(@RequestBody
-                                                                                    ServiceCustomFieldRequest request) {
-        ServiceCustomField createdField = service.createServiceCustomField(request);
-        ApiResponse<ServiceCustomField> response = new ApiResponse<>(true, "Service custom field created successfully", createdField);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<ApiResponse<ServiceCustomField>> createServiceCustomField(
+            @RequestBody ServiceCustomFieldRequest request) {
+
+        ServiceCustomField createdField =
+                service.createServiceCustomField(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse<>(true,
+                        messages.get("servicecustomfield.success.create"),
+                        createdField));
     }
 
-    @PutMapping("/deactivate/{id}")
-    public ResponseEntity<ApiResponse<Void>> deactivateServiceCustomField(@PathVariable int id) {
+    @PatchMapping("/{id}/deactivate")
+    public ResponseEntity<ApiResponse<Void>> deactivateServiceCustomField(
+            @PathVariable int id) {
+
         service.deactiveServiceCustomField(id);
-        ApiResponse<Void> response = new ApiResponse<>(true, "Service custom field deactivated successfully", null);
-        return ResponseEntity.ok(response);
-    }
 
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,
+                        messages.get("servicecustomfield.success.deactive"),
+                        null));
+    }
 }

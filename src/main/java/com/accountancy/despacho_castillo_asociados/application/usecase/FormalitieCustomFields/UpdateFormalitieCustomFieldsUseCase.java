@@ -4,6 +4,7 @@ import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Forma
 import com.accountancy.despacho_castillo_asociados.domain.model.FormalitieCustomFields.FormalitieCustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.FormalitieCustomFields.FormalitieCustomFieldRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.FormalitieCustomFields.FormalitieCustomFieldRepository;
+import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 
 import java.util.Optional;
@@ -11,15 +12,17 @@ import java.util.Optional;
 public class UpdateFormalitieCustomFieldsUseCase {
 
     private final FormalitieCustomFieldRepository formalitieCustomFieldsRepository;
+    private final Messages messages;
 
-    public UpdateFormalitieCustomFieldsUseCase(FormalitieCustomFieldRepository formalitieCustomFieldsRepository) {
+    public UpdateFormalitieCustomFieldsUseCase(FormalitieCustomFieldRepository formalitieCustomFieldsRepository, Messages messages) {
         this.formalitieCustomFieldsRepository = formalitieCustomFieldsRepository;
+        this.messages = messages;
     }
 
     public FormalitieCustomField execute(FormalitieCustomFieldRequest request, int id) {
 
         if (request == null) {
-            throw new BadRequestException("Formalitie Custom Field cannot be null");
+            throw new BadRequestException(messages.get("formalitycustomfield.exception.update.cannot_be_null"));
         }
 
         Optional<FormalitieCustomField> existingFormalitie = formalitieCustomFieldsRepository.findByFormalitieIdAndCustomFieldId(
@@ -27,19 +30,20 @@ public class UpdateFormalitieCustomFieldsUseCase {
                 request.getCustomFieldId());
 
         if (existingFormalitie.isEmpty()) {
-            throw new BadRequestException("Formalitie Custom Field relation does not exist for formalitie ID"
-                    + request.getFormalitieId() + " and custom field ID " + request.getCustomFieldId());
+            throw new BadRequestException(messages.get("formalitycustomfield.exception.update.notfound",
+                    new Object[]{request.getFormalitieId(), request.getCustomFieldId()}));
         }
 
         if (!existingFormalitie.get().isActive()) {
-            throw new BadRequestException("Formalitie Custom Field relation for formalitie ID "
-                    + request.getFormalitieId() + " and custom field ID " + request.getCustomFieldId() + " is not active");
+            throw new BadRequestException(messages.get("formalitycustomfield.exception.update.notfound",
+                    new Object[]{request.getFormalitieId(), request.getCustomFieldId()}));
         }
 
         FormalitieCustomField updated = formalitieCustomFieldsRepository.update(request,id);
 
+
         if (updated == null) {
-            throw new BadRequestException("Formalitie Custom Field relation to update with id " + id);
+            throw new BadRequestException(messages.get("formalitycustomfield.exception.update.failed"));
         }
 
         return updated;

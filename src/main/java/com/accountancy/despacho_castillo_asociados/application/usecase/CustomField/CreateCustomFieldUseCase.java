@@ -38,7 +38,7 @@ public class CreateCustomFieldUseCase {
         Type type = typeRepository.findById(customField.getTypeId()).orElse(null);
 
         if (type == null || !type.isActive()) {
-            throw new BadRequestException(messages.get("customfield.exception.create.type.invalid"));
+            throw new BadRequestException(messages.get("customfield.exception.create.type.invalid", new Object[]{customField.getTypeId()}));
         }
 
         boolean existingCustomField = customFieldRepository.existsByNameAndIsActive(customField.getName());
@@ -58,5 +58,4 @@ public class CreateCustomFieldUseCase {
 
         return customFieldRepository.create(customField,type);
     }
-
 }

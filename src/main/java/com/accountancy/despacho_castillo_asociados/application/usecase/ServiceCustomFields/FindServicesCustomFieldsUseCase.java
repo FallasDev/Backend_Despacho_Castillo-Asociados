@@ -2,6 +2,7 @@ package com.accountancy.despacho_castillo_asociados.application.usecase.ServiceC
 
 import com.accountancy.despacho_castillo_asociados.domain.model.ServiceCustomFields.ServiceCustomField;
 import com.accountancy.despacho_castillo_asociados.domain.repository.ServiceCustomFields.ServiceCustomFieldsRepository;
+import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.EmptyListException;
 
@@ -9,8 +10,11 @@ public class FindServicesCustomFieldsUseCase {
 
     private final ServiceCustomFieldsRepository repository;
 
-    public FindServicesCustomFieldsUseCase(ServiceCustomFieldsRepository repository) {
+    private final Messages messages;
+
+    public FindServicesCustomFieldsUseCase(ServiceCustomFieldsRepository repository, Messages messages) {
         this.repository = repository;
+        this.messages = messages;
     }
 
     public PageResult<ServiceCustomField> execute(int serviceId, int page, int size) {
@@ -20,7 +24,7 @@ public class FindServicesCustomFieldsUseCase {
                 PageResult<ServiceCustomField> servicesCustomFieldsByServiceId = repository.findByServiceId(serviceId, page, size);
 
                 if (servicesCustomFieldsByServiceId.content().isEmpty()) {
-                    throw new EmptyListException("No custom fields found for service ID: " + serviceId);
+                    throw new EmptyListException(messages.get("servicecustomfield.exception.fetch.by_service_id.notfound", new Object[]{serviceId}));
                 }
 
                 return servicesCustomFieldsByServiceId;
@@ -29,7 +33,7 @@ public class FindServicesCustomFieldsUseCase {
 
             PageResult<ServiceCustomField> serviceCustomFields = repository.findAll(page, size);
             if (serviceCustomFields.content().isEmpty()) {
-                throw new EmptyListException("No custom fields found");
+                throw new EmptyListException(messages.get("servicecustomfield.exception.fetch.all.none"));
             }
             return serviceCustomFields;
 

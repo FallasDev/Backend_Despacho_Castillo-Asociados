@@ -26,7 +26,7 @@ public class FormalitieJpaSpecificationBuilder {
                 predicates.add(cb.like(cb.lower(root.get("service").get("name")), "%" + searchFormalitie.getServiceName().toLowerCase() + "%"));
             }
 
-            if (searchFormalitie.getStateId() > 0) {
+            if (searchFormalitie.getStateId() != null && searchFormalitie.getStateId() > 0) {
                 predicates.add(cb.equal(root.get("state"), searchFormalitie.getStateId()));
             }
 

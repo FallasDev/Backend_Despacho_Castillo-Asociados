@@ -22,20 +22,15 @@ public class FindFormalitiesUseCase {
 
         PageResult<Formalitie> formalities = formalitieRepository.findByFilter(searchFormalitie, page, size);
 
+        if (searchFormalitie.getStateId() == null) {
+            searchFormalitie.setStateId(0);
+        }
+
         if (formalities.content().isEmpty()) {
             throw new EmptyListException(messages.get("formality.exception.fetch.by_params"));
         }
 
         return formalities;
-    }
-
-    @NonNull
-    public boolean hasFilter(@NonNull SearchFormalitie searchFormalitie) {
-        return searchFormalitie.getClientName() != null &&
-               searchFormalitie.getServiceName() != null &&
-               searchFormalitie.getStateId() <= 0 &&
-                searchFormalitie.getStartDate() != null &&
-                searchFormalitie.getEndDate() != null;
     }
 
 

@@ -7,7 +7,9 @@ import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.Cust
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,84 +17,90 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/custom-fields")
+@RequiredArgsConstructor
 public class CustomFieldController {
 
-    @Autowired
-    private CustomFieldService customFieldService;
-
-    private Messages messages;
-
-    public CustomFieldController(Messages messages) {
-        this.messages = messages;
-    }
+    private final CustomFieldService customFieldService;
+    private final Messages messages;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResult<CustomField>>> getCustomFields(@RequestParam (defaultValue = "0") int page, @RequestParam (defaultValue = "10") int size) {
+    public ResponseEntity<ApiResponse<PageResult<CustomField>>> getCustomFields(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        PageResult<CustomField> customFields = customFieldService.findAllCustomFields(page, size);
+        PageResult<CustomField> result =
+                customFieldService.findAllCustomFields(page, size);
 
-
-        if (customFields == null || customFields.content().isEmpty()) {
-            return ResponseEntity.ok().body(
-                    new ApiResponse<>(false, messages.get("customfield.exception.fetch.all.none"), null)
-            );
-        }
-
-        return ResponseEntity.ok().body(
-                new ApiResponse<>(true, messages.get("customfield.success.fetch_all"), customFields)
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        messages.get("customfield.success.fetch_all"),
+                        result
+                )
         );
-
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<CustomField>> getCustomFieldById(@PathVariable  int id) {
-        CustomField customField = customFieldService.findByIdCustomField(id);
-        if (customField != null) {
-            return ResponseEntity.ok(
-                    new ApiResponse<CustomField>(true, messages.get("customfield.success.fetch_by_id"), customField)
-            );
-        } else {
-            return ResponseEntity.ok(
-                    new ApiResponse<CustomField>(false, messages.get("customfield.exception.fetch_by_id.notfound", new Object[]{id}), null
-            ));
-        }
-    }
+    public ResponseEntity<ApiResponse<CustomField>> getCustomFieldById(
+            @PathVariable int id) {
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<CustomField>> createCustomField(@RequestBody CustomFieldRequest customField) {
-        CustomField createdCustomField = customFieldService.createCustomField(customField);
-        if (createdCustomField != null) {
-            return ResponseEntity.ok(
-                    new ApiResponse<CustomField>(true, messages.get("customfield.success.create"), createdCustomField)
-            );
-        } else {
-            return ResponseEntity.ok(
-                    new ApiResponse<CustomField>(false, messages.get("customfield.exception.create.failed"), null)
-            );
-        }
-    }
+        CustomField customField =
+                customFieldService.findByIdCustomField(id);
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<CustomField>> updateCustomField(@RequestBody CustomFieldRequest customField, @PathVariable int id) {
-        CustomField updatedCustomField = customFieldService.updateCustomField(customField, id);
-        if (updatedCustomField != null) {
-            return ResponseEntity.ok(
-                    new ApiResponse<CustomField>(true, messages.get("customfield.success.update"), updatedCustomField)
-            );
-        } else {
-            return ResponseEntity.ok(
-                    new ApiResponse<CustomField>(false, messages.get("customfield.exception.update.failed"), null)
-            );
-        }
-    }
-
-    @PutMapping("/deactivate/{id}")
-    public ResponseEntity<ApiResponse<Boolean>> deactivateCustomField(@PathVariable int id) {
-        customFieldService.deactiveCustomField(id);
-        return  ResponseEntity.ok(
-                new ApiResponse<Boolean>(true, "customfield.success.deactive", true)
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        messages.get("customfield.success.fetch_by_id"),
+                        customField
+                )
         );
     }
 
+    @PostMapping
+    public ResponseEntity<ApiResponse<CustomField>> createCustomField(
+            @RequestBody CustomFieldRequest request) {
 
+        CustomField created =
+                customFieldService.createCustomField(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new ApiResponse<>(
+                        true,
+                        messages.get("customfield.success.create"),
+                        created
+                )
+        );
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<CustomField>> updateCustomField(
+            @RequestBody CustomFieldRequest request,
+            @PathVariable int id) {
+
+        CustomField updated =
+                customFieldService.updateCustomField(request, id);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        messages.get("customfield.success.update"),
+                        updated
+                )
+        );
+    }
+
+    @PatchMapping("/{id}/deactivate")
+    public ResponseEntity<ApiResponse<Void>> deactivateCustomField(
+            @PathVariable int id) {
+
+        customFieldService.deactiveCustomField(id);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        messages.get("customfield.success.deactive"),
+                        null
+                )
+        );
+    }
 }
