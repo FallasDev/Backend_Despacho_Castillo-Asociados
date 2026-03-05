@@ -25,7 +25,7 @@ public class FindServicesUseCase {
             PageResult<DomainService> servicesByName = serviceRepository.findByContainsNameLetterUseCase(name, page, size);
 
             if (servicesByName.content().isEmpty()) {
-                throw new EmptyListException(messages.get("service.exception.fetch.by_name_like.none"));
+                throw new EmptyListException(messages.get("service.exception.fetch.by_name_like.none", new Object[]{name}));
             }
 
             return servicesByName;

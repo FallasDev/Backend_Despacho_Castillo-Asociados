@@ -1,6 +1,7 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.config.Service;
 import com.accountancy.despacho_castillo_asociados.application.usecase.Service.*;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Service.ServiceRepository;
+import com.accountancy.despacho_castillo_asociados.domain.repository.ServiceCustomFields.ServiceCustomFieldsRepository;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +20,9 @@ public class DomainServiceUseCaseConfig {
     }
 
     @Bean
-    public DeactiveServiceUseCase deactiveServiceUseCase(ServiceRepository serviceRepository, Messages messages) {
-        return new DeactiveServiceUseCase(serviceRepository, messages);
+    public DeactiveServiceUseCase deactiveServiceUseCase(ServiceRepository serviceRepository, Messages messages,
+                                                         ServiceCustomFieldsRepository serviceCustomFieldsRepository) {
+        return new DeactiveServiceUseCase(serviceRepository, messages, serviceCustomFieldsRepository);
     }
 
     @Bean

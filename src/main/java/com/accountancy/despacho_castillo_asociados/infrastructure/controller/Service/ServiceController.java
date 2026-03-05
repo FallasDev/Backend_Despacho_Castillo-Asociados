@@ -7,9 +7,11 @@ import com.accountancy.despacho_castillo_asociados.domain.model.Service.ServiceR
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.message.LocalizedMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,97 +20,84 @@ import java.util.Locale;
 
 @RestController
 @RequestMapping("/services")
+@RequiredArgsConstructor
 public class ServiceController {
 
-    @Autowired
-    private DomainServiceService domainServiceService;
-
-
-    private Messages messages;
-
-    public ServiceController(Messages messages) {
-        this.messages = messages;
-    }
+    private final DomainServiceService domainServiceService;
+    private final Messages messages;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResult<DomainService>>> getAllServices(@RequestParam (required = false) String name,
-                                                                                 @RequestParam (defaultValue = "0") int page,
-                                                                                 @RequestParam (defaultValue = "10") int size) {
+    public ResponseEntity<ApiResponse<PageResult<DomainService>>> getAllServices(
+            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        PageResult<DomainService> domainServices = domainServiceService.findServices(name, page, size);
+        PageResult<DomainService> result = domainServiceService.findServices(name, page, size);
 
-        if (domainServices == null || domainServices.content().isEmpty()) {
-            return ResponseEntity.ok().body(
-                    new ApiResponse<>(false, messages.get("service.exception.fetch.all.none"), null)
-            );
-        }
-
-
-
-        return ResponseEntity.ok().body(
-                new ApiResponse<>(true, messages.get("service.success.fetch_all"), domainServices)
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        messages.get("service.success.fetch_all"),
+                        result
+                )
         );
-
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<DomainService>> findById(@PathVariable  int id
-    ) {
-        DomainService domainService = domainServiceService.findByIdService(id);
-        if (domainService != null) {
-            return ResponseEntity.ok(
-                    new ApiResponse<DomainService>(true, "services.exception.fetch.by_id.notfound", domainService)
-            );
-        } else {
-            return ResponseEntity.ok(
-                    new ApiResponse<DomainService>(false, "service.success.fetch_by_id", null
-            ));
-        }
+    public ResponseEntity<ApiResponse<DomainService>> findById(@PathVariable int id) {
+
+        DomainService service = domainServiceService.findByIdService(id);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        messages.get("service.success.fetch_by_id"),
+                        service
+                )
+        );
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse<DomainService>> createService(@RequestBody ServiceRequest request) {
-        DomainService createdService = domainServiceService.createService(request);
 
-        if (createdService == null) {
-            return ResponseEntity.ok(
-                    new ApiResponse<DomainService>(false, "service.exception.create.failed", null)
-            );
-        }
+        DomainService created = domainServiceService.createService(request);
 
-        return ResponseEntity.ok(
-                new ApiResponse<DomainService>(true, "service.success.create", createdService)
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new ApiResponse<>(
+                        true,
+                        messages.get("service.success.create"),
+                        created
+                )
         );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<DomainService>> updateService(@RequestBody ServiceRequest request
-            , @PathVariable int id) {
-        DomainService updatedService = domainServiceService.updateService(request, id);
+    public ResponseEntity<ApiResponse<DomainService>> updateService(
+            @RequestBody ServiceRequest request,
+            @PathVariable int id) {
 
-        if (updatedService == null) {
-            return ResponseEntity.ok(
-                    new ApiResponse<DomainService>(false, "service.exception.update.failed", null)
-            );
-        }
+        DomainService updated = domainServiceService.updateService(request, id);
 
         return ResponseEntity.ok(
-                new ApiResponse<DomainService>(true, "service.success.update", updatedService)
+                new ApiResponse<>(
+                        true,
+                        messages.get("service.success.update"),
+                        updated
+                )
         );
     }
 
-    @PutMapping("/deactivate/{id}")
+    @PatchMapping("/deactivate/{id}")
     public ResponseEntity<ApiResponse<Void>> deactivateService(@PathVariable int id) {
+
         domainServiceService.deactiveService(id);
+
         return ResponseEntity.ok(
-                new ApiResponse<Void>(true, "service.success.deactive", null)
+                new ApiResponse<>(
+                        true,
+                        messages.get("service.success.deactive"),
+                        null
+                )
         );
     }
-
-
-
-
-
-
-
 }

@@ -5,70 +5,92 @@ import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Forma
 import com.accountancy.despacho_castillo_asociados.domain.model.FormalitieCustomFields.FormalitieCustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.FormalitieCustomFields.FormalitieCustomFieldRequest;
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
+import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequestMapping("/formalitie-custom-fields")
+@RequiredArgsConstructor
 public class FormalitieCustomFieldController {
 
-    @Autowired
-    private FormalitieCustomFieldsService formalitieCustomFieldService;
+    private final FormalitieCustomFieldsService formalitieCustomFieldService;
+    private final Messages messages;
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResult<FormalitieCustomField>>> getFormalitiesCustomField(
-            @RequestParam (defaultValue = "0") int page,
-            @RequestParam (defaultValue = "10") int size,
-            @RequestParam (required = false) Integer formalitieId
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "0") int formalitieId
     ) {
 
-        PageResult<FormalitieCustomField> formalitiesCustomField = formalitieCustomFieldService.find(page, size, formalitieId);
-        if (formalitiesCustomField == null || formalitiesCustomField.content().isEmpty()) {
-            return ResponseEntity.ok().body(
-                    new ApiResponse<>(false, "No formalities custom fields found", null)
-            );
-        }
+        PageResult<FormalitieCustomField> result =
+                formalitieCustomFieldService.find(formalitieId, page, size);
 
-        return ResponseEntity.ok().body(
-                new ApiResponse<>(true, "Formalities custom fields retrieved successfully", formalitiesCustomField)
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        messages.get("formalitycustomfield.success.fetch_all"),
+                        result
+                )
         );
-
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse<FormalitieCustomField>> createFormalitieCustomField(
-            @RequestBody FormalitieCustomFieldRequest formalitieCustomField
+            @RequestBody FormalitieCustomFieldRequest request
     ) {
-        FormalitieCustomField createdFormalitieCustomField = formalitieCustomFieldService.create(formalitieCustomField);
-        return ResponseEntity.ok().body(
-                new ApiResponse<>(true, "Formalitie custom field created successfully", createdFormalitieCustomField)
+
+        FormalitieCustomField created =
+                formalitieCustomFieldService.create(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new ApiResponse<>(
+                        true,
+                        messages.get("formalitycustomfield.success.create"),
+                        created
+                )
         );
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<FormalitieCustomField>> updateFormalitieCustomField(
-            @RequestParam int id,
-            @RequestBody FormalitieCustomFieldRequest formalitieCustomField
+            @PathVariable int id,
+            @RequestBody FormalitieCustomFieldRequest request
     ) {
-        FormalitieCustomField updatedFormalitieCustomField = formalitieCustomFieldService.update(id, formalitieCustomField);
-        return ResponseEntity.ok().body(
-                new ApiResponse<>(true, "Formalitie custom field updated successfully", updatedFormalitieCustomField)
+
+        System.out.println("Updating FormalitieCustomField with ID: " + id);
+
+        FormalitieCustomField updated =
+                formalitieCustomFieldService.update(id, request);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        messages.get("formalitycustomfield.success.update"),
+                        updated
+                )
         );
     }
 
-    @PutMapping
-    @RequestMapping("/deactivate")
+    @PatchMapping("/{id}/deactivate")
     public ResponseEntity<ApiResponse<Void>> deactivateFormalitieCustomField(
-            @RequestParam int id
+            @PathVariable int id
     ) {
+
         formalitieCustomFieldService.deactivate(id);
-        return ResponseEntity.ok().body(
-                new ApiResponse<>(true, "Formalitie custom field deactivated successfully", null)
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        messages.get("formalitycustomfield.success.deactive"),
+                        null
+                )
         );
     }
-
-
 }

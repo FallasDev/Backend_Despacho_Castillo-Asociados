@@ -57,6 +57,29 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
     }
 
     @Override
+    public Formalitie update(FormalitieRequest formalitieRequest, int id) {
+
+        FormalitieEntity existingEntity = jpaFormalitieRepository.findById(id).orElse(null);
+
+        if (existingEntity == null) {
+            return null;
+        }
+
+        existingEntity.setService(
+                new ServiceEntity(
+                        formalitieRequest.getServiceId(),
+                        null,
+                        null,
+                        false
+                )
+        );
+
+        FormalitieEntity updatedEntity = jpaFormalitieRepository.save(existingEntity);
+        return getFormalitieFromEntity(updatedEntity);
+
+    }
+
+    @Override
     public boolean changeFormalitieState(int id, FormalitiesState state) {
 
         FormalitieEntity entity = jpaFormalitieRepository.findById(id).orElse(null);
@@ -81,17 +104,7 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         Page<FormalitieEntity> entityPage = jpaFormalitieRepository.findAll(pageable);
 
-        List<FormalitieEntity> formalities = entityPage.getContent();
-
-        return new PageResult<>(
-                formalities.stream()
-                        .map(this::getFormalitieFromEntity)
-                        .toList(),
-                page,
-                size,
-                entityPage.getTotalElements(),
-                entityPage.getTotalPages()
-        );
+        return getFormalitiePageResult(page, size, entityPage);
 
     }
 
@@ -103,16 +116,22 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
 
         Page<FormalitieEntity> entityPage = jpaFormalitieRepository.findAll(spec, pageable);
 
+        return getFormalitiePageResult(page, size, entityPage);
+    }
+
+    @NonNull
+    private PageResult<Formalitie> getFormalitiePageResult(int page, int size, Page<FormalitieEntity> entityPage) {
         List<FormalitieEntity> formalities = entityPage.getContent();
 
+        List<Formalitie> formalitieList = formalities.stream()
+                .map(this::getFormalitieFromEntity)
+                .toList();
 
         return new PageResult<>(
-                formalities.stream()
-                        .map(this::getFormalitieFromEntity)
-                        .toList(),
+                formalitieList,
                 page,
                 size,
-                entityPage.getTotalElements(),
+                formalitieList.size(),
                 entityPage.getTotalPages()
         );
     }

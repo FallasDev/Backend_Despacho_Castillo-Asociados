@@ -8,11 +8,11 @@ public class SearchFormalitie {
     private String serviceName;
     private String clientName;
     private String userName;
-    private int stateId;
+    private Integer stateId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
-    public SearchFormalitie(String serviceName, String clientName, String userName, int stateId, LocalDateTime startDate, LocalDateTime endDate) {
+    public SearchFormalitie(String serviceName, String clientName, String userName, Integer stateId, LocalDateTime startDate, LocalDateTime endDate) {
         this.serviceName = serviceName;
         this.clientName = clientName;
         this.userName = userName;
@@ -49,11 +49,11 @@ public class SearchFormalitie {
         this.userName = userName;
     }
 
-    public int getStateId() {
+    public Integer getStateId() {
         return stateId;
     }
 
-    public void setStateId(int stateId) {
+    public void setStateId(Integer stateId) {
         this.stateId = stateId;
     }
 

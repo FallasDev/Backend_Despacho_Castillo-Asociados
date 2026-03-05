@@ -1,9 +1,6 @@
 package com.accountancy.despacho_castillo_asociados.application.service.Formalitie;
 
-import com.accountancy.despacho_castillo_asociados.application.usecase.Formalitie.ChangeFormalitieStateUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.Formalitie.CreateFormalitieUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.Formalitie.FindByIdFormalitieUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.Formalitie.FindFormalitiesUseCase;
+import com.accountancy.despacho_castillo_asociados.application.usecase.Formalitie.*;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Formalitie;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalitieRequest;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.SearchFormalitie;
@@ -17,15 +14,18 @@ public class FormalitieService {
     private ChangeFormalitieStateUseCase changeFormalitieStateUseCase;
     private FindFormalitiesUseCase findFormalitiesUseCase;
     private FindByIdFormalitieUseCase findByIdFormalitieUseCase;
+    private UpdateFormalitieUseCase updateFormalitieUseCase;
 
     public FormalitieService(CreateFormalitieUseCase createFormalitieUseCase,
                              ChangeFormalitieStateUseCase changeFormalitieStateUseCase,
                              FindFormalitiesUseCase findFormalitiesUseCase,
-                             FindByIdFormalitieUseCase findByIdFormalitieUseCase) {
+                             FindByIdFormalitieUseCase findByIdFormalitieUseCase,
+                             UpdateFormalitieUseCase updateFormalitieUseCase) {
         this.createFormalitieUseCase = createFormalitieUseCase;
         this.changeFormalitieStateUseCase = changeFormalitieStateUseCase;
         this.findFormalitiesUseCase = findFormalitiesUseCase;
         this.findByIdFormalitieUseCase = findByIdFormalitieUseCase;
+        this.updateFormalitieUseCase = updateFormalitieUseCase;
     }
 
     public Formalitie createFormalitie(FormalitieRequest formalitie) {
@@ -42,6 +42,11 @@ public class FormalitieService {
 
     public Formalitie findFormalitieById(int id) {
         return findByIdFormalitieUseCase.execute(id);
+    }
+
+
+    public Formalitie updateFormalitie(int id, FormalitieRequest formalitieRequest) {
+        return updateFormalitieUseCase.execute(formalitieRequest, id);
     }
 
 

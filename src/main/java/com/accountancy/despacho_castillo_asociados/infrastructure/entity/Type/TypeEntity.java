@@ -1,9 +1,12 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.entity.Type;
 
 
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.CustomField.CustomFieldEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +25,9 @@ public class TypeEntity {
     @Column(name = "active", nullable = false)
     private boolean active = true;
 
+    @OneToMany
+    @JoinColumn(name = "type_id")
+    private List<CustomFieldEntity> customFields;
 
     public TypeEntity(String name, boolean active) {
         this.name = name;
@@ -37,5 +43,7 @@ public class TypeEntity {
     public TypeEntity() {
 
     }
+
+
 
 }

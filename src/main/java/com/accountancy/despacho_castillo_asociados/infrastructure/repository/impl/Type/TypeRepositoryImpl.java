@@ -3,9 +3,11 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.repository.im
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.TypeRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Type.TypeRepository;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.CustomField.CustomFieldEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Type.TypeEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Type.JPATypeRepository;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -113,15 +115,15 @@ public class TypeRepositoryImpl implements TypeRepository {
 
         List<TypeEntity> types = typePage.getContent();
 
+        List<Type> typeList = types.stream().map(
+                this::getTypeFromEntity
+        ).filter(Type::isActive).toList();
+
         return new PageResult<>(
-                types.stream().map(entity -> new Type(
-                        entity.getId(),
-                        entity.getName(),
-                        entity.isActive()
-                )).filter(Type::isActive).toList(),
+                typeList,
                 page,
                 size,
-                typePage.getTotalElements(),
+                typeList.size(),
                 typePage.getTotalPages()
         );
 
@@ -135,6 +137,11 @@ public class TypeRepositoryImpl implements TypeRepository {
     @Override
     public boolean existsByNameAndIsInactive(String name) {
         return jpaTypeRepository.existsByNameAndActive(name, false);
+    }
+
+    @Override
+    public boolean hasActiveAssociations(int id) {
+        return jpaTypeRepository.existsByIdAndCustomFieldsActiveTrue(id);
     }
 
     @Override
@@ -159,6 +166,15 @@ public class TypeRepositoryImpl implements TypeRepository {
         Type result = new Type(type.getId(), type.getName(), type.isActive());
 
         return Optional.of(result);
+    }
+
+    @NonNull
+    public Type getTypeFromEntity(@NonNull TypeEntity entity) {
+        return new Type(
+                entity.getId(),
+                entity.getName(),
+                entity.isActive()
+        );
     }
 
 

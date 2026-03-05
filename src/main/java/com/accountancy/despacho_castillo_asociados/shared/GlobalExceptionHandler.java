@@ -2,8 +2,10 @@ package com.accountancy.despacho_castillo_asociados.shared;
 
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.EmptyListException;
+import com.accountancy.despacho_castillo_asociados.shared.utils.ExtractColumn;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,10 +17,10 @@ import java.util.Locale;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private final MessageSource messageSource;
+    private final Messages messages;
 
-    public GlobalExceptionHandler(MessageSource messageSource) {
-        this.messageSource = messageSource;
+    public GlobalExceptionHandler(Messages messages) {
+        this.messages = messages;
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
@@ -42,11 +44,21 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>(false, ex.getMessage(), null));
     }
 
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<?> handleDataIntegrity(DataIntegrityViolationException ex) {
+
+        System.out.println("DataIntegrityViolationException caught: " + ex.getMessage());
+
+        Throwable root = ex.getRootCause();
+        String columnName = ExtractColumn.extractColumnName(root != null ? root.getMessage() : null);
+
+        return ResponseEntity.badRequest().body(
+                new ApiResponse<>(false, messages.get("database.data.too.long", new Object[]{columnName}), null)
+        );
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneric(Exception ex, Locale locale) {
-
-        String localizedMessage = messageSource.getMessage("internal.server.error", null, locale);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ApiResponse<>(false, ex.getMessage(), null));

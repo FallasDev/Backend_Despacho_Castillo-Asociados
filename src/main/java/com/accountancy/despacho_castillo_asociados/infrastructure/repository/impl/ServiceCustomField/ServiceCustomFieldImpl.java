@@ -13,6 +13,8 @@ import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Service.JPAServiceRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.ServiceCustomField.JPAServiceCustomFieldRepository;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import jakarta.transaction.Transactional;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -60,13 +62,27 @@ public class ServiceCustomFieldImpl implements ServiceCustomFieldsRepository {
 
         ServiceCustomFieldEntity existingEntity = jpaServiceCustomField.findById(id).orElse(null);
 
-        if (existingEntity == null) {
+        if (existingEntity == null || !existingEntity.isActive()) {
             return false;
         }
 
         existingEntity.setActive(false);
         jpaServiceCustomField.save(existingEntity);
         return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean deactivateByServiceId(int serviceId) {
+        int updatedRows = jpaServiceCustomField.deactivateByServiceId(serviceId);
+        return updatedRows > 0;
+    }
+
+    @Override
+    @Transactional
+    public boolean deactivateByCustomFieldId(int customFieldId) {
+        int updatedRows = jpaServiceCustomField.deactivateByCustomFieldId(customFieldId);
+        return updatedRows > 0;
     }
 
     @Override
@@ -95,17 +111,7 @@ public class ServiceCustomFieldImpl implements ServiceCustomFieldsRepository {
 
         Page<ServiceCustomFieldEntity> serviceCustomFieldPage = jpaServiceCustomField.findByServiceId(serviceId, pageable);
 
-        List<ServiceCustomFieldEntity> serviceCustomFieldEntities = serviceCustomFieldPage.getContent();
-
-        return new PageResult<>(
-                serviceCustomFieldEntities.stream().map(
-                        this::getServiceCustomField
-                ).filter(Objects::nonNull).filter(ServiceCustomField::isActive).toList(),
-                serviceCustomFieldPage.getNumber(),
-                serviceCustomFieldPage.getSize(),
-                serviceCustomFieldPage.getTotalElements(),
-                serviceCustomFieldPage.getTotalPages()
-        );
+        return getServiceCustomFieldPageResult(serviceCustomFieldPage);
 
     }
 
@@ -115,15 +121,24 @@ public class ServiceCustomFieldImpl implements ServiceCustomFieldsRepository {
 
         Page<ServiceCustomFieldEntity> serviceCustomFieldPage = jpaServiceCustomField.findAll(pageable);
 
+        return getServiceCustomFieldPageResult(serviceCustomFieldPage);
+    }
+
+    @NonNull
+    private PageResult<ServiceCustomField> getServiceCustomFieldPageResult(Page<ServiceCustomFieldEntity> serviceCustomFieldPage) {
         List<ServiceCustomFieldEntity> serviceCustomFieldEntities = serviceCustomFieldPage.getContent();
 
+        List<ServiceCustomField> serviceCustomFields = serviceCustomFieldEntities.stream()
+                .map(this::getServiceCustomField)
+                .filter(Objects::nonNull)
+                .filter(ServiceCustomField::isActive)
+                .toList();
+
         return new PageResult<>(
-                serviceCustomFieldEntities.stream().map(
-                        this::getServiceCustomField
-                ).filter(Objects::nonNull).filter(ServiceCustomField::isActive).toList(),
+                serviceCustomFields,
                 serviceCustomFieldPage.getNumber(),
                 serviceCustomFieldPage.getSize(),
-                serviceCustomFieldPage.getTotalElements(),
+                serviceCustomFields.size(),
                 serviceCustomFieldPage.getTotalPages()
         );
     }

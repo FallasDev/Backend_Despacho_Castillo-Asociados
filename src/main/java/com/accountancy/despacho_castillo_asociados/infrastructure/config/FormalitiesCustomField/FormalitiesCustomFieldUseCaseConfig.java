@@ -8,6 +8,7 @@ import com.accountancy.despacho_castillo_asociados.application.usecase.Formaliti
 import com.accountancy.despacho_castillo_asociados.domain.repository.CustomField.CustomFieldRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Formalitie.FormalitieRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.FormalitieCustomFields.FormalitieCustomFieldRepository;
+import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,24 +17,24 @@ public class FormalitiesCustomFieldUseCaseConfig {
 
     @Bean
     public CreateFormalitieCustomFieldsUseCase createFormalitieCustomFieldsUseCase(FormalitieCustomFieldRepository repository,
-        FormalitieRepository formalitieRepository, CustomFieldRepository customFieldRepository
+        FormalitieRepository formalitieRepository, CustomFieldRepository customFieldRepository, Messages messages
     ) {
-        return new CreateFormalitieCustomFieldsUseCase(repository,customFieldRepository, formalitieRepository);
+        return new CreateFormalitieCustomFieldsUseCase(repository,customFieldRepository, formalitieRepository, messages);
     }
 
     @Bean
-    public DeactiveFormalitieCustomFieldsUseCase deactiveFormalitieCustomFieldsUseCase(FormalitieCustomFieldRepository repository) {
-        return new DeactiveFormalitieCustomFieldsUseCase(repository);
+    public DeactiveFormalitieCustomFieldsUseCase deactiveFormalitieCustomFieldsUseCase(FormalitieCustomFieldRepository repository, Messages messages) {
+        return new DeactiveFormalitieCustomFieldsUseCase(repository, messages);
     }
 
     @Bean
-    public UpdateFormalitieCustomFieldsUseCase updateFormalitieCustomFieldsUseCase(FormalitieCustomFieldRepository repository) {
-        return new UpdateFormalitieCustomFieldsUseCase(repository);
+    public UpdateFormalitieCustomFieldsUseCase updateFormalitieCustomFieldsUseCase(FormalitieCustomFieldRepository repository, Messages messages) {
+        return new UpdateFormalitieCustomFieldsUseCase(repository, messages);
     }
 
     @Bean
-    public FindFormalitiesCustomFieldsUseCase findFormalitiesCustomFieldsUseCase(FormalitieCustomFieldRepository repository) {
-        return new FindFormalitiesCustomFieldsUseCase(repository);
+    public FindFormalitiesCustomFieldsUseCase findFormalitiesCustomFieldsUseCase(FormalitieCustomFieldRepository repository, Messages messages) {
+        return new FindFormalitiesCustomFieldsUseCase(repository, messages);
     }
 
 
