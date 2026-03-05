@@ -1,7 +1,6 @@
-package com.accountancy.despacho_castillo_asociados.infrastructure.entity.Client;
+package com.accountancy.despacho_castillo_asociados.infrastructure.entity.User;
 
-
-import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Role.Role;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Role.RoleEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "clients")
-public class Client {
+@Table(name = "users")
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +19,7 @@ public class Client {
     private String name;
 
     @Column(nullable = false)
-    private  String suername;
+    private String suername;
 
     @Column(nullable = true)
     private String photoProfileUrl;
@@ -34,10 +33,11 @@ public class Client {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
-    private Role role;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "role_id", nullable = false)
+    private RoleEntity role;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
@@ -46,9 +46,9 @@ public class Client {
     @Column(nullable = false)
     private boolean isActive;
 
-    public Client(int id, String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, Role role, String password, String address, boolean isActive) {
+    public UserEntity() {}
 
-        this.id = id;
+    public UserEntity(String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, RoleEntity role, String password, String address, boolean isActive) {
         this.name = name;
         this.suername = suername;
         this.photoProfileUrl = photoProfileUrl;
@@ -61,9 +61,8 @@ public class Client {
         this.isActive = isActive;
     }
 
-    public Client () {}
-
-    public Client(String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, Role role, String password, String address, boolean isActive) {
+    public UserEntity(int id, String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, RoleEntity role, String password, String address, boolean isActive) {
+        this.id = id;
         this.name = name;
         this.suername = suername;
         this.photoProfileUrl = photoProfileUrl;

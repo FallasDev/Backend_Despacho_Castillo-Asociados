@@ -1,24 +1,19 @@
 package com.accountancy.despacho_castillo_asociados.domain.repository.PermissionRole;
 
-import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
-import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientRequest;
+import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRole;
+import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRoleRequest;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 
 import java.util.Optional;
 
 public interface PermissionRoleRepository {
 
-    Client create(ClientRequest client);
-    Client update(ClientRequest client, int id);
-    void activate(int id);
-    boolean deactivate(int id);
+    PermissionRole create(PermissionRoleRequest permissionRole);
+    PermissionRole update(PermissionRoleRequest permissionRole, int id);
+    boolean delete(int id);
 
-    Optional<Client> findById(int id);
-    Optional<Client> fintByName(String name);
-    Optional<Client> fintByNameAndIsActive(String name);
-    Optional<Client> fintByNameAndIsInactive(String name);
-    Optional<Client> fintBySurname(String surname);
-    Optional<Client> fintBySurnameAndIsActive(String surname);
-    Optional<Client> fintBySurnameAndIsInactive(String surname);
-    PageResult<Client> findAll(int page, int size);
+    Optional<PermissionRole> findById(int id);
+    PageResult<PermissionRole> findAll(int page, int size);
+    PageResult<PermissionRole> findByIdRole(int idRole, int page, int size);
+    PageResult<PermissionRole> findByPermissionId(int permissionId, int page, int size);
 }

@@ -1,6 +1,6 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.entity.Role;
 
-import com.accountancy.despacho_castillo_asociados.infrastructure.entity.PermissionRole.PermissionRole;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.PermissionRole.PermissionRoleEntity;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -16,7 +16,7 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "roles")
-public class Role {
+public class RoleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,26 +30,26 @@ public class Role {
     private String description;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<PermissionRole> permissions = new ArrayList<>();
+    private List<PermissionRoleEntity> permissions = new ArrayList<>();
 
     @Column(nullable = false)
     private boolean active;
 
-    public Role() {}
+    public RoleEntity() {}
 
-    public Role(String name, String description, List<PermissionRole> permissions, boolean active) {
+    public RoleEntity(String name, String description, List<PermissionRoleEntity> permissions, boolean active) {
         this.name = name;
         this.description = description;
         this.permissions = permissions != null ? permissions : new ArrayList<>();
         this.active = active;
     }
 
-    public Role(Integer id, String name, String description, List<PermissionRole> permissions, boolean active) {
+    public RoleEntity(Integer id, String name, String description, List<PermissionRoleEntity> permissions, boolean active) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.permissions = permissions != null ? permissions : new ArrayList<>();
         this.active = active;
     }
-
 }
+

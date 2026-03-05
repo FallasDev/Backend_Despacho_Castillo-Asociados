@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "permissions")
-public class Permission {
+public class PermissionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,18 +20,17 @@ public class Permission {
     @Column(nullable = false)
     private String description;
 
-        public Permission() {
-        }
+    public PermissionEntity() {}
 
-        public Permission(String name, String description) {
-            this.name = name;
-            this.description = description;
-        }
+    public PermissionEntity(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 
-        public Permission(int id, String name, String description) {
-            this.id = id;
-            this.name = name;
-            this.description = description;
-        }
-
+    public PermissionEntity(int id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
 }
+

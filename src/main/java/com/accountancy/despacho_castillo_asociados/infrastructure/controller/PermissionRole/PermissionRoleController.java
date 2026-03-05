@@ -1,0 +1,86 @@
+package com.accountancy.despacho_castillo_asociados.infrastructure.controller.PermissionRole;
+
+import com.accountancy.despacho_castillo_asociados.application.service.PermissionRole.PermissionRoleService;
+import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRole;
+import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRoleRequest;
+import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
+import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/permission-roles")
+@RequiredArgsConstructor
+public class PermissionRoleController {
+
+    private final PermissionRoleService permissionRoleService;
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<PageResult<PermissionRole>>> getAllPermissionRoles(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        PageResult<PermissionRole> permissionRoles = permissionRoleService.findAllPermissionRoles(page, size);
+
+        return ResponseEntity.ok().body(
+                new ApiResponse<>(true, "Permission roles retrieved successfully", permissionRoles)
+        );
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<PermissionRole>> findById(@PathVariable int id) {
+        PermissionRole permissionRole = permissionRoleService.findByIdPermissionRole(id);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Permission role found", permissionRole)
+        );
+    }
+
+    @GetMapping("/role/{roleId}")
+    public ResponseEntity<ApiResponse<PageResult<PermissionRole>>> findByRoleId(
+            @PathVariable int roleId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        PageResult<PermissionRole> permissionRoles = permissionRoleService.findByIdRolePermissionRole(roleId, page, size);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Permission roles found by role", permissionRoles)
+        );
+    }
+
+    @GetMapping("/permission/{permissionId}")
+    public ResponseEntity<ApiResponse<PageResult<PermissionRole>>> findByPermissionId(
+            @PathVariable int permissionId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        PageResult<PermissionRole> permissionRoles = permissionRoleService.findByPermissionIdPermissionRole(permissionId, page, size);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Permission roles found by permission", permissionRoles)
+        );
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<PermissionRole>> createPermissionRole(@RequestBody PermissionRoleRequest request) {
+        PermissionRole createdPermissionRole = permissionRoleService.createPermissionRole(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new ApiResponse<>(true, "Permission role created successfully", createdPermissionRole)
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deletePermissionRole(@PathVariable int id) {
+        permissionRoleService.deletePermissionRole(id);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Permission role deleted successfully", null)
+        );
+    }
+
+}
+
