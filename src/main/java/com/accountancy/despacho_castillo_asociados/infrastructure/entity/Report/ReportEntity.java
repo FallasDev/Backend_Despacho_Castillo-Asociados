@@ -1,20 +1,42 @@
-package com.accountancy.despacho_castillo_asociados.domain.model.Report;
+package com.accountancy.despacho_castillo_asociados.infrastructure.entity.Report;
 
-import java.awt.*;
-import java.net.URL;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDate;
 
-public class DomainService {
+@Getter
+@Setter
+@NoArgsConstructor // Genera el constructor vacío automáticamente
+@Entity
+@Table(name = "reports")
+public class ReportEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(nullable = false, unique = true)
     private String title;
+
+    @Column(nullable = false)
     private String description;
-    private URL image;
+
+    @Column(nullable = false)
+    private String image; // Cambiado de URL a String
+
+    @Column(nullable = false)
     private String category;
+
+    @Column(nullable = false)
     private LocalDate date;
+
+    @Column(nullable = false)
     private boolean active;
 
-    public DomainService(int id, String title, String description, URL image, String category, LocalDate date, boolean active) {
+    public ReportEntity(int id, String title, String description, String image, String category, LocalDate date, boolean active) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -22,10 +44,6 @@ public class DomainService {
         this.category = category;
         this.date = date;
         this.active = active;
-    }
-
-    public DomainService(){
-
     }
 
     public int getId() {
@@ -49,14 +67,14 @@ public class DomainService {
     }
 
     public void setDescription(String description) {
-        description = description;
+        this.description = description;
     }
 
-    public URL getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(URL image) {
+    public void setImage(String image) {
         this.image = image;
     }
 

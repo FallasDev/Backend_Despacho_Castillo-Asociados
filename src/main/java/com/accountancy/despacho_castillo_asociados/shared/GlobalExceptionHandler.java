@@ -11,8 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Locale;
+
+import static com.accountancy.despacho_castillo_asociados.shared.utils.ExtractColumn.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -47,13 +50,56 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<?> handleDataIntegrity(DataIntegrityViolationException ex) {
 
-        System.out.println("DataIntegrityViolationException caught: " + ex.getMessage());
-
         Throwable root = ex.getRootCause();
-        String columnName = ExtractColumn.extractColumnName(root != null ? root.getMessage() : null);
 
+        if (root instanceof SQLException sqlEx) {
+
+            String message = sqlEx.getMessage();
+
+            switch (sqlEx.getErrorCode()) {
+
+                case 1062: { // Duplicate
+                    String column = extractDuplicateColumn(message);
+                    String value = extractDuplicateValue(message);
+
+                    return buildResponse(
+                            messages.get("database.duplicate.entry",
+                                    new Object[]{column, value})
+                    );
+                }
+
+                case 1048: { // Not null
+                    String column = extractNotNullColumn(message);
+
+                    return buildResponse(
+                            messages.get("database.not.null.violation",
+                                    new Object[]{column})
+                    );
+                }
+
+                case 1406: { // Data too long
+                    String column = extractDataTooLongColumn(message);
+
+                    return buildResponse(
+                            messages.get("database.data.too.long",
+                                    new Object[]{column})
+                    );
+                }
+
+                case 1452: { // FK
+                    return buildResponse(
+                            messages.get("database.foreign.key.violation")
+                    );
+                }
+            }
+        }
+
+        return buildResponse(messages.get("database.integrity.generic"));
+    }
+
+    private ResponseEntity<?> buildResponse(String message) {
         return ResponseEntity.badRequest().body(
-                new ApiResponse<>(false, messages.get("database.data.too.long", new Object[]{columnName}), null)
+                new ApiResponse<>(false, message, null)
         );
     }
 

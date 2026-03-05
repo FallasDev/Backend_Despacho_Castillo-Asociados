@@ -52,5 +52,4 @@ public class DomainServiceService {
         return findByIdServiceUseCase.execute(id);
     }
 
-
 }

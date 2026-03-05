@@ -3,20 +3,35 @@ package com.accountancy.despacho_castillo_asociados.domain.model.Report;
 import java.net.URL;
 import java.time.LocalDate;
 
-public class ServiceRequest {
+public class Report {
 
+    private int id;
     private String title;
     private String description;
     private URL image;
     private String category;
     private LocalDate date;
+    private boolean active;
 
-    public ServiceRequest(String title, String description, URL image, String category, LocalDate date) {
+    public Report(int id, String title, String description, URL image, String category, LocalDate date, boolean active) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.image = image;
         this.category = category;
         this.date = date;
+        this.active = active;
+    }
+
+    public Report() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -57,5 +72,13 @@ public class ServiceRequest {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

@@ -1,24 +1,24 @@
-package com.accountancy.despacho_castillo_asociados.domain.model.ReportCategories;
+package com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory;
 
 import java.time.LocalDate;
 
-public class DomainService {
+public class ReportCategory {
 
     private int id;
-    private String category;
+    private String name;
     private LocalDate date;
     private boolean active;
     private int visibility;
 
-    public DomainService(int id, String category, LocalDate date, boolean active, int visibility){
+    public ReportCategory(int id, String name, LocalDate date, boolean active, int visibility){
         this.id = id;
-        this.category = category;
+        this.name = name;
         this.date = date;
         this.active = active;
         this.visibility = visibility;
     }
 
-    public DomainService(){
+    public ReportCategory(){
 
     }
 
@@ -46,14 +46,13 @@ public class DomainService {
         this.date = date;
     }
 
-    public String getCategory() {
-        return category;
+    public String getName() {
+        return name;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setName(String name) {
+        this.name = name;
     }
-
     public int getId() {
         return id;
     }
