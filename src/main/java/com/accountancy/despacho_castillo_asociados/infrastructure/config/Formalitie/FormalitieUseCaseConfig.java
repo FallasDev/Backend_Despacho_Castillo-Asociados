@@ -3,8 +3,10 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.config.Formal
 
 import com.accountancy.despacho_castillo_asociados.application.usecase.Formalitie.*;
 import com.accountancy.despacho_castillo_asociados.application.usecase.Formalitie.FindFormalitiesUseCase;
+import com.accountancy.despacho_castillo_asociados.domain.repository.Client.ClientRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Formalitie.FormalitieRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Service.ServiceRepository;
+import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRepository;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +16,12 @@ public class FormalitieUseCaseConfig {
 
 
     @Bean
-    public CreateFormalitieUseCase createFormalitieUseCase(FormalitieRepository formalitieRepository, ServiceRepository serviceRepository, Messages messages) {
-        return new CreateFormalitieUseCase(formalitieRepository, serviceRepository, messages);
+    public CreateFormalitieUseCase createFormalitieUseCase(FormalitieRepository formalitieRepository,
+                                                           ServiceRepository serviceRepository,
+                                                           ClientRepository clientRepository,
+                                                           UserRepository userRepository,
+                                                           Messages messages) {
+        return new CreateFormalitieUseCase(formalitieRepository,serviceRepository,clientRepository, userRepository, messages);
 
     }
 
@@ -35,9 +41,17 @@ public class FormalitieUseCaseConfig {
     }
 
     @Bean
-    public UpdateFormalitieUseCase updateFormalitieUseCase(FormalitieRepository formalitieRepository
+    public UpdateFormalitieUseCase updateFormalitieUseCase(FormalitieRepository formalitieRepository,
+                                                           ClientRepository clientRepository,
+                                                              UserRepository userRepository
             , Messages messages) {
-        return new UpdateFormalitieUseCase(formalitieRepository, messages);
+        return new UpdateFormalitieUseCase(formalitieRepository, clientRepository, userRepository ,messages);
+    }
+
+    @Bean
+    public HandleFormalitieUseCase handleFormalitieUseCase(FormalitieRepository formalitieRepository
+            , UserRepository userRepository, Messages messages) {
+        return new HandleFormalitieUseCase(formalitieRepository, userRepository, messages);
     }
 
 }

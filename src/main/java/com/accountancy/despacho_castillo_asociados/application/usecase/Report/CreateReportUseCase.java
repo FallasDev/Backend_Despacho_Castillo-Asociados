@@ -2,7 +2,9 @@ package com.accountancy.despacho_castillo_asociados.application.usecase.Report;
 
 import com.accountancy.despacho_castillo_asociados.domain.model.Report.Report;
 import com.accountancy.despacho_castillo_asociados.domain.model.Report.ReportRequest;
+import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.ReportCategory;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Report.ReportRepository;
+import com.accountancy.despacho_castillo_asociados.domain.repository.ReportCategory.ReportCategoryRepository;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 
@@ -12,10 +14,13 @@ public class CreateReportUseCase {
 
     private final ReportRepository reportRepository;
 
+    private final ReportCategoryRepository reportCategoryRepository;
+
     private final Messages messages;
 
-    public CreateReportUseCase(ReportRepository reportRepository, Messages messages) {
+    public CreateReportUseCase(ReportRepository reportRepository, ReportCategoryRepository reportCategoryRepository, Messages messages) {
         this.reportRepository = reportRepository;
+        this.reportCategoryRepository = reportCategoryRepository;
         this.messages = messages;
     }
 
@@ -44,6 +49,13 @@ public class CreateReportUseCase {
             return reactivatedReport;
         }
 
-        return reportRepository.create(report);
+        ReportCategory category = reportCategoryRepository.findById(report.getCategoryId()).orElse(null);
+
+        if (category == null || !category.isActive()) {
+            throw new BadRequestException(messages.get("report.exception.create.category.not_found",
+                    new Object[]{report.getCategoryId()}));
+        }
+
+        return reportRepository.create(report, category);
     }
 }

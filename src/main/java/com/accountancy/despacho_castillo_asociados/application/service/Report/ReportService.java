@@ -1,9 +1,6 @@
 package com.accountancy.despacho_castillo_asociados.application.service.Report;
 
-import com.accountancy.despacho_castillo_asociados.application.usecase.Report.CreateReportUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.Report.DeactiveReportUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.Report.FindByIdReportUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.Report.FindReportsUseCase;
+import com.accountancy.despacho_castillo_asociados.application.usecase.Report.*;
 import com.accountancy.despacho_castillo_asociados.domain.model.Report.Report;
 import com.accountancy.despacho_castillo_asociados.domain.model.Report.ReportRequest;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
@@ -16,17 +13,20 @@ public class ReportService {
     private DeactiveReportUseCase deactiveReportUseCase;
     private FindReportsUseCase findReportUseCase;
     private FindByIdReportUseCase findByIdReportUseCase;
+    private UpdateReportUseCase updateReportUseCase;
 
     public ReportService(
             CreateReportUseCase createReportUseCase,
             DeactiveReportUseCase deactiveReportUseCase,
             FindReportsUseCase findReportUseCase,
-            FindByIdReportUseCase findByIdReportUseCase
+            FindByIdReportUseCase findByIdReportUseCase,
+            UpdateReportUseCase updateReportUseCase
     ) {
         this.createReportUseCase = createReportUseCase;
         this.deactiveReportUseCase = deactiveReportUseCase;
         this.findReportUseCase = findReportUseCase;
         this.findByIdReportUseCase = findByIdReportUseCase;
+        this.updateReportUseCase = updateReportUseCase;
     }
 
     public Report createReport(ReportRequest reportRequest) {
@@ -44,4 +44,10 @@ public class ReportService {
     public Report findByIdReport(int id) {
         return findByIdReportUseCase.execute(id);
     }
+
+    public Report updateReport(ReportRequest reportRequest, int id) {
+        return updateReportUseCase.execute(id,reportRequest);
+    }
+
+
 }

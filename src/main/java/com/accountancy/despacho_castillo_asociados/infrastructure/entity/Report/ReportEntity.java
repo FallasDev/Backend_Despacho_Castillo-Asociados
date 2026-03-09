@@ -1,5 +1,6 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.entity.Report;
 
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.ReportCategory.ReportCategoryEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,7 @@ public class ReportEntity {
     private String image; // Cambiado de URL a String
 
     @Column(nullable = false)
-    private String category;
+    private int categoryId; // Cambiado de ReportCategoryEntity a int
 
     @Column(nullable = false)
     private LocalDate date;
@@ -36,14 +37,19 @@ public class ReportEntity {
     @Column(nullable = false)
     private boolean active;
 
-    public ReportEntity(int id, String title, String description, String image, String category, LocalDate date, boolean active) {
+    @ManyToOne
+    @JoinColumn(name = "categoryId", insertable = false, updatable = false)
+    private ReportCategoryEntity category;
+
+    public ReportEntity(int id, String title, String description, String image, int categoryId, LocalDate date, boolean active, ReportCategoryEntity category) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.image = image;
-        this.category = category;
+        this.categoryId = categoryId;
         this.date = date;
         this.active = active;
+        this.category = category;
     }
 
     public int getId() {
@@ -78,12 +84,12 @@ public class ReportEntity {
         this.image = image;
     }
 
-    public String getCategory() {
-        return category;
+    public int getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     public LocalDate getDate() {
@@ -100,5 +106,27 @@ public class ReportEntity {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public ReportCategoryEntity getCategory() {
+        return category;
+    }
+
+    public void setCategory(ReportCategoryEntity category) {
+        this.category = category;
+    }
+
+    @Override
+    public String toString() {
+        return "ReportEntity{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", image='" + image + '\'' +
+                ", categoryId=" + categoryId +
+                ", date=" + date +
+                ", active=" + active +
+                ", category=" + category.getName() +
+                '}';
     }
 }

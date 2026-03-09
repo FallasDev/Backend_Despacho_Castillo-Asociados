@@ -1,10 +1,14 @@
 package com.accountancy.despacho_castillo_asociados.application.usecase.Formalitie;
 
+import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.CustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Formalitie;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalitieRequest;
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
+import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
+import com.accountancy.despacho_castillo_asociados.domain.repository.Client.ClientRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Formalitie.FormalitieRepository;
+import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRepository;
 import com.accountancy.despacho_castillo_asociados.shared.FormalitiesState;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
@@ -15,11 +19,14 @@ public class UpdateFormalitieUseCase {
 
 
     private final FormalitieRepository formalitieRepository;
-
+    private final ClientRepository clientRepository;
+    private final UserRepository userRepository;
     private final Messages messages;
 
-    public UpdateFormalitieUseCase(FormalitieRepository formalitieRepository, Messages messages) {
+    public UpdateFormalitieUseCase(FormalitieRepository formalitieRepository, ClientRepository clientRepository, UserRepository userRepository, Messages messages) {
         this.formalitieRepository = formalitieRepository;
+        this.clientRepository = clientRepository;
+        this.userRepository = userRepository;
         this.messages = messages;
     }
 
@@ -49,7 +56,15 @@ public class UpdateFormalitieUseCase {
             throw new BadRequestException(messages.get("formality.exception.update.is_not_updatable", new Object[]{id}));
         }
 
-        Formalitie updatedFormalitie = formalitieRepository.update(formalitie, id);
+        Client client = clientRepository.findById(formalitie.getClientId()).orElse(null);
+
+        if (client == null) {
+            throw new BadRequestException(messages.get("formality.exception.update.client.not_found", new Object[]{formalitie.getClientId()}));
+        }
+
+        User user = userRepository.findById(formalitie.getUserId()).orElse(null);
+
+        Formalitie updatedFormalitie = formalitieRepository.update(formalitie, id, client, user);
 
          if (updatedFormalitie == null) {
              throw new BadRequestException(messages.get("formality.exception.update.failed"));

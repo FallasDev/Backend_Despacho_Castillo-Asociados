@@ -8,15 +8,13 @@ public class ReportRequest {
     private String title;
     private String description;
     private URL image;
-    private String category;
-    private LocalDate date;
+    private int categoryId;
 
-    public ReportRequest(String title, String description, URL image, String category, LocalDate date) {
+    public ReportRequest(String title, String description, URL image, int categoryId, LocalDate date) {
         this.title = title;
         this.description = description;
         this.image = image;
-        this.category = category;
-        this.date = date;
+        this.categoryId = categoryId;
     }
 
     public String getTitle() {
@@ -43,19 +41,11 @@ public class ReportRequest {
         this.image = image;
     }
 
-    public String getCategory() {
-        return category;
+    public int getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 }

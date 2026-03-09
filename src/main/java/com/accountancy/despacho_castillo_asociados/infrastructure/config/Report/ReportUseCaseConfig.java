@@ -1,9 +1,7 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.config.Report;
-import com.accountancy.despacho_castillo_asociados.application.usecase.Report.CreateReportUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.Report.DeactiveReportUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.Report.FindByIdReportUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.Report.FindReportsUseCase;
+import com.accountancy.despacho_castillo_asociados.application.usecase.Report.*;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Report.*;
+import com.accountancy.despacho_castillo_asociados.domain.repository.ReportCategory.ReportCategoryRepository;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +10,10 @@ import org.springframework.context.annotation.Configuration;
 public class ReportUseCaseConfig {
 
     @Bean
-    public CreateReportUseCase createReportUseCase(ReportRepository reportRepository, Messages messages) {
-        return new CreateReportUseCase(reportRepository, messages);
+    public CreateReportUseCase createReportUseCase(ReportRepository reportRepository,
+                                                   ReportCategoryRepository reportCategoryRepository,
+                                                   Messages messages) {
+        return new CreateReportUseCase(reportRepository, reportCategoryRepository ,messages);
     }
 
     @Bean
@@ -29,5 +29,11 @@ public class ReportUseCaseConfig {
     @Bean
     public FindByIdReportUseCase findByIdReportUseCase(ReportRepository reportRepository, Messages messages) {
         return new FindByIdReportUseCase(reportRepository, messages);
+    }
+
+    @Bean
+    public UpdateReportUseCase updateReportUseCase(ReportRepository reportRepository, ReportCategoryRepository
+            reportCategoryRepository, Messages messages) {
+        return new UpdateReportUseCase(reportRepository, reportCategoryRepository, messages);
     }
 }

@@ -66,10 +66,9 @@ public class FormalitieCustomFieldsRepositoryImpl implements FormalitieCustomFie
     @Override
     public boolean deactivate(int id) {
 
-        FormalitieCustomFieldsEntity entity = jpaRepository.findById(id)
-                .orElseThrow(() -> new BadRequestException("FormalitieCustomField with id " + id + " not found"));
+        FormalitieCustomFieldsEntity entity = jpaRepository.findById(id).orElse(null);
 
-        if (!entity.isActive()) {
+        if (entity == null) {
             return false;
         }
 

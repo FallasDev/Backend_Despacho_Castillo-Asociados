@@ -4,15 +4,16 @@ package com.accountancy.despacho_castillo_asociados.domain.repository.Report;
 
 import com.accountancy.despacho_castillo_asociados.domain.model.Report.Report;
 import com.accountancy.despacho_castillo_asociados.domain.model.Report.ReportRequest;
+import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.ReportCategory;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 
 import java.util.Optional;
 
 public interface ReportRepository {
 
-    Report create(ReportRequest reportRequest);
+    Report create(ReportRequest reportRequest, ReportCategory category);
 
-    Report update(ReportRequest reportRequest, int id);
+    Report update(ReportRequest reportRequest, int id, ReportCategory category);
 
     boolean deactivate(int id);
 

@@ -1,6 +1,8 @@
 package com.accountancy.despacho_castillo_asociados.domain.model.Formalitie;
 
+import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
+import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
 import com.accountancy.despacho_castillo_asociados.shared.FormalitiesState;
 
 import java.time.LocalDateTime;
@@ -10,13 +12,13 @@ public class Formalitie {
 
     private int id;
     private DomainService service;
-    private Object client;
-    private Object user;
+    private Client client;
+    private User user;
     private FormalitiesState state;
     private LocalDateTime applicationDate;
 
 
-    public Formalitie(int id, DomainService service, Object user, Object client, FormalitiesState state, LocalDateTime applicationDate) {
+    public Formalitie(int id, DomainService service, User user, Client client, FormalitiesState state, LocalDateTime applicationDate) {
         this.id = id;
         this.user = user;
         this.service = service;
@@ -33,11 +35,11 @@ public class Formalitie {
         return service;
     }
 
-    public Object getUser() {
+    public User getUser() {
         return user;
     }
 
-    public Object getClient() {
+    public Client getClient() {
         return client;
     }
 
@@ -57,11 +59,11 @@ public class Formalitie {
         this.state = state;
     }
 
-    public void setUser(Object user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
-    public void setClient(Object client) {
+    public void setClient(Client client) {
         this.client = client;
     }
 

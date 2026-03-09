@@ -1,6 +1,8 @@
 package com.accountancy.despacho_castillo_asociados.domain.model.Formalitie;
 
+import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
+import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
 import com.accountancy.despacho_castillo_asociados.shared.FormalitiesState;
 
 import java.time.LocalDateTime;
@@ -32,13 +34,13 @@ public class FormalitieBuilder implements Builder {
     }
 
     @Override
-    public FormalitieBuilder setUser(Object user) {
+    public FormalitieBuilder setUser(User user) {
         this.formalitie.setUser(user);
         return this;
     }
 
     @Override
-    public FormalitieBuilder setClient(Object client) {
+    public FormalitieBuilder setClient(Client client) {
         this.formalitie.setClient(client);
         return this;
     }

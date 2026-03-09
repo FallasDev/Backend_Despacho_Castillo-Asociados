@@ -1,13 +1,18 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.repository.impl.Formalitie;
 
+import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Formalitie;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalitieBuilder;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalitieRequest;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.SearchFormalitie;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
+import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Formalitie.FormalitieRepository;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Client.ClientEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Formalitie.FormalitieEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Role.RoleEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Service.ServiceEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.User.UserEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Formalitie.FormalitieJpaSpecificationBuilder;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Formalitie.JPAFormalitieRepository;
 import com.accountancy.despacho_castillo_asociados.shared.FormalitiesState;
@@ -36,7 +41,7 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
 
 
     @Override
-    public Formalitie create(FormalitieRequest formalitieRequest, DomainService service) {
+    public Formalitie create(FormalitieRequest formalitieRequest, DomainService service, Client client, User user) {
 
 
         FormalitieEntity entity = new FormalitieEntity();
@@ -50,14 +55,11 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                     service.isActive()
                 )
         );
-
-
-        FormalitieEntity saved = jpaFormalitieRepository.save(entity);
-        return getFormalitieFromEntity(saved);
+        return getFormalitie(client, user, entity);
     }
 
     @Override
-    public Formalitie update(FormalitieRequest formalitieRequest, int id) {
+    public Formalitie update(FormalitieRequest formalitieRequest, int id,Client client, User user) {
 
         FormalitieEntity existingEntity = jpaFormalitieRepository.findById(id).orElse(null);
 
@@ -74,9 +76,62 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                 )
         );
 
+        return getFormalitie(client, user, existingEntity);
+
+    }
+
+    @org.jspecify.annotations.NonNull
+    private Formalitie getFormalitie(Client client, User user, FormalitieEntity existingEntity) {
+        existingEntity.setClient(
+                new ClientEntity(
+                        client.getId(),
+                        client.getName(),
+                        client.getSuername(),
+                        client.getPhotoProfileUrl(),
+                        client.getPhoneNumber(),
+                        client.getPerosnalId(),
+                        client.getEmail(),
+                        new RoleEntity(
+                                client.getRole().getId(),
+                                client.getRole().getName(),
+                                client.getRole().getDescription(),
+                                null,
+                                client.getRole().isActive()
+                        ),
+                        client.getPassword(),
+                        client.getAddress(),
+                        client.isActive()
+                )
+        );
+
+        if (user == null) {
+            return getFormalitieFromEntity(jpaFormalitieRepository.save(existingEntity));
+        }
+
+        existingEntity.setUser(
+                new UserEntity(
+                        user.getId(),
+                        user.getName(),
+                        user.getSuername(),
+                        user.getPhotoProfileUrl(),
+                        user.getPhoneNumber(),
+                        user.getPerosnalId(),
+                        user.getEmail(),
+                        new RoleEntity(
+                                user.getRole().getId(),
+                                user.getRole().getName(),
+                                user.getRole().getDescription(),
+                                null,
+                                user.getRole().isActive()
+                        ),
+                        user.getPassword(),
+                        user.getAddress(),
+                        user.isActive()
+                )
+        );
+
         FormalitieEntity updatedEntity = jpaFormalitieRepository.save(existingEntity);
         return getFormalitieFromEntity(updatedEntity);
-
     }
 
     @Override
@@ -117,6 +172,38 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
         Page<FormalitieEntity> entityPage = jpaFormalitieRepository.findAll(spec, pageable);
 
         return getFormalitiePageResult(page, size, entityPage);
+    }
+
+    @Override
+    public PageResult<Formalitie> findByClientId(int clientId, int page, int size) {
+        return null;
+    }
+
+    @Override
+    public PageResult<Formalitie> findByUserId(int userId, int page, int size) {
+        return null;
+    }
+
+    @Override
+    public PageResult<Formalitie> findByServiceId(int serviceId, int page, int size) {
+        return null;
+    }
+
+    @Override
+    public boolean handleFormalitie(int id, int userId) {
+
+        FormalitieEntity entity = jpaFormalitieRepository.findById(id).orElse(null);
+
+        if (entity == null || entity.getState() != FormalitiesState.PENDING.getId()) {
+            return false;
+        }
+
+        entity.setState(FormalitiesState.IN_PROGRESS.getId());
+        entity.setUserId(userId);
+
+        jpaFormalitieRepository.save(entity);
+        return true;
+
     }
 
     @NonNull

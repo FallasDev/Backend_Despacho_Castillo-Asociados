@@ -117,4 +117,19 @@ public class FormalitieController {
                         messages.get("formality.success.change_status"),
                         null));
     }
+
+    @PatchMapping("/{id}/handle")
+    public ResponseEntity<ApiResponse<Void>> handleFormalitie(
+            @PathVariable int id,
+            @RequestParam int userId) {
+
+        formalitieService.handleFormalitie(id, userId);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,
+                        messages.get("formality.success.handle"),
+                        null));
+        
+
+    }
 }

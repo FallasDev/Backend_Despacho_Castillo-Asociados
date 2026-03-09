@@ -1,5 +1,7 @@
 package com.accountancy.despacho_castillo_asociados.domain.model.Report;
 
+import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.ReportCategory;
+
 import java.net.URL;
 import java.time.LocalDate;
 
@@ -9,11 +11,11 @@ public class Report {
     private String title;
     private String description;
     private URL image;
-    private String category;
+    private ReportCategory category;
     private LocalDate date;
     private boolean active;
 
-    public Report(int id, String title, String description, URL image, String category, LocalDate date, boolean active) {
+    public Report(int id, String title, String description, URL image, ReportCategory category, LocalDate date, boolean active) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -58,11 +60,11 @@ public class Report {
         this.image = image;
     }
 
-    public String getCategory() {
+    public ReportCategory getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(ReportCategory category) {
         this.category = category;
     }
 

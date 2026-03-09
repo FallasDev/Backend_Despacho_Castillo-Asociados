@@ -2,17 +2,21 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.repository.im
 
 import com.accountancy.despacho_castillo_asociados.domain.model.Report.Report;
 import com.accountancy.despacho_castillo_asociados.domain.model.Report.ReportRequest;
+import com.accountancy.despacho_castillo_asociados.domain.model.ReportCategory.ReportCategory;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Report.ReportRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Report.ReportEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.ReportCategory.ReportCategoryEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Report.JPAReportRepository;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 
+import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.net.URI;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,18 +30,13 @@ public class ReportRepositoryImpl implements ReportRepository {
     }
 
     @Override
-    public Report create(ReportRequest reportRequest) {
+    public Report create(ReportRequest reportRequest, ReportCategory category) {
         ReportEntity reportEntity = new ReportEntity();
 
-        reportEntity.setTitle(reportRequest.getTitle());
-        reportEntity.setDescription(reportRequest.getDescription());
+        System.out.println(category);
 
-        if (reportRequest.getImage() != null) {
-            reportEntity.setImage(reportRequest.getImage().toString());
-        }
-
-        reportEntity.setCategory(reportRequest.getCategory());
-        reportEntity.setDate(reportRequest.getDate());
+        setEntities(reportRequest, category, reportEntity);
+        reportEntity.setDate(LocalDateTime.now().toLocalDate());
         reportEntity.setActive(true);
 
         ReportEntity savedEntity = jpaReportRepository.save(reportEntity);
@@ -46,13 +45,22 @@ public class ReportRepositoryImpl implements ReportRepository {
     }
 
     @Override
-    public Report update(ReportRequest reportRequest, int id) {
+    public Report update(ReportRequest reportRequest, int id, ReportCategory category) {
         ReportEntity existingEntity = jpaReportRepository.findById(id).orElse(null);
 
         if (existingEntity == null) {
             return null;
         }
 
+        setEntities(reportRequest, category, existingEntity);
+
+
+        ReportEntity updatedEntity = jpaReportRepository.save(existingEntity);
+
+        return mapToDomain(updatedEntity);
+    }
+
+    private void    setEntities(ReportRequest reportRequest, ReportCategory category, ReportEntity existingEntity) {
         existingEntity.setTitle(reportRequest.getTitle());
         existingEntity.setDescription(reportRequest.getDescription());
 
@@ -60,12 +68,19 @@ public class ReportRepositoryImpl implements ReportRepository {
             existingEntity.setImage(reportRequest.getImage().toString());
         }
 
-        existingEntity.setCategory(reportRequest.getCategory());
-        existingEntity.setDate(reportRequest.getDate());
+        existingEntity.setCategory(
+                new ReportCategoryEntity(
+                        category.getId(),
+                        category.getName(),
+                        category.getDate(),
+                        category.isActive(),
+                        category.getVisibility()
+                )
+        );
 
-        ReportEntity updatedEntity = jpaReportRepository.save(existingEntity);
+        existingEntity.setCategoryId(category.getId());
 
-        return mapToDomain(updatedEntity);
+        System.out.println(existingEntity);
     }
 
     @Override
@@ -158,7 +173,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 urlImage = URI.create(entity.getImage()).toURL();
             }
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            throw new BadRequestException("Error converting image URL: " + e.getMessage());
         }
 
         return new Report(
@@ -166,7 +181,13 @@ public class ReportRepositoryImpl implements ReportRepository {
                 entity.getTitle(),
                 entity.getDescription(),
                 urlImage,
-                entity.getCategory(),
+                new ReportCategory(
+                        entity.getCategory().getId(),
+                        entity.getCategory().getName(),
+                        entity.getCategory().getDate(),
+                        entity.getCategory().isActive(),
+                        entity.getCategory().getVisibility()
+                ),
                 entity.getDate(),
                 entity.isActive()
         );

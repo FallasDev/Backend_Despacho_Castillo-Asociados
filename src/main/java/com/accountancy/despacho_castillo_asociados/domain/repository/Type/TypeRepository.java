@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface TypeRepository {
+public interface   TypeRepository {
 
     Type create(TypeRequest type);
     Type update(TypeRequest type, int id);

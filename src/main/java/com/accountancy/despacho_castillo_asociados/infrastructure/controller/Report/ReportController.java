@@ -6,22 +6,21 @@ import com.accountancy.despacho_castillo_asociados.domain.model.Report.ReportReq
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/reports")
+@RequiredArgsConstructor
 public class ReportController {
 
-    @Autowired
-    private ReportService reportService;
 
-    private Messages messages;
+    private final ReportService reportService;
 
-    public ReportController(Messages messages) {
-        this.messages = messages;
-    }
+    private final Messages messages;
+
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResult<Report>>> findReports(
@@ -31,11 +30,6 @@ public class ReportController {
 
         PageResult<Report> report = reportService.findReport(title, page, size);
 
-        if (report == null || report.content().isEmpty()) {
-            return ResponseEntity.ok().body(
-                    new ApiResponse<>(false, messages.get("report.exception.fetch.all.none"), null)
-            );
-        }
 
         return ResponseEntity.ok().body(
                 new ApiResponse<>(true, messages.get("report.success.fetch_all"), report)
@@ -47,15 +41,10 @@ public class ReportController {
 
         Report report = reportService.findByIdReport(id);
 
-        if (report != null) {
-            return ResponseEntity.ok(
-                    new ApiResponse<Report>(true, "report.exception.fetch.by_id.notfound", report)
-            );
-        } else {
-            return ResponseEntity.ok(
-                    new ApiResponse<Report>(false, "report.success.fetch_by_id", null)
-            );
-        }
+        return ResponseEntity.ok(
+                new ApiResponse<Report>(true, messages.get("report.success.fetch_by_id"), report)
+        );
+
     }
 
     @PostMapping
@@ -63,24 +52,29 @@ public class ReportController {
 
         Report createdReport = reportService.createReport(request);
 
-        if (createdReport == null) {
-            return ResponseEntity.ok(
-                    new ApiResponse<Report>(false, "report.exception.create.failed", null)
-            );
-        }
-
         return ResponseEntity.ok(
-                new ApiResponse<Report>(true, "report.success.create", createdReport)
+                new ApiResponse<Report>(true, messages.get("report.success.create"), createdReport)
         );
     }
 
-    @PutMapping("/deactivate/{id}")
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<Report>> updateReport(@RequestBody ReportRequest request, @
+PathVariable int id) {
+
+        Report updatedReport = reportService.updateReport(request, id);
+
+        return ResponseEntity.ok(
+                new ApiResponse<Report>(true, messages.get("report.success.update"), updatedReport)
+        );
+    }
+
+    @PatchMapping("/deactivate/{id}")
     public ResponseEntity<ApiResponse<Void>> deactiveReport(@PathVariable int id) {
 
         reportService.deactiveReport(id);
 
         return ResponseEntity.ok(
-                new ApiResponse<Void>(true, "report.success.deactive", null)
+                new ApiResponse<Void>(true, messages.get("report.success.deactive"), null)
         );
     }
 

@@ -15,16 +15,19 @@ public class FormalitieService {
     private FindFormalitiesUseCase findFormalitiesUseCase;
     private FindByIdFormalitieUseCase findByIdFormalitieUseCase;
     private UpdateFormalitieUseCase updateFormalitieUseCase;
+    private HandleFormalitieUseCase handleFormalitieUseCase;
 
     public FormalitieService(CreateFormalitieUseCase createFormalitieUseCase,
                              ChangeFormalitieStateUseCase changeFormalitieStateUseCase,
                              FindFormalitiesUseCase findFormalitiesUseCase,
                              FindByIdFormalitieUseCase findByIdFormalitieUseCase,
+                             HandleFormalitieUseCase handleFormalitieUseCase,
                              UpdateFormalitieUseCase updateFormalitieUseCase) {
         this.createFormalitieUseCase = createFormalitieUseCase;
         this.changeFormalitieStateUseCase = changeFormalitieStateUseCase;
         this.findFormalitiesUseCase = findFormalitiesUseCase;
         this.findByIdFormalitieUseCase = findByIdFormalitieUseCase;
+        this.handleFormalitieUseCase = handleFormalitieUseCase;
         this.updateFormalitieUseCase = updateFormalitieUseCase;
     }
 
@@ -47,6 +50,10 @@ public class FormalitieService {
 
     public Formalitie updateFormalitie(int id, FormalitieRequest formalitieRequest) {
         return updateFormalitieUseCase.execute(formalitieRequest, id);
+    }
+
+    public void handleFormalitie(int id, int userId) {
+        handleFormalitieUseCase.execute(id, userId);
     }
 
 
