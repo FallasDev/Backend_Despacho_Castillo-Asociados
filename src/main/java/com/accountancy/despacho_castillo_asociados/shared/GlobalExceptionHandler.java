@@ -62,27 +62,33 @@ public class GlobalExceptionHandler {
                     String column = extractDuplicateColumn(message);
                     String value = extractDuplicateValue(message);
 
+                    String friendlyColumn = messages.getFriendlyName(column, Locale.getDefault());
+
                     return buildResponse(
                             messages.get("database.duplicate.entry",
-                                    new Object[]{column, value})
+                                    new Object[]{friendlyColumn, value})
                     );
                 }
 
                 case 1048: { // Not null
                     String column = extractNotNullColumn(message);
 
+                    String friendlyColumn = messages.getFriendlyName(column, Locale.getDefault());
+
                     return buildResponse(
                             messages.get("database.not.null.violation",
-                                    new Object[]{column})
+                                    new Object[]{friendlyColumn})
                     );
                 }
 
                 case 1406: { // Data too long
                     String column = extractDataTooLongColumn(message);
 
+                    String friendlyColumn = messages.getFriendlyName(column, Locale.getDefault());
+
                     return buildResponse(
                             messages.get("database.data.too.long",
-                                    new Object[]{column})
+                                    new Object[]{friendlyColumn})
                     );
                 }
 

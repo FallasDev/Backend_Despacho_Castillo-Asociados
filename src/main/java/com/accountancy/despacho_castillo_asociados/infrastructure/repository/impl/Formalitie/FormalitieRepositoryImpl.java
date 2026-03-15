@@ -80,7 +80,7 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
 
     }
 
-    @org.jspecify.annotations.NonNull
+    @NonNull
     private Formalitie getFormalitie(Client client, User user, FormalitieEntity existingEntity) {
         existingEntity.setClient(
                 new ClientEntity(
@@ -91,13 +91,6 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                         client.getPhoneNumber(),
                         client.getPerosnalId(),
                         client.getEmail(),
-                        new RoleEntity(
-                                client.getRole().getId(),
-                                client.getRole().getName(),
-                                client.getRole().getDescription(),
-                                null,
-                                client.getRole().isActive()
-                        ),
                         client.getPassword(),
                         client.getAddress(),
                         client.isActive()
