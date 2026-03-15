@@ -91,6 +91,13 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                         client.getPhoneNumber(),
                         client.getPerosnalId(),
                         client.getEmail(),
+                        new RoleEntity(
+                                client.getRole().getId(),
+                                client.getRole().getName(),
+                                client.getRole().getDescription(),
+                                null,
+                                client.getRole().isActive()
+                        ),
                         client.getPassword(),
                         client.getAddress(),
                         client.isActive()

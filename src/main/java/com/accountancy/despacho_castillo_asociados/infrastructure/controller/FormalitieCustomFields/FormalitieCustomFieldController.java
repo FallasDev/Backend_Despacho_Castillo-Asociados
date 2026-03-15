@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 
 @RestController
@@ -89,6 +92,24 @@ public class FormalitieCustomFieldController {
                 new ApiResponse<>(
                         true,
                         messages.get("formalitycustomfield.success.deactive"),
+                        null
+                )
+        );
+    }
+
+    @PostMapping("/upload/{id}")
+    public ResponseEntity<ApiResponse<Void>> uploadFile(@PathVariable int id,@RequestParam("file") MultipartFile file) throws IOException {
+
+        formalitieCustomFieldService.uploadFile(
+                id, // Aquí deberías pasar el ID correcto del FormalitieCustomField
+                file,
+                file.getOriginalFilename()
+        );
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        messages.get("formalitycustomfield.success.file_upload"),
                         null
                 )
         );

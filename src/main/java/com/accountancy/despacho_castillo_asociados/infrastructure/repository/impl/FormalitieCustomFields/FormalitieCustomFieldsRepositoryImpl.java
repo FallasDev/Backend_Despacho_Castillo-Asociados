@@ -162,6 +162,20 @@ public class FormalitieCustomFieldsRepositoryImpl implements FormalitieCustomFie
         return entity.map(this::getFormalitieCustomField);
     }
 
+    @Override
+    public void updateFilePath(int id, String filePath) {
+        FormalitieCustomFieldsEntity entity     = jpaRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("FormalitieCustomField with id " + id + " not found"));
+
+        entity.setValue(filePath);
+
+        FormalitieCustomFieldsEntity updatedEntity = jpaRepository.save(entity);
+
+        if (!updatedEntity.getValue().equals(filePath)) {
+            throw new BadRequestException("Failed to update file path for FormalitieCustomField with id " + id);
+        }
+    }
+
 
     @NonNull
     private FormalitieCustomField getFormalitieCustomField(@NonNull FormalitieCustomFieldsEntity entity) {

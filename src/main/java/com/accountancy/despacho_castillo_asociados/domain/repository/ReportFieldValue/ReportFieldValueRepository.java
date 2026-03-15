@@ -30,6 +30,7 @@ public interface ReportFieldValueRepository {
     boolean existsByReport(int reportId);
     boolean existsByReportAndIsActive(int reportId);
 
+    void updateFilePath(int reportFieldValueId, String filePath);
 
 
 }

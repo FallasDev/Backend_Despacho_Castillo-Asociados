@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -114,5 +115,14 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ApiResponse<>(false, ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<ApiResponse<Void>> handleIOException(IOException ex) {
+
+        System.out.println("IOException: " + ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse<>(false, messages.get("file.io.exception"), null));
     }
 }

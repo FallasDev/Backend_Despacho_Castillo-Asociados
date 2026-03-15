@@ -21,6 +21,7 @@ public interface FormalitieCustomFieldRepository {
     Optional<FormalitieCustomField> findByFormalitieIdAndCustomFieldId(int formalitieId, int customFieldId);
     Optional<FormalitieCustomField> findByFormalitieIdAndCustomFieldIdAndIsInactive(int formalitieId, int customFieldId);
 
+    void updateFilePath(int formalitieCustomFieldId, String filePath);
 
 
 
