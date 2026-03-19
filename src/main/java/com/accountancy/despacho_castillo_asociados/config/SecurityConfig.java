@@ -14,10 +14,26 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+        http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> auth
+
+                        // Rutas públicas
+                        .anyRequest().permitAll()
+/*                        // Rutas públicas
+                        .requestMatchers("/auth/**").permitAll()
+
+                        // Rutas protegidas por permisos
+                        .requestMatchers(HttpMethod.GET, "/users/**").hasAuthority("USER_READ")
+                        .requestMatchers(HttpMethod.POST, "/users/**").hasAuthority("USER_CREATE")
+                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasAuthority("USER_DELETE")
+
+                        // Cualquier otra ruta requiere autenticación
+                        .anyRequest().authenticated()
+
+ */);
+
+
         return http.build();
     }
+
 
 }
