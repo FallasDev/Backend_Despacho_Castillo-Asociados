@@ -16,6 +16,7 @@ public interface JPAUserRepository extends JpaRepository<UserEntity, Integer> {
     Optional<UserEntity> findBySuername(String suername);
     Optional<UserEntity> findBySuernameAndIsActiveTrue(String suername);
     Optional<UserEntity> findBySuernameAndIsActiveFalse(String suername);
+    Optional<UserEntity> findByEmail(String email);
     Page<UserEntity> findAll(Pageable pageable);
 }
 

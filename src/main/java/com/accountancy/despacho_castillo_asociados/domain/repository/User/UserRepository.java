@@ -15,6 +15,7 @@ public interface UserRepository {
     boolean deactivate(int id);
 
     Optional<User> findById(int id);
+    Optional<User> findByEmail(String email);
     Optional<User> fintByName(String name);
     Optional<User> fintByNameAndIsActive(String name);
     Optional<User> fintByNameAndIsInactive(String name);
