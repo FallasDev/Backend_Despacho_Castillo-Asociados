@@ -1,12 +1,10 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.config.ReportFieldValue;
 
-import com.accountancy.despacho_castillo_asociados.application.usecase.ReportFieldValue.CreateReportFieldValueUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.ReportFieldValue.DeactiveReportFieldValueUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.ReportFieldValue.FindReportsFieldValuesUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.ReportFieldValue.UpdateReportFieldValueUseCase;
+import com.accountancy.despacho_castillo_asociados.application.usecase.ReportFieldValue.*;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Report.ReportRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.ReportField.ReportFieldRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.ReportFieldValue.ReportFieldValueRepository;
+import com.accountancy.despacho_castillo_asociados.domain.repository.UploadFile.UploadFileRepository;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,4 +35,8 @@ public class ReportFieldValueUseCaseConfig {
         return new FindReportsFieldValuesUseCase(repository, messages);
     }
 
+    @Bean
+    public UploadFileReportFieldValueUseCase uploadFileReportFieldValueUseCase(ReportFieldValueRepository reportFieldValueRepository, UploadFileRepository uploadFileRepository) {
+        return new UploadFileReportFieldValueUseCase(uploadFileRepository,reportFieldValueRepository);
+    }
 }

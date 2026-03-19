@@ -1,13 +1,10 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.config.FormalitiesCustomField;
 
-import com.accountancy.despacho_castillo_asociados.application.usecase.Formalitie.CreateFormalitieUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.FormalitieCustomFields.CreateFormalitieCustomFieldsUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.FormalitieCustomFields.DeactiveFormalitieCustomFieldsUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.FormalitieCustomFields.FindFormalitiesCustomFieldsUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.FormalitieCustomFields.UpdateFormalitieCustomFieldsUseCase;
+import com.accountancy.despacho_castillo_asociados.application.usecase.FormalitieCustomFields.*;
 import com.accountancy.despacho_castillo_asociados.domain.repository.CustomField.CustomFieldRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Formalitie.FormalitieRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.FormalitieCustomFields.FormalitieCustomFieldRepository;
+import com.accountancy.despacho_castillo_asociados.domain.repository.UploadFile.UploadFileRepository;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +32,11 @@ public class FormalitiesCustomFieldUseCaseConfig {
     @Bean
     public FindFormalitiesCustomFieldsUseCase findFormalitiesCustomFieldsUseCase(FormalitieCustomFieldRepository repository, Messages messages) {
         return new FindFormalitiesCustomFieldsUseCase(repository, messages);
+    }
+
+    @Bean
+    public UploadFileFormalitieCustomFieldUseCase uploadFileFormalitieCustomFieldUseCase(UploadFileRepository storageRepository, FormalitieCustomFieldRepository formalitieCustomFieldRepository) {
+        return new UploadFileFormalitieCustomFieldUseCase(storageRepository, formalitieCustomFieldRepository);
     }
 
 

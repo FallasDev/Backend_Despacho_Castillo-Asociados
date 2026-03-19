@@ -36,21 +36,17 @@ public class CreateFormalitieCustomFieldsUseCase {
             throw new BadRequestException(messages.get("formalitycustomfield.exception.create.cannot_be_null"));
         }
 
-        System.out.println("test 1");
-
         Optional<FormalitieCustomField> existingRelation = formalitieCustomFieldRepository
                 .findByFormalitieIdAndCustomFieldId(request.getFormalitieId(), request.getCustomFieldId());
-
-        System.out.println("test 2");
 
         Optional<Formalitie> formalitie = formalitieRepository.findById(request.getFormalitieId());
         Optional<CustomField> customField = customFieldRepository.findById(request.getCustomFieldId());
 
+
+
         if (existingRelation.isPresent() && existingRelation.get().isActive()) {
             throw new BadRequestException(messages.get("formalitycustomfield.exception.create.name.relation.already.exists"));
         }
-
-        System.out.println("test 3");
 
         if (formalitie.isEmpty()) {
             throw new BadRequestException(messages.get("formalitycustomfield.exception.create.formality.not_found",
@@ -81,8 +77,6 @@ public class CreateFormalitieCustomFieldsUseCase {
             formalitieCustomFieldRepository.activate(reactivated.getId());
             return reactivated;
         }
-
-        System.out.println("Creating new FormalitieCustomField with request in usecase: " + request);
 
         FormalitieCustomField created = formalitieCustomFieldRepository.create(request);
 

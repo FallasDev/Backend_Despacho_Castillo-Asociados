@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/report-field-values")
@@ -83,6 +86,28 @@ public class ReportFieldValueController {
                         null
                 )
         );
+    }
+
+    @PostMapping("/{id}/upload")
+    public ResponseEntity<ApiResponse<Void>> uploadFile(
+            @PathVariable int id,
+            @RequestParam MultipartFile file
+    ) throws IOException {
+
+        service.uploadFile(
+            id,
+            file,
+            file.getOriginalFilename()
+        );
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        messages.get("reportfieldvalue.success.file_upload", new Object[]{id}),
+                        null
+                )
+        );
+
     }
 
 }

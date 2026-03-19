@@ -1,13 +1,13 @@
 package com.accountancy.despacho_castillo_asociados.application.service.ReportFieldValue;
 
-import com.accountancy.despacho_castillo_asociados.application.usecase.ReportFieldValue.CreateReportFieldValueUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.ReportFieldValue.DeactiveReportFieldValueUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.ReportFieldValue.FindReportsFieldValuesUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.ReportFieldValue.UpdateReportFieldValueUseCase;
+import com.accountancy.despacho_castillo_asociados.application.usecase.ReportFieldValue.*;
 import com.accountancy.despacho_castillo_asociados.domain.model.ReportFieldValue.ReportFieldValue;
 import com.accountancy.despacho_castillo_asociados.domain.model.ReportFieldValue.ReportFieldValueRequest;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 public class ReportFieldValueService {
@@ -16,17 +16,20 @@ public class ReportFieldValueService {
     private UpdateReportFieldValueUseCase updateReportFieldValueUseCase;
     private DeactiveReportFieldValueUseCase deactiveReportFieldValueUseCase;
     private FindReportsFieldValuesUseCase findReportsFieldValuesUseCase;
+    private UploadFileReportFieldValueUseCase uploadFileReportFieldValueUseCase;
 
     public ReportFieldValueService(
         CreateReportFieldValueUseCase createReportFieldValueUseCase,
         UpdateReportFieldValueUseCase updateReportFieldValueUseCase,
         DeactiveReportFieldValueUseCase deactiveReportFieldValueUseCase,
-        FindReportsFieldValuesUseCase findReportsFieldValuesUseCase
+        FindReportsFieldValuesUseCase findReportsFieldValuesUseCase,
+        UploadFileReportFieldValueUseCase uploadFileReportFieldValueUseCase
     ) {
         this.createReportFieldValueUseCase = createReportFieldValueUseCase;
         this.updateReportFieldValueUseCase = updateReportFieldValueUseCase;
         this.deactiveReportFieldValueUseCase = deactiveReportFieldValueUseCase;
         this.findReportsFieldValuesUseCase = findReportsFieldValuesUseCase;
+        this.uploadFileReportFieldValueUseCase = uploadFileReportFieldValueUseCase;
     }
 
      public ReportFieldValue create(ReportFieldValueRequest request) {
@@ -43,6 +46,10 @@ public class ReportFieldValueService {
 
     public PageResult<ReportFieldValue> findReportsFieldValues(int reportId, int page, int size) {
         return findReportsFieldValuesUseCase.execute(reportId, page, size);
+    }
+
+    public boolean uploadFile(int reportFieldValueId, MultipartFile file, String filename) throws IOException {
+        return uploadFileReportFieldValueUseCase.execute(reportFieldValueId, file , filename);
     }
 
 }

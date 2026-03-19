@@ -80,7 +80,7 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
 
     }
 
-    @org.jspecify.annotations.NonNull
+    @NonNull
     private Formalitie getFormalitie(Client client, User user, FormalitieEntity existingEntity) {
         existingEntity.setClient(
                 new ClientEntity(

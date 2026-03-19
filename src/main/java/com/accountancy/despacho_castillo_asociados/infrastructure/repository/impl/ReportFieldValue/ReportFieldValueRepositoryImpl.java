@@ -170,6 +170,22 @@ public class ReportFieldValueRepositoryImpl implements ReportFieldValueRepositor
         return false;
     }
 
+    @Override
+    public void updateFilePath(int  id, String filePath) {
+
+        ReportFieldValueEntity reportFieldValueEntity = jpaReportFieldValueRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ReportFieldValue with id " + id + " not found"));
+
+        reportFieldValueEntity.setValue(filePath);
+
+        ReportFieldValueEntity updatedEntity = jpaReportFieldValueRepository.save(reportFieldValueEntity);
+
+        if (!updatedEntity.getValue().equals(filePath)) {
+            throw new BadRequestException("Error updating file path for ReportFieldValue with id " + id);
+        }
+
+    }
+
     @NonNull
     private ReportFieldValue getReportFieldValue(ReportFieldValueEntity entity) {
         Report report = jpaReportRepository.findById(entity.getReportId())

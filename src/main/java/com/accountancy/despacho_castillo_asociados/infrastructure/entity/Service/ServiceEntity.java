@@ -40,5 +40,4 @@ public class    ServiceEntity {
             this.active = active;
         }
 
-
 }

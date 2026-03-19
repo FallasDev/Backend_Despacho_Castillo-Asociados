@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -62,27 +63,33 @@ public class GlobalExceptionHandler {
                     String column = extractDuplicateColumn(message);
                     String value = extractDuplicateValue(message);
 
+                    String friendlyColumn = messages.getFriendlyName(column, Locale.getDefault());
+
                     return buildResponse(
                             messages.get("database.duplicate.entry",
-                                    new Object[]{column, value})
+                                    new Object[]{friendlyColumn, value})
                     );
                 }
 
                 case 1048: { // Not null
                     String column = extractNotNullColumn(message);
 
+                    String friendlyColumn = messages.getFriendlyName(column, Locale.getDefault());
+
                     return buildResponse(
                             messages.get("database.not.null.violation",
-                                    new Object[]{column})
+                                    new Object[]{friendlyColumn})
                     );
                 }
 
                 case 1406: { // Data too long
                     String column = extractDataTooLongColumn(message);
 
+                    String friendlyColumn = messages.getFriendlyName(column, Locale.getDefault());
+
                     return buildResponse(
                             messages.get("database.data.too.long",
-                                    new Object[]{column})
+                                    new Object[]{friendlyColumn})
                     );
                 }
 
@@ -108,5 +115,14 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ApiResponse<>(false, ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<ApiResponse<Void>> handleIOException(IOException ex) {
+
+        System.out.println("IOException: " + ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse<>(false, messages.get("file.io.exception"), null));
     }
 }
