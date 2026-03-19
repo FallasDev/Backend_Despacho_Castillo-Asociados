@@ -8,7 +8,6 @@ import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRe
 import com.accountancy.despacho_castillo_asociados.infrastructure.security.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class AuthUseCaseConfig {
