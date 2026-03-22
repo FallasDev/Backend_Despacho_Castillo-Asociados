@@ -20,7 +20,7 @@ public class FindBySurnameClientUseCase {
             throw new IllegalArgumentException("Client surname cannot be null or empty");
         }
 
-        Optional<Client> client = clientRepository.fintBySurnameAndIsActive(surname);
+        Optional<Client> client = clientRepository.findBySurnameAndIsActive(surname);
 
         if (client.isEmpty()) {
             throw new EntityNotFoundException("Client with surname " + surname + " not found");

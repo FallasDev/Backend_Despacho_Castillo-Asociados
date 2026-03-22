@@ -14,11 +14,17 @@ public interface ClientRepository {
     boolean deactivate(int id);
 
     Optional<Client> findById(int id);
-    Optional<Client> fintByName(String name);
-    Optional<Client> fintByNameAndIsActive(String name);
-    Optional<Client> fintByNameAndIsInactive(String name);
-    Optional<Client> fintBySurname(String surname);
-    Optional<Client> fintBySurnameAndIsActive(String surname);
-    Optional<Client> fintBySurnameAndIsInactive(String surname);
+    Optional<Client> findByName(String name);
+    Optional<Client> findByNameAndIsActive(String name);
+    Optional<Client> findByNameAndIsInactive(String name);
+    Optional<Client> findBySurname(String surname);
+    Optional<Client> findBySurnameAndIsActive(String surname);
+    Optional<Client> findBySurnameAndIsInactive(String surname);
+    Optional<Client> findByEmailAndActive(String email);
     PageResult<Client> findAll(int page, int size);
+
+    void enabledClient(int id);
+
+
+    boolean existByEmailAndPasswordAndActive(String email, String password);
 }

@@ -72,7 +72,8 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                         client.getEmail(),
                         client.getPassword(),
                         client.getAddress(),
-                        client.isActive()
+                        client.isActive(),
+                        client.isEnabled()
                 )
         );
         if (user != null) {
@@ -249,7 +250,8 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                         entity.getClient().getEmail(),
                         entity.getClient().getPassword(),
                         entity.getClient().getAddress(),
-                        entity.getClient().isActive()
+                        entity.getClient().isActive(),
+                        entity.getClient().isEnabled()
                 ),
                 FormalitiesState.fromId(entity.getState()),
                 entity.getCreatedAt()

@@ -41,9 +41,12 @@ public class ClientEntity {
     @Column(nullable = false)
     private boolean isActive;
 
+    @Column(nullable = false)
+    private boolean enabled;
+
     public ClientEntity() {}
 
-    public ClientEntity(String name, String surname, String photoProfileUrl, String phoneNumber, String personalId, String email, String password, String address, boolean isActive) {
+    public ClientEntity(String name, String surname, String photoProfileUrl, String phoneNumber, String personalId, String email, String password, String address, boolean isActive, boolean enabled) {
         this.name = name;
         this.surname = surname;
         this.photoProfileUrl = photoProfileUrl;
@@ -53,9 +56,10 @@ public class ClientEntity {
         this.password = password;
         this.address = address;
         this.isActive = isActive;
+        this.enabled = enabled;
     }
 
-    public ClientEntity(int id, String name, String surname, String photoProfileUrl, String phoneNumber, String personalId, String email, String password, String address, boolean isActive) {
+    public ClientEntity(int id, String name, String surname, String photoProfileUrl, String phoneNumber, String personalId, String email, String password, String address, boolean isActive, boolean enabled) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -66,6 +70,7 @@ public class ClientEntity {
         this.password = password;
         this.address = address;
         this.isActive = isActive;
+        this.enabled = enabled;
     }
 }
 
