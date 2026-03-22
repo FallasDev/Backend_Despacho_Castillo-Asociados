@@ -29,24 +29,17 @@ public class FormalitieEntity {
     @Column(name = "active", nullable = false)
     private boolean active;
 
-    @Column(name = "client_id", nullable = false)
-    private int clientId;
-
-    @Column(name = "user_id")
-    private int userId;
-
-    @ManyToOne
-    @JoinColumn(name = "service", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "service_id")
     private ServiceEntity service;
 
-    @ManyToOne
-    @JoinColumn(name = "client", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "client_id")
     private ClientEntity client;
 
-    @ManyToOne
-    @JoinColumn(name = "user", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private UserEntity user;
-    // Client and user pending implementation
 
-
+    // Getters & setters ya los tienes con Lombok @Getter @Setter
 }

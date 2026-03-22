@@ -5,11 +5,15 @@ import com.accountancy.despacho_castillo_asociados.application.usecase.Auth.IRef
 import com.accountancy.despacho_castillo_asociados.config.jwt.JwtService;
 import com.accountancy.despacho_castillo_asociados.domain.model.Auth.LoginRequest;
 import com.accountancy.despacho_castillo_asociados.domain.model.Auth.LoginResponse;
+import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
 import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.security.CustomUserDetailsService;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AuthService implements ILoginUseCase, IRefreshTokenUseCase {
@@ -27,6 +31,7 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase {
     }
 
     @Override
+    @Transactional
     public LoginResponse execute(LoginRequest request) throws BadRequestException {
         // Buscar usuario por email
         var user = userRepository.findByEmail(request.getEmail())
@@ -48,10 +53,11 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase {
         // Generar token JWT
         String token = jwtService.generateToken(userDetails);
 
-        return new LoginResponse(token, 3600, user.getEmail(), user.getName());
+        return new LoginResponse(token, 3600, user.getId() ,user.getRole().getName(), user.getName());
     }
 
     @Override
+    @Transactional
     public LoginResponse execute(String token) {
         try {
             String username = jwtService.extractUsername(token);
@@ -59,15 +65,16 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase {
 
             if (jwtService.isTokenValid(token, userDetails)) {
                 String newToken = jwtService.generateToken(userDetails);
-                var user = userRepository.findByEmail(username);
+                User user = userRepository.findByEmail(username).orElse(null);
 
-                if (user.isPresent()) {
-                    return new LoginResponse(newToken, 3600, user.get().getEmail(), user.get().getName());
+                if (user != null) {
+                    return new LoginResponse(newToken, 3600, user.getId(), user.getRole().getName(), user.getName());
                 }
             }
 
             throw new BadRequestException("Token inválido o expirado");
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new BadRequestException("No se pudo renovar el token");
         }
     }

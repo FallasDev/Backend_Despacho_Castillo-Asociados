@@ -8,12 +8,10 @@ public class RoleRequest {
 
     private String name;
     private String description;
-    private ArrayList<PermissionRole> permissions;
 
-    public RoleRequest(String name, String description, ArrayList<PermissionRole> permissions) {
+    public RoleRequest(String name, String description) {
         this.name = name;
         this.description = description;
-        this.permissions = permissions;
     }
 
     public RoleRequest(){}
@@ -34,11 +32,4 @@ public class RoleRequest {
         this.description = description;
     }
 
-    public ArrayList<PermissionRole> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(ArrayList<PermissionRole> permissions) {
-        this.permissions = permissions;
-    }
 }

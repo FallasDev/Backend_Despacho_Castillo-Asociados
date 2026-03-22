@@ -2,9 +2,9 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.repository.im
 
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Formalitie;
-import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalitieBuilder;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalitieRequest;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.SearchFormalitie;
+import com.accountancy.despacho_castillo_asociados.domain.model.Role.Role;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
 import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Formalitie.FormalitieRepository;
@@ -47,42 +47,21 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
         FormalitieEntity entity = new FormalitieEntity();
         entity.setState(FormalitiesState.PENDING.getId());
         entity.setCreatedAt(LocalDateTime.now());
-        entity.setService(
-                new ServiceEntity(
-                    service.getId(),
-                    service.getName(),
-                    service.getDescription(),
-                    service.isActive()
-                )
-        );
-        return getFormalitie(client, user, entity);
-    }
-
-    @Override
-    public Formalitie update(FormalitieRequest formalitieRequest, int id,Client client, User user) {
-
-        FormalitieEntity existingEntity = jpaFormalitieRepository.findById(id).orElse(null);
-
-        if (existingEntity == null) {
-            return null;
-        }
-
-        existingEntity.setService(
-                new ServiceEntity(
-                        formalitieRequest.getServiceId(),
-                        null,
-                        null,
-                        false
-                )
-        );
-
-        return getFormalitie(client, user, existingEntity);
-
+        entity.setActive(true);
+        return setFormalitie(service, client, user, entity);
     }
 
     @NonNull
-    private Formalitie getFormalitie(Client client, User user, FormalitieEntity existingEntity) {
-        existingEntity.setClient(
+    private Formalitie setFormalitie(DomainService service, Client client, User user, FormalitieEntity entity) {
+        entity.setService(
+                new ServiceEntity(
+                        service.getId(),
+                        service.getName(),
+                        service.getDescription(),
+                        service.isActive()
+                )
+        );
+        entity.setClient(
                 new ClientEntity(
                         client.getId(),
                         client.getName(),
@@ -91,24 +70,21 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                         client.getPhoneNumber(),
                         client.getPerosnalId(),
                         client.getEmail(),
-                        new RoleEntity(
-                                client.getRole().getId(),
-                                client.getRole().getName(),
-                                client.getRole().getDescription(),
-                                null,
-                                client.getRole().isActive()
-                        ),
                         client.getPassword(),
                         client.getAddress(),
                         client.isActive()
                 )
         );
-
-        if (user == null) {
-            return getFormalitieFromEntity(jpaFormalitieRepository.save(existingEntity));
+        if (user != null) {
+            setUser(user, entity);
         }
 
-        existingEntity.setUser(
+        FormalitieEntity saved = jpaFormalitieRepository.save(entity);
+        return getFormalitieFromEntity(saved);
+    }
+
+    private void setUser(User user, FormalitieEntity entity) {
+        entity.setUser(
                 new UserEntity(
                         user.getId(),
                         user.getName(),
@@ -121,7 +97,7 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                                 user.getRole().getId(),
                                 user.getRole().getName(),
                                 user.getRole().getDescription(),
-                                null,
+                                new java.util.ArrayList<>(),
                                 user.getRole().isActive()
                         ),
                         user.getPassword(),
@@ -129,10 +105,21 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                         user.isActive()
                 )
         );
-
-        FormalitieEntity updatedEntity = jpaFormalitieRepository.save(existingEntity);
-        return getFormalitieFromEntity(updatedEntity);
     }
+
+    @Override
+    public Formalitie update(FormalitieRequest formalitieRequest, int id, DomainService service, Client client, User user) {
+
+        FormalitieEntity existingEntity = jpaFormalitieRepository.findById(id).orElse(null);
+
+        if (existingEntity == null) {
+            return null;
+        }
+
+        return setFormalitie(service, client, user, existingEntity);
+
+    }
+
 
     @Override
     public boolean changeFormalitieState(int id, FormalitiesState state) {
@@ -190,7 +177,7 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
     }
 
     @Override
-    public boolean handleFormalitie(int id, int userId) {
+    public boolean handleFormalitie(int id, User user) {
 
         FormalitieEntity entity = jpaFormalitieRepository.findById(id).orElse(null);
 
@@ -199,7 +186,7 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
         }
 
         entity.setState(FormalitiesState.IN_PROGRESS.getId());
-        entity.setUserId(userId);
+        setUser(user, entity);
 
         jpaFormalitieRepository.save(entity);
         return true;
@@ -233,8 +220,37 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                         entity.getService().getDescription(),
                         entity.getService().isActive()
                 ),
-                null,
-                null,
+                new User(
+                        entity.getUser() != null ? entity.getUser().getId() : 0,
+                        entity.getUser() != null ? entity.getUser().getName() : null,
+                        entity.getUser() != null ? entity.getUser().getSuername() : null,
+                        entity.getUser() != null ? entity.getUser().getPhotoProfileUrl() : null,
+                        entity.getUser() != null ? entity.getUser().getPhoneNumber() : null,
+                        entity.getUser() != null ? entity.getUser().getPerosnalId() : null,
+                        entity.getUser() != null ? entity.getUser().getEmail() : null,
+                        new Role(
+                                entity.getUser() != null && entity.getUser().getRole() != null ? entity.getUser().getRole().getId() : 0,
+                                entity.getUser() != null && entity.getUser().getRole() != null ? entity.getUser().getRole().getName() : null,
+                                entity.getUser() != null && entity.getUser().getRole() != null ? entity.getUser().getRole().getDescription() : null,
+                                new java.util.ArrayList<>(),
+                                entity.getUser() != null && entity.getUser().getRole() != null && entity.getUser().getRole().isActive()
+                        ),
+                        entity.getUser() != null ? entity.getUser().getPassword() : null,
+                        entity.getUser() != null ? entity.getUser().getAddress() : null,
+                        entity.getUser() != null && entity.getUser().isActive()
+                ),
+                new Client(
+                        entity.getClient().getId(),
+                        entity.getClient().getName(),
+                        entity.getClient().getSurname(),
+                        entity.getClient().getPhotoProfileUrl(),
+                        entity.getClient().getPhoneNumber(),
+                        entity.getClient().getPersonalId(),
+                        entity.getClient().getEmail(),
+                        entity.getClient().getPassword(),
+                        entity.getClient().getAddress(),
+                        entity.getClient().isActive()
+                ),
                 FormalitiesState.fromId(entity.getState()),
                 entity.getCreatedAt()
         );

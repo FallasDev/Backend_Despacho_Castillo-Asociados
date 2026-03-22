@@ -13,9 +13,9 @@ public interface JPAClientRepository extends JpaRepository<ClientEntity, Integer
     Optional<ClientEntity> findByName(String name);
     Optional<ClientEntity> findByNameAndIsActiveTrue(String name);
     Optional<ClientEntity> findByNameAndIsActiveFalse(String name);
-    Optional<ClientEntity> findBySuername(String suername);
-    Optional<ClientEntity> findBySuernameAndIsActiveTrue(String suername);
-    Optional<ClientEntity> findBySuernameAndIsActiveFalse(String suername);
+    Optional<ClientEntity> findBySurname(String surname);
+    Optional<ClientEntity> findBySurnameAndIsActiveTrue(String surname);
+    Optional<ClientEntity> findBySurnameAndIsActiveFalse(String surname);
     Page<ClientEntity> findAll(Pageable pageable);
 }
 

@@ -6,6 +6,7 @@ import com.accountancy.despacho_castillo_asociados.domain.repository.Role.RoleRe
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Role.RoleEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Role.JPARoleRepository;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

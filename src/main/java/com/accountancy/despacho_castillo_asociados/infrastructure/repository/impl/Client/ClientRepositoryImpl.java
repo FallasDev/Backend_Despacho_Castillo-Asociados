@@ -4,7 +4,6 @@ import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Client.ClientRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Client.ClientEntity;
-import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Role.RoleEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Client.JPAClientRepository;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import lombok.NonNull;
@@ -33,8 +32,6 @@ public class ClientRepositoryImpl implements ClientRepository {
                 clientRequest.getPhoneNumber(),
                 clientRequest.getPerosnalId(),
                 clientRequest.getEmail(),
-                clientRequest.getRole() != null ?
-                    new RoleEntity(clientRequest.getRole().getId(), "", "", new java.util.ArrayList<>(), true) : null,
                 clientRequest.getPassword(),
                 clientRequest.getAddress(),
                 true
@@ -54,14 +51,11 @@ public class ClientRepositoryImpl implements ClientRepository {
 
         ClientEntity entity = existing.get();
         entity.setName(clientRequest.getName());
-        entity.setSuername(clientRequest.getSuername());
+        entity.setSurname(clientRequest.getSuername());
         entity.setPhotoProfileUrl(clientRequest.getPhotoProfileUrl());
         entity.setPhoneNumber(clientRequest.getPhoneNumber());
-        entity.setPerosnalId(clientRequest.getPerosnalId());
+        entity.setPersonalId(clientRequest.getPerosnalId());
         entity.setEmail(clientRequest.getEmail());
-        if (clientRequest.getRole() != null) {
-            entity.setRole(new RoleEntity(clientRequest.getRole().getId(), "", "", new java.util.ArrayList<>(), true));
-        }
         entity.setPassword(clientRequest.getPassword());
         entity.setAddress(clientRequest.getAddress());
 
@@ -117,19 +111,19 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     @Override
     public Optional<Client> fintBySurname(String surname) {
-        return jpaClientRepository.findBySuername(surname)
+        return jpaClientRepository.findBySurname(surname)
                 .map(this::getClientFromEntity);
     }
 
     @Override
     public Optional<Client> fintBySurnameAndIsActive(String surname) {
-        return jpaClientRepository.findBySuernameAndIsActiveTrue(surname)
+        return jpaClientRepository.findBySurnameAndIsActiveTrue(surname)
                 .map(this::getClientFromEntity);
     }
 
     @Override
     public Optional<Client> fintBySurnameAndIsInactive(String surname) {
-        return jpaClientRepository.findBySuernameAndIsActiveFalse(surname)
+        return jpaClientRepository.findBySurnameAndIsActiveFalse(surname)
                 .map(this::getClientFromEntity);
     }
 
@@ -153,26 +147,15 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     @NonNull
     private Client getClientFromEntity(@NonNull ClientEntity entity) {
-        com.accountancy.despacho_castillo_asociados.domain.model.Role.Role domainRole = null;
-        if (entity.getRole() != null) {
-            domainRole = new com.accountancy.despacho_castillo_asociados.domain.model.Role.Role(
-                    entity.getRole().getId(),
-                    entity.getRole().getName(),
-                    entity.getRole().getDescription(),
-                    new java.util.ArrayList<>(),
-                    entity.getRole().isActive()
-            );
-        }
 
         return new Client(
                 entity.getId(),
                 entity.getName(),
-                entity.getSuername(),
+                entity.getSurname(),
                 entity.getPhotoProfileUrl(),
                 entity.getPhoneNumber(),
-                entity.getPerosnalId(),
+                entity.getPersonalId(),
                 entity.getEmail(),
-                domainRole,
                 entity.getPassword(),
                 entity.getAddress(),
                 entity.isActive()

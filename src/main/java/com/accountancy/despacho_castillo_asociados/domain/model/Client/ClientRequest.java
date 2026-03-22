@@ -9,18 +9,16 @@ public class ClientRequest {
     private String phoneNumber;
     private String perosnalId;
     private String email;
-    private Role role;
     private String password;
     private String address;
 
-    public ClientRequest(String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, Role role, String password, String address) {
+    public ClientRequest(String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, String password, String address) {
         this.name = name;
         this.suername = suername;
         this.photoProfileUrl = photoProfileUrl;
         this.phoneNumber = phoneNumber;
         this.perosnalId = perosnalId;
         this.email = email;
-        this.role = role;
         this.password = password;
         this.address = address;
     }
@@ -76,13 +74,6 @@ public class ClientRequest {
         this.email = email;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
 
     public String getPassword() {
         return password;

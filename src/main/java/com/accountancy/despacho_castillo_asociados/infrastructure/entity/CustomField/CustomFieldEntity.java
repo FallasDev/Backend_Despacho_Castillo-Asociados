@@ -28,7 +28,7 @@ public class CustomFieldEntity {
     @Column(name = "exclusive", nullable = false)
     private boolean exclusive = false;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "type_id", nullable = false)
     private TypeEntity type;
 

@@ -1,5 +1,6 @@
 package com.accountancy.despacho_castillo_asociados.domain.repository.User;
 
+import com.accountancy.despacho_castillo_asociados.domain.model.Role.Role;
 import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
 import com.accountancy.despacho_castillo_asociados.domain.model.User.UserRequest;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
@@ -9,8 +10,8 @@ import java.util.Optional;
 public interface UserRepository {
 
 
-    User create(UserRequest user);
-    User update(UserRequest user, int id);
+    User create(UserRequest user, Role role);
+    User update(UserRequest user, int id, Role role);
     void activate(int id);
     boolean deactivate(int id);
 

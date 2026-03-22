@@ -1,17 +1,21 @@
 package com.accountancy.despacho_castillo_asociados.domain.model.Auth;
 
+import com.accountancy.despacho_castillo_asociados.domain.model.Role.Role;
+
 public class LoginResponse {
     private String token;
     private long expiresIn;
-    private String email;
+    private long userId;
+    private String role;
     private String name;
 
     public LoginResponse() {}
 
-    public LoginResponse(String token, long expiresIn, String email, String name) {
+    public LoginResponse(String token, long expiresIn, long userId, String role, String name) {
         this.token = token;
         this.expiresIn = expiresIn;
-        this.email = email;
+        this.userId = userId;
+        this.role = role;
         this.name = name;
     }
 
@@ -31,12 +35,20 @@ public class LoginResponse {
         this.expiresIn = expiresIn;
     }
 
-    public String getEmail() {
-        return email;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getName() {

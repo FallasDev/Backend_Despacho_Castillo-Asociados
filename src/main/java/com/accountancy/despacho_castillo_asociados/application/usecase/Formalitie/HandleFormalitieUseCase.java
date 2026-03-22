@@ -46,7 +46,7 @@ public class HandleFormalitieUseCase {
             throw new BadRequestException(messages.get("formality.exception.handle.formality.not_pending", new Object[]{id}));
         }
 
-        boolean response = formalitieRepository.handleFormalitie(id, userId);
+        boolean response = formalitieRepository.handleFormalitie(id, user);
 
         if (!response) {
             throw new BadRequestException(messages.get("formality.exception.handle.formality.failed", new Object[]{id}));

@@ -4,6 +4,7 @@ import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Client.ClientRepository;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
+import com.accountancy.despacho_castillo_asociados.shared.utils.UserValidationsHelper;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.Optional;
@@ -25,6 +26,9 @@ public class UpdateClientUseCase {
         if (clientRequest.getName() == null || clientRequest.getName().isEmpty()) {
             throw new BadRequestException("Client name cannot be null or empty");
         }
+
+        UserValidationsHelper.validateEmail(clientRequest.getEmail());
+        UserValidationsHelper.validatePassword(clientRequest.getPassword());
 
         Optional<Client> existingClient = clientRepository.findById(id);
 

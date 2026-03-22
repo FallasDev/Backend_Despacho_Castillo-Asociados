@@ -43,11 +43,11 @@ public class ReportFieldEntity {
     @Column(nullable = false)
     private int reportCategoryId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "typeId", insertable = false, updatable = false)
     private TypeEntity type;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reportCategoryId", insertable = false, updatable = false)
     private ReportCategoryEntity reportCategory;
 

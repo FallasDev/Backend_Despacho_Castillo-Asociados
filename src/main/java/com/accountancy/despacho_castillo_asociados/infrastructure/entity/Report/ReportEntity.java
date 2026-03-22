@@ -37,7 +37,7 @@ public class ReportEntity {
     @Column(nullable = false)
     private boolean active;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "categoryId", insertable = false, updatable = false)
     private ReportCategoryEntity category;
 
