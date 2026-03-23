@@ -44,6 +44,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiResponse<Void>> handleBadRequest(BadRequestException ex) {
 
+        System.out.println("BadRequestException: " + ex.getMessage());
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse<>(false, ex.getMessage(), null));
     }
@@ -52,6 +54,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleDataIntegrity(DataIntegrityViolationException ex) {
 
         Throwable root = ex.getRootCause();
+
+        System.out.println("DataIntegrityViolationException: " + root.getMessage());
 
         if (root instanceof SQLException sqlEx) {
 
@@ -120,7 +124,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IOException.class)
     public ResponseEntity<ApiResponse<Void>> handleIOException(IOException ex) {
 
-        System.out.println("IOException: " + ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ApiResponse<>(false, messages.get("file.io.exception"), null));

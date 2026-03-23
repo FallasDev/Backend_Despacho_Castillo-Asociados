@@ -10,14 +10,14 @@ public class Client {
     private String phoneNumber;
     private String perosnalId;
     private String email;
-    private Role role;
     private String password;
     private String address;
+    private boolean enabled;
     private boolean isActive;
 
     public Client(){}
 
-    public Client(int id, String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, Role role, String password, String address, boolean isActive) {
+    public Client(int id, String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, String password, String address, boolean isActive, boolean enabled) {
         this.id = id;
         this.name = name;
         this.suername = suername;
@@ -25,10 +25,10 @@ public class Client {
         this.phoneNumber = phoneNumber;
         this.perosnalId = perosnalId;
         this.email = email;
-        this.role = role;
         this.password = password;
         this.address = address;
         this.isActive = isActive;
+        this.enabled = enabled;
     }
 
 
@@ -88,14 +88,6 @@ public class Client {
         this.email = email;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -118,5 +110,13 @@ public class Client {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

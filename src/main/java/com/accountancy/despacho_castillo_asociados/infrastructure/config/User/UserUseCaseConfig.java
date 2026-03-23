@@ -1,6 +1,7 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.config.User;
 
 import com.accountancy.despacho_castillo_asociados.application.usecase.User.*;
+import com.accountancy.despacho_castillo_asociados.domain.repository.Role.RoleRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,13 +10,13 @@ import org.springframework.context.annotation.Configuration;
 public class UserUseCaseConfig {
 
     @Bean
-    public CreateUserUseCase createUserUseCase(UserRepository userRepository) {
-        return new CreateUserUseCase(userRepository);
+    public CreateUserUseCase createUserUseCase(UserRepository userRepository, RoleRepository roleRepository) {
+        return new CreateUserUseCase(userRepository, roleRepository);
     }
 
     @Bean
-    public UpdateUserUseCase updateUserUseCase(UserRepository userRepository) {
-        return new UpdateUserUseCase(userRepository);
+    public UpdateUserUseCase updateUserUseCase(UserRepository userRepository, RoleRepository roleRepository) {
+        return new UpdateUserUseCase(userRepository, roleRepository);
     }
 
     @Bean

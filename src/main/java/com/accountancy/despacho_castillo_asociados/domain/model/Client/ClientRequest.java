@@ -1,26 +1,22 @@
 package com.accountancy.despacho_castillo_asociados.domain.model.Client;
 
-import com.accountancy.despacho_castillo_asociados.domain.model.Role.Role;
-
 public class ClientRequest {
     private String name;
-    private  String suername;
+    private  String surname;
     private String photoProfileUrl;
     private String phoneNumber;
-    private String perosnalId;
+    private String personalId;
     private String email;
-    private Role role;
     private String password;
     private String address;
 
-    public ClientRequest(String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, Role role, String password, String address) {
+    public ClientRequest(String name, String surname, String photoProfileUrl, String phoneNumber, String personalId, String email, String password, String address) {
         this.name = name;
-        this.suername = suername;
+        this.surname = surname;
         this.photoProfileUrl = photoProfileUrl;
         this.phoneNumber = phoneNumber;
-        this.perosnalId = perosnalId;
+        this.personalId = personalId;
         this.email = email;
-        this.role = role;
         this.password = password;
         this.address = address;
     }
@@ -36,12 +32,12 @@ public class ClientRequest {
         this.name = name;
     }
 
-    public String getSuername() {
-        return suername;
+    public String getSurname() {
+        return surname;
     }
 
-    public void setSuername(String suername) {
-        this.suername = suername;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getPhotoProfileUrl() {
@@ -60,12 +56,12 @@ public class ClientRequest {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getPerosnalId() {
-        return perosnalId;
+    public String getPersonalId() {
+        return personalId;
     }
 
-    public void setPerosnalId(String perosnalId) {
-        this.perosnalId = perosnalId;
+    public void setPersonalId(String personalId) {
+        this.personalId = personalId;
     }
 
     public String getEmail() {
@@ -76,13 +72,6 @@ public class ClientRequest {
         this.email = email;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
 
     public String getPassword() {
         return password;

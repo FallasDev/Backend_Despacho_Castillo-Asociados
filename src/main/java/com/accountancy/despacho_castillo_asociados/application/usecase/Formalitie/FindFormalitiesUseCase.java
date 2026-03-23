@@ -6,6 +6,7 @@ import com.accountancy.despacho_castillo_asociados.domain.repository.Formalitie.
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.EmptyListException;
+import jakarta.transaction.Transactional;
 import lombok.NonNull;
 
 public class FindFormalitiesUseCase {
@@ -18,6 +19,7 @@ public class FindFormalitiesUseCase {
         this.messages = messages;
     }
 
+    @Transactional
     public PageResult<Formalitie> execute(SearchFormalitie searchFormalitie, int page, int size) {
 
         PageResult<Formalitie> formalities = formalitieRepository.findByFilter(searchFormalitie, page, size);

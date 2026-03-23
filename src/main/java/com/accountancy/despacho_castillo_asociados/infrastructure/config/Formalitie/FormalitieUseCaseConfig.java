@@ -43,9 +43,10 @@ public class FormalitieUseCaseConfig {
     @Bean
     public UpdateFormalitieUseCase updateFormalitieUseCase(FormalitieRepository formalitieRepository,
                                                            ClientRepository clientRepository,
-                                                              UserRepository userRepository
-            , Messages messages) {
-        return new UpdateFormalitieUseCase(formalitieRepository, clientRepository, userRepository ,messages);
+                                                              UserRepository userRepository,
+            ServiceRepository serviceRepository
+            ,Messages messages) {
+        return new UpdateFormalitieUseCase(formalitieRepository, clientRepository, userRepository , serviceRepository,messages);
     }
 
     @Bean

@@ -11,6 +11,7 @@ import com.accountancy.despacho_castillo_asociados.domain.repository.Service.Ser
 import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRepository;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
+import jakarta.transaction.Transactional;
 
 import java.util.Optional;
 
@@ -30,6 +31,7 @@ public class CreateFormalitieUseCase {
         this.messages = messages;
     }
 
+    @Transactional
     public Formalitie execute(FormalitieRequest formalitie) {
 
 

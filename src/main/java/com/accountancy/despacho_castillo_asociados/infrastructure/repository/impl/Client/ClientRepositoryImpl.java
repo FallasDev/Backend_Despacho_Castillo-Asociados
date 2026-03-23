@@ -4,7 +4,6 @@ import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Client.ClientRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Client.ClientEntity;
-import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Role.RoleEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Client.JPAClientRepository;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import lombok.NonNull;
@@ -26,18 +25,27 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     @Override
     public Client create(ClientRequest clientRequest) {
+
+        System.out.println("Creating client: "
+         + clientRequest.getName() + " "
+                + clientRequest.getEmail() + " "
+    + clientRequest.getPhoneNumber() + " "
+                + clientRequest.getPersonalId() + " "
+                + clientRequest.getAddress() + " "
+        + clientRequest.getPhotoProfileUrl() + " "
+                + clientRequest.getSurname() + " " );
+
         ClientEntity entity = new ClientEntity(
                 clientRequest.getName(),
-                clientRequest.getSuername(),
+                clientRequest.getSurname(),
                 clientRequest.getPhotoProfileUrl(),
                 clientRequest.getPhoneNumber(),
-                clientRequest.getPerosnalId(),
+                clientRequest.getPersonalId(),
                 clientRequest.getEmail(),
-                clientRequest.getRole() != null ?
-                    new RoleEntity(clientRequest.getRole().getId(), "", "", new java.util.ArrayList<>(), true) : null,
                 clientRequest.getPassword(),
                 clientRequest.getAddress(),
-                true
+                true,
+                false
         );
 
         ClientEntity saved = jpaClientRepository.save(entity);
@@ -54,14 +62,11 @@ public class ClientRepositoryImpl implements ClientRepository {
 
         ClientEntity entity = existing.get();
         entity.setName(clientRequest.getName());
-        entity.setSuername(clientRequest.getSuername());
+        entity.setSurname(clientRequest.getSurname());
         entity.setPhotoProfileUrl(clientRequest.getPhotoProfileUrl());
         entity.setPhoneNumber(clientRequest.getPhoneNumber());
-        entity.setPerosnalId(clientRequest.getPerosnalId());
+        entity.setPersonalId(clientRequest.getPersonalId());
         entity.setEmail(clientRequest.getEmail());
-        if (clientRequest.getRole() != null) {
-            entity.setRole(new RoleEntity(clientRequest.getRole().getId(), "", "", new java.util.ArrayList<>(), true));
-        }
         entity.setPassword(clientRequest.getPassword());
         entity.setAddress(clientRequest.getAddress());
 
@@ -98,38 +103,46 @@ public class ClientRepositoryImpl implements ClientRepository {
     }
 
     @Override
-    public Optional<Client> fintByName(String name) {
+    public Optional<Client> findByName(String name) {
         return jpaClientRepository.findByName(name)
                 .map(this::getClientFromEntity);
     }
 
     @Override
-    public Optional<Client> fintByNameAndIsActive(String name) {
+    public Optional<Client> findByNameAndIsActive(String name) {
         return jpaClientRepository.findByNameAndIsActiveTrue(name)
                 .map(this::getClientFromEntity);
     }
 
     @Override
-    public Optional<Client> fintByNameAndIsInactive(String name) {
+    public Optional<Client> findByNameAndIsInactive(String name) {
         return jpaClientRepository.findByNameAndIsActiveFalse(name)
                 .map(this::getClientFromEntity);
     }
 
     @Override
-    public Optional<Client> fintBySurname(String surname) {
-        return jpaClientRepository.findBySuername(surname)
+    public Optional<Client> findBySurname(String surname) {
+        return jpaClientRepository.findBySurname(surname)
                 .map(this::getClientFromEntity);
     }
 
     @Override
-    public Optional<Client> fintBySurnameAndIsActive(String surname) {
-        return jpaClientRepository.findBySuernameAndIsActiveTrue(surname)
+    public Optional<Client> findBySurnameAndIsActive(String surname) {
+        return jpaClientRepository.findBySurnameAndIsActiveTrue(surname)
                 .map(this::getClientFromEntity);
     }
 
     @Override
-    public Optional<Client> fintBySurnameAndIsInactive(String surname) {
-        return jpaClientRepository.findBySuernameAndIsActiveFalse(surname)
+    public Optional<Client> findBySurnameAndIsInactive(String surname) {
+        return jpaClientRepository.findBySurnameAndIsActiveFalse(surname)
+                .map(this::getClientFromEntity);
+    }
+
+    @Override
+    public Optional<Client> findByEmailAndActive(String email) {
+        return jpaClientRepository.findByEmailAndIsActive(email, true)
+                .stream()
+                .findFirst()
                 .map(this::getClientFromEntity);
     }
 
@@ -151,31 +164,42 @@ public class ClientRepositoryImpl implements ClientRepository {
         );
     }
 
+    @Override
+    public void enabledClient(int id) {
+
+        Optional<ClientEntity> client = jpaClientRepository.findById(id);
+
+        if (client.isPresent()) {
+            Optional<ClientEntity> existing = jpaClientRepository.findById(id);
+            if (existing.isPresent()) {
+                ClientEntity entity = existing.get();
+                entity.setEnabled(true);
+                jpaClientRepository.save(entity);
+            }
+        }
+
+    }
+
+    @Override
+    public boolean existByEmailAndPasswordAndActive(String email, String password) {
+        return false;
+    }
+
     @NonNull
     private Client getClientFromEntity(@NonNull ClientEntity entity) {
-        com.accountancy.despacho_castillo_asociados.domain.model.Role.Role domainRole = null;
-        if (entity.getRole() != null) {
-            domainRole = new com.accountancy.despacho_castillo_asociados.domain.model.Role.Role(
-                    entity.getRole().getId(),
-                    entity.getRole().getName(),
-                    entity.getRole().getDescription(),
-                    new java.util.ArrayList<>(),
-                    entity.getRole().isActive()
-            );
-        }
 
         return new Client(
                 entity.getId(),
                 entity.getName(),
-                entity.getSuername(),
+                entity.getSurname(),
                 entity.getPhotoProfileUrl(),
                 entity.getPhoneNumber(),
-                entity.getPerosnalId(),
+                entity.getPersonalId(),
                 entity.getEmail(),
-                domainRole,
                 entity.getPassword(),
                 entity.getAddress(),
-                entity.isActive()
+                entity.isActive(),
+                entity.isEnabled()
         );
     }
 }

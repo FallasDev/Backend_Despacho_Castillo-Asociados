@@ -1,7 +1,9 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.config.Client;
 
+import com.accountancy.despacho_castillo_asociados.application.service.Email.EmailService;
 import com.accountancy.despacho_castillo_asociados.application.usecase.Client.*;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Client.ClientRepository;
+import com.accountancy.despacho_castillo_asociados.domain.repository.verificationcode.VerificationCodeRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 public class ClientUseCaseConfig {
 
     @Bean
-    public CreateClientUseCase createClientUseCase(ClientRepository clientRepository) {
-        return new CreateClientUseCase(clientRepository);
+    public CreateClientUseCase createClientUseCase(ClientRepository clientRepository, VerificationCodeRepository verificationCodeRepository, EmailService emailService) {
+        return new CreateClientUseCase(clientRepository, verificationCodeRepository, emailService);
     }
 
     @Bean

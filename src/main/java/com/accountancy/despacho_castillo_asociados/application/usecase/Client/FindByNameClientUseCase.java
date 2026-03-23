@@ -20,7 +20,7 @@ public class FindByNameClientUseCase {
             throw new IllegalArgumentException("Client name cannot be null or empty");
         }
 
-        Optional<Client> client = clientRepository.fintByNameAndIsActive(name);
+        Optional<Client> client = clientRepository.findByNameAndIsActive(name);
 
         if (client.isEmpty()) {
             throw new EntityNotFoundException("Client with name " + name + " not found");

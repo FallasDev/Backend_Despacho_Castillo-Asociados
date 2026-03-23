@@ -17,7 +17,7 @@ import java.util.Optional;
 public interface FormalitieRepository {
 
     Formalitie create(FormalitieRequest formalitieRequest, DomainService domainService, Client client, User user);
-    Formalitie update(FormalitieRequest formalitieRequest, int id, Client client, User user);
+    Formalitie update(FormalitieRequest formalitieRequest, int id, DomainService service, Client client, User user);
     boolean changeFormalitieState(int id, FormalitiesState state);
 
 
@@ -29,6 +29,6 @@ public interface FormalitieRepository {
     PageResult<Formalitie> findByUserId(int userId, int page, int size);
      PageResult<Formalitie> findByServiceId(int serviceId, int page, int size);
 
-     boolean handleFormalitie(int id, int userId);
+     boolean handleFormalitie(int id, User user);
 
 }

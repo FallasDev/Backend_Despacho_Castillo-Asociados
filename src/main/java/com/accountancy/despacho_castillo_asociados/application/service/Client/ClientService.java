@@ -4,6 +4,7 @@ import com.accountancy.despacho_castillo_asociados.application.usecase.Client.*;
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientRequest;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import jakarta.mail.MessagingException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,7 +36,7 @@ public class ClientService {
         this.findBySurnameClientUseCase = findBySurnameClientUseCase;
     }
 
-    public Client createClient(ClientRequest clientRequest) {
+    public Client createClient(ClientRequest clientRequest) throws MessagingException {
         return createClientUseCase.execute(clientRequest);
     }
 

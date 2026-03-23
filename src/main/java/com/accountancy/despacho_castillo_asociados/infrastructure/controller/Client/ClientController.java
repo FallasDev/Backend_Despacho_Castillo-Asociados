@@ -5,6 +5,7 @@ import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientRequest;
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +58,7 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Client>> createClient(@RequestBody ClientRequest request) {
+    public ResponseEntity<ApiResponse<Client>> createClient(@RequestBody ClientRequest request) throws MessagingException {
         Client createdClient = clientService.createClient(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(

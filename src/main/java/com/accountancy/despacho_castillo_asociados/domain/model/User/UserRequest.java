@@ -9,18 +9,18 @@ public class UserRequest {
     private String phoneNumber;
     private String perosnalId;
     private String email;
-    private Role role;
+    private int roleId;
     private String password;
     private String address;
 
-    public UserRequest(String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, Role role, String password, String address) {
+    public UserRequest(String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, int roleId, String password, String address) {
         this.name = name;
         this.suername = suername;
         this.photoProfileUrl = photoProfileUrl;
         this.phoneNumber = phoneNumber;
         this.perosnalId = perosnalId;
         this.email = email;
-        this.role = role;
+        this.roleId = roleId;
         this.password = password;
         this.address = address;
     }
@@ -75,12 +75,12 @@ public class UserRequest {
         this.email = email;
     }
 
-    public Role getRole() {
-        return role;
+    public int getRoleId() {
+        return roleId;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
     }
 
     public String getPassword() {
