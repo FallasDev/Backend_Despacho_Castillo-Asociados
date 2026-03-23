@@ -10,6 +10,7 @@ import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,9 +20,11 @@ import java.util.Optional;
 public class UserRepositoryImpl implements UserRepository {
 
     private final JPAUserRepository jpaUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserRepositoryImpl(JPAUserRepository jpaUserRepository) {
+    public UserRepositoryImpl(JPAUserRepository jpaUserRepository, PasswordEncoder passwordEncoder) {
         this.jpaUserRepository = jpaUserRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -35,7 +38,7 @@ public class UserRepositoryImpl implements UserRepository {
                 userRequest.getEmail(),
                 userRequest.getRole() != null ?
                     new RoleEntity(userRequest.getRole().getId(), "", "", new java.util.ArrayList<>(), true) : null,
-                userRequest.getPassword(),
+                passwordEncoder.encode(userRequest.getPassword()),
                 userRequest.getAddress(),
                 true
         );
@@ -62,7 +65,7 @@ public class UserRepositoryImpl implements UserRepository {
         if (userRequest.getRole() != null) {
             entity.setRole(new RoleEntity(userRequest.getRole().getId(), "", "", new java.util.ArrayList<>(), true));
         }
-        entity.setPassword(userRequest.getPassword());
+        entity.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         entity.setAddress(userRequest.getAddress());
 
         UserEntity updated = jpaUserRepository.save(entity);

@@ -9,6 +9,7 @@ import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRe
 import com.accountancy.despacho_castillo_asociados.infrastructure.security.CustomUserDetailsService;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,13 +18,16 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase {
     private final UserRepository userRepository;
     private final CustomUserDetailsService userDetailsService;
     private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
     public AuthService(UserRepository userRepository,
                       CustomUserDetailsService userDetailsService,
-                      JwtService jwtService) {
+                      JwtService jwtService,
+                      PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -32,8 +36,8 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase {
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BadRequestException("Email o contraseña incorrectos"));
 
-        // Validar contraseña (comparación directa)
-        if (!request.getPassword().equals(user.getPassword())) {
+        // Validar contraseña usando BCrypt
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BadRequestException("Email o contraseña incorrectos");
         }
 
