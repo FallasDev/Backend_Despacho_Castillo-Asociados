@@ -3,6 +3,7 @@ package com.accountancy.despacho_castillo_asociados.application.service.Formalit
 import com.accountancy.despacho_castillo_asociados.application.usecase.Formalitie.*;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Formalitie;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalitieRequest;
+import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalityClientStats;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.SearchFormalitie;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import org.springframework.stereotype.Service;
@@ -16,19 +17,22 @@ public class FormalitieService {
     private FindByIdFormalitieUseCase findByIdFormalitieUseCase;
     private UpdateFormalitieUseCase updateFormalitieUseCase;
     private HandleFormalitieUseCase handleFormalitieUseCase;
+    private GetFormalitiesCountByClientUseCase getFormalitiesCountByClientUseCase;
 
     public FormalitieService(CreateFormalitieUseCase createFormalitieUseCase,
                              ChangeFormalitieStateUseCase changeFormalitieStateUseCase,
                              FindFormalitiesUseCase findFormalitiesUseCase,
                              FindByIdFormalitieUseCase findByIdFormalitieUseCase,
                              HandleFormalitieUseCase handleFormalitieUseCase,
-                             UpdateFormalitieUseCase updateFormalitieUseCase) {
+                             UpdateFormalitieUseCase updateFormalitieUseCase,
+                             GetFormalitiesCountByClientUseCase getFormalitiesCountByClientUseCase) {
         this.createFormalitieUseCase = createFormalitieUseCase;
         this.changeFormalitieStateUseCase = changeFormalitieStateUseCase;
         this.findFormalitiesUseCase = findFormalitiesUseCase;
         this.findByIdFormalitieUseCase = findByIdFormalitieUseCase;
         this.handleFormalitieUseCase = handleFormalitieUseCase;
         this.updateFormalitieUseCase = updateFormalitieUseCase;
+        this.getFormalitiesCountByClientUseCase = getFormalitiesCountByClientUseCase;
     }
 
     public Formalitie createFormalitie(FormalitieRequest formalitie) {
@@ -50,6 +54,10 @@ public class FormalitieService {
 
     public Formalitie updateFormalitie(int id, FormalitieRequest formalitieRequest) {
         return updateFormalitieUseCase.execute(formalitieRequest, id);
+    }
+
+    public FormalityClientStats countFormalitiesByClientId(int clientId) {
+        return getFormalitiesCountByClientUseCase.execute(clientId);
     }
 
     public void handleFormalitie(int id, int userId) {

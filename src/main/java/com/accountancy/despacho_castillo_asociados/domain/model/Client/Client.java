@@ -1,34 +1,36 @@
 package com.accountancy.despacho_castillo_asociados.domain.model.Client;
 
-import com.accountancy.despacho_castillo_asociados.domain.model.Role.Role;
+import java.time.LocalDate;
 
 public class Client {
     private int id;
     private String name;
-    private  String suername;
+    private  String surname;
     private String photoProfileUrl;
     private String phoneNumber;
-    private String perosnalId;
+    private String personalId;
     private String email;
     private String password;
     private String address;
     private boolean enabled;
     private boolean isActive;
+    private LocalDate createdAt;
 
     public Client(){}
 
-    public Client(int id, String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, String password, String address, boolean isActive, boolean enabled) {
+    public Client(int id, String name, String surname, String photoProfileUrl, String phoneNumber, String personalId, String email, String password, String address, boolean isActive, boolean enabled, LocalDate createdAt) {
         this.id = id;
         this.name = name;
-        this.suername = suername;
+        this.surname = surname;
         this.photoProfileUrl = photoProfileUrl;
         this.phoneNumber = phoneNumber;
-        this.perosnalId = perosnalId;
+        this.personalId = personalId;
         this.email = email;
         this.password = password;
         this.address = address;
         this.isActive = isActive;
         this.enabled = enabled;
+        this.createdAt = createdAt;
     }
 
 
@@ -48,12 +50,12 @@ public class Client {
         this.name = name;
     }
 
-    public String getSuername() {
-        return suername;
+    public String getSurname() {
+        return surname;
     }
 
-    public void setSuername(String suername) {
-        this.suername = suername;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getPhotoProfileUrl() {
@@ -73,11 +75,11 @@ public class Client {
     }
 
     public String getPerosnalId() {
-        return perosnalId;
+        return personalId;
     }
 
     public void setPerosnalId(String perosnalId) {
-        this.perosnalId = perosnalId;
+        this.personalId = perosnalId;
     }
 
     public String getEmail() {
@@ -118,5 +120,21 @@ public class Client {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getPersonalId() {
+        return personalId;
+    }
+
+    public void setPersonalId(String personalId) {
+        this.personalId = personalId;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
     }
 }

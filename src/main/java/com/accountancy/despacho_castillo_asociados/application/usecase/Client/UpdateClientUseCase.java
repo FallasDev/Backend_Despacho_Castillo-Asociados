@@ -2,6 +2,7 @@ package com.accountancy.despacho_castillo_asociados.application.usecase.Client;
 
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientRequest;
+import com.accountancy.despacho_castillo_asociados.domain.model.Client.UpdateClientRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Client.ClientRepository;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 import com.accountancy.despacho_castillo_asociados.shared.utils.UserValidationsHelper;
@@ -17,7 +18,7 @@ public class UpdateClientUseCase {
         this.clientRepository = clientRepository;
     }
 
-    public Client execute(ClientRequest clientRequest, int id) {
+    public Client execute(UpdateClientRequest clientRequest, int id) {
 
         if (clientRequest == null) {
             throw new BadRequestException("Client cannot be null");
@@ -28,7 +29,6 @@ public class UpdateClientUseCase {
         }
 
         UserValidationsHelper.validateEmail(clientRequest.getEmail());
-        UserValidationsHelper.validatePassword(clientRequest.getPassword());
 
         Optional<Client> existingClient = clientRepository.findById(id);
 

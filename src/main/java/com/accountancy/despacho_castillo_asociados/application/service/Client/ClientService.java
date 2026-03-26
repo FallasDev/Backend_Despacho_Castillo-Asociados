@@ -3,6 +3,8 @@ package com.accountancy.despacho_castillo_asociados.application.service.Client;
 import com.accountancy.despacho_castillo_asociados.application.usecase.Client.*;
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientRequest;
+import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientResponse;
+import com.accountancy.despacho_castillo_asociados.domain.model.Client.UpdateClientRequest;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import jakarta.mail.MessagingException;
 import org.springframework.stereotype.Service;
@@ -40,7 +42,7 @@ public class ClientService {
         return createClientUseCase.execute(clientRequest);
     }
 
-    public Client updateClient(ClientRequest clientRequest, int id) {
+    public Client updateClient(UpdateClientRequest clientRequest, int id) {
         return updateClientUseCase.execute(clientRequest, id);
     }
 
@@ -48,7 +50,7 @@ public class ClientService {
         deactivateClientUseCase.execute(id);
     }
 
-    public PageResult<Client> findAllClients(int page, int size) {
+    public PageResult<ClientResponse> findAllClients(int page, int size) {
         return findAllClientUseCase.execute(page, size);
     }
 

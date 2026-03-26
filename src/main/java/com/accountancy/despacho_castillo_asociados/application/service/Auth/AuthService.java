@@ -16,6 +16,7 @@ import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRe
 import com.accountancy.despacho_castillo_asociados.domain.repository.verificationcode.VerificationCodeRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.security.CustomUserDetailsService;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
+import com.accountancy.despacho_castillo_asociados.shared.utils.HtmlContent;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
@@ -122,10 +123,7 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
         emailService.sendHtmlEmail(
             client.getEmail(),
             "Nuevo inicio de sesión",
-            "<p>Hola " + client.getName() + ",</p>" +
-            "<p>Se ha detectado un nuevo inicio de sesión en tu cuenta. Si no fuiste tú, por favor contacta con nuestro soporte.</p>" +
-            "<p>Si fuiste tú, puedes ignorar este mensaje.</p>" +
-            "<p>Saludos,<br/>Despacho Castillo & Asociados</p>"
+            new HtmlContent().generateLoginAlertEmail(client.getName())
         );
 
         return new LoginResponse(token, 3600, client.getId(), "CLIENT", client.getName());
