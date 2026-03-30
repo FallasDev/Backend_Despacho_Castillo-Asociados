@@ -2,6 +2,8 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.repository.im
 
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientRequest;
+import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientResponse;
+import com.accountancy.despacho_castillo_asociados.domain.model.Client.UpdateClientRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Client.ClientRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Client.ClientEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Client.JPAClientRepository;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,15 +29,6 @@ public class ClientRepositoryImpl implements ClientRepository {
     @Override
     public Client create(ClientRequest clientRequest) {
 
-        System.out.println("Creating client: "
-         + clientRequest.getName() + " "
-                + clientRequest.getEmail() + " "
-    + clientRequest.getPhoneNumber() + " "
-                + clientRequest.getPersonalId() + " "
-                + clientRequest.getAddress() + " "
-        + clientRequest.getPhotoProfileUrl() + " "
-                + clientRequest.getSurname() + " " );
-
         ClientEntity entity = new ClientEntity(
                 clientRequest.getName(),
                 clientRequest.getSurname(),
@@ -47,13 +41,14 @@ public class ClientRepositoryImpl implements ClientRepository {
                 true,
                 false
         );
+        entity.setCreatedAt(LocalDate.now());
 
         ClientEntity saved = jpaClientRepository.save(entity);
         return getClientFromEntity(saved);
     }
 
     @Override
-    public Client update(ClientRequest clientRequest, int id) {
+    public Client update(UpdateClientRequest clientRequest, int id) {
         Optional<ClientEntity> existing = jpaClientRepository.findById(id);
 
         if (existing.isEmpty()) {
@@ -67,7 +62,6 @@ public class ClientRepositoryImpl implements ClientRepository {
         entity.setPhoneNumber(clientRequest.getPhoneNumber());
         entity.setPersonalId(clientRequest.getPersonalId());
         entity.setEmail(clientRequest.getEmail());
-        entity.setPassword(clientRequest.getPassword());
         entity.setAddress(clientRequest.getAddress());
 
         ClientEntity updated = jpaClientRepository.save(entity);
@@ -147,7 +141,7 @@ public class ClientRepositoryImpl implements ClientRepository {
     }
 
     @Override
-    public PageResult<Client> findAll(int page, int size) {
+    public PageResult<ClientResponse> findAll(int page, int size) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         Page<ClientEntity> entityPage = jpaClientRepository.findAll(pageable);
 
@@ -155,7 +149,8 @@ public class ClientRepositoryImpl implements ClientRepository {
 
         return new PageResult<>(
                 clients.stream()
-                        .map(this::getClientFromEntity)
+                        .map(this::getClientResponseFromEntity)
+                        .filter(ClientResponse::isActive)
                         .toList(),
                 page,
                 size,
@@ -199,7 +194,23 @@ public class ClientRepositoryImpl implements ClientRepository {
                 entity.getPassword(),
                 entity.getAddress(),
                 entity.isActive(),
-                entity.isEnabled()
+                entity.isEnabled(),
+                entity.getCreatedAt()
+        );
+    }
+
+    @NonNull
+    private ClientResponse getClientResponseFromEntity(@NonNull ClientEntity entity) {
+
+        return new ClientResponse(
+                entity.getId(),
+                entity.getName(),
+                entity.getSurname(),
+                entity.getPhoneNumber(),
+                entity.getPersonalId(),
+                entity.getEmail(),
+                entity.getCreatedAt(),
+                entity.isActive()
         );
     }
 }

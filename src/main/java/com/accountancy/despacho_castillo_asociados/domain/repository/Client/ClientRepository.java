@@ -2,6 +2,8 @@ package com.accountancy.despacho_castillo_asociados.domain.repository.Client;
 
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientRequest;
+import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientResponse;
+import com.accountancy.despacho_castillo_asociados.domain.model.Client.UpdateClientRequest;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 
 import java.util.Optional;
@@ -9,7 +11,7 @@ import java.util.Optional;
 public interface ClientRepository {
 
     Client create(ClientRequest clientRequest);
-    Client update(ClientRequest clientRequest, int id);
+    Client update(UpdateClientRequest clientRequest, int id);
     void activate(int id);
     boolean deactivate(int id);
 
@@ -21,7 +23,7 @@ public interface ClientRepository {
     Optional<Client> findBySurnameAndIsActive(String surname);
     Optional<Client> findBySurnameAndIsInactive(String surname);
     Optional<Client> findByEmailAndActive(String email);
-    PageResult<Client> findAll(int page, int size);
+    PageResult<ClientResponse> findAll(int page, int size);
 
     void enabledClient(int id);
 

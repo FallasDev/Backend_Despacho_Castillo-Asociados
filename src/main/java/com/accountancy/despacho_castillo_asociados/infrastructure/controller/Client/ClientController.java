@@ -3,6 +3,8 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.controller.Cl
 import com.accountancy.despacho_castillo_asociados.application.service.Client.ClientService;
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientRequest;
+import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientResponse;
+import com.accountancy.despacho_castillo_asociados.domain.model.Client.UpdateClientRequest;
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import jakarta.mail.MessagingException;
@@ -19,11 +21,11 @@ public class ClientController {
     private final ClientService clientService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResult<Client>>> getAllClients(
+    public ResponseEntity<ApiResponse<PageResult<ClientResponse>>> getAllClients(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        PageResult<Client> clients = clientService.findAllClients(page, size);
+        PageResult<ClientResponse> clients = clientService.findAllClients(page, size);
 
         return ResponseEntity.ok().body(
                 new ApiResponse<>(true, "Clients retrieved successfully", clients)
@@ -68,7 +70,7 @@ public class ClientController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Client>> updateClient(
-            @RequestBody ClientRequest request,
+            @RequestBody UpdateClientRequest request,
             @PathVariable int id) {
         Client updatedClient = clientService.updateClient(request, id);
 

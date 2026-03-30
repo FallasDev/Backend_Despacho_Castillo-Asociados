@@ -55,4 +55,8 @@ public class FormalitieUseCaseConfig {
         return new HandleFormalitieUseCase(formalitieRepository, userRepository, messages);
     }
 
+    @Bean
+    public GetFormalitiesCountByClientUseCase getFormalitiesCountByClientUseCase(FormalitieRepository formalitieRepository, ClientRepository clientRepository) {
+        return new GetFormalitiesCountByClientUseCase(formalitieRepository, clientRepository);
+    }
 }

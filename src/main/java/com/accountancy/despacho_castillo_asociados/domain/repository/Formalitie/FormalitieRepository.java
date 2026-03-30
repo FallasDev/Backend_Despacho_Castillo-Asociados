@@ -3,9 +3,7 @@ package com.accountancy.despacho_castillo_asociados.domain.repository.Formalitie
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.CustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.CustomFieldRequest;
-import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Formalitie;
-import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalitieRequest;
-import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.SearchFormalitie;
+import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.*;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
 import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
 import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
@@ -30,5 +28,7 @@ public interface FormalitieRepository {
      PageResult<Formalitie> findByServiceId(int serviceId, int page, int size);
 
      boolean handleFormalitie(int id, User user);
+
+     Stats countByClientId(int clientId);
 
 }

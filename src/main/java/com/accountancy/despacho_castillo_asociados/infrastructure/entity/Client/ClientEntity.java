@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @Entity
@@ -43,6 +45,9 @@ public class ClientEntity {
 
     @Column(nullable = false)
     private boolean enabled;
+
+    @Column(nullable = false)
+    private LocalDate createdAt = LocalDate.now();
 
     public ClientEntity() {}
 

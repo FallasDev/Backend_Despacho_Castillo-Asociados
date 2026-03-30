@@ -1,9 +1,7 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.repository.impl.Formalitie;
 
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
-import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Formalitie;
-import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalitieRequest;
-import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.SearchFormalitie;
+import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.*;
 import com.accountancy.despacho_castillo_asociados.domain.model.Role.Role;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
 import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
@@ -65,7 +63,7 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                 new ClientEntity(
                         client.getId(),
                         client.getName(),
-                        client.getSuername(),
+                        client.getSurname(),
                         client.getPhotoProfileUrl(),
                         client.getPhoneNumber(),
                         client.getPerosnalId(),
@@ -194,6 +192,11 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
 
     }
 
+    @Override
+    public Stats countByClientId(int clientId) {
+        return jpaFormalitieRepository.countFormalitiesByClientId(clientId);
+    }
+
     @NonNull
     private PageResult<Formalitie> getFormalitiePageResult(int page, int size, Page<FormalitieEntity> entityPage) {
         List<FormalitieEntity> formalities = entityPage.getContent();
@@ -251,7 +254,8 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                         entity.getClient().getPassword(),
                         entity.getClient().getAddress(),
                         entity.getClient().isActive(),
-                        entity.getClient().isEnabled()
+                        entity.getClient().isEnabled(),
+                        entity.getClient().getCreatedAt()
                 ),
                 FormalitiesState.fromId(entity.getState()),
                 entity.getCreatedAt()

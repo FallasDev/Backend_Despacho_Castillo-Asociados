@@ -8,6 +8,7 @@ import com.accountancy.despacho_castillo_asociados.domain.repository.Client.Clie
 import com.accountancy.despacho_castillo_asociados.domain.repository.verificationcode.VerificationCodeRepository;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 import com.accountancy.despacho_castillo_asociados.shared.utils.GenerateOtp;
+import com.accountancy.despacho_castillo_asociados.shared.utils.HtmlContent;
 import com.accountancy.despacho_castillo_asociados.shared.utils.UserValidationsHelper;
 import jakarta.mail.MessagingException;
 
@@ -66,13 +67,7 @@ public class CreateClientUseCase {
         VerificationCode codeSaved = verificationCodeRepository.save(verificationCode);
 
         String subject = "Codigo de verificación para tu cuenta";
-        String body = "Hola " + client.getName() + ",\n\n" +
-                      "Gracias por registrarte en nuestro sistema. Para completar tu registro, por favor utiliza el siguiente código de verificación:\n\n" +
-                      codeSaved.getCode() + "\n\n" +
-                      "Este código es válido por 15 minutos.\n\n" +
-                      "Si no solicitaste este código, por favor ignora este mensaje.\n\n" +
-                      "Saludos,\n" +
-                      "Despacho Castillo & Asociados";
+        String body = new HtmlContent().generateVerificationEmail(client.getName(),codeSaved.getCode());
 
         emailService.sendHtmlEmail(
             client.getEmail(),

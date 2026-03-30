@@ -4,6 +4,7 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.controller.Fo
 import com.accountancy.despacho_castillo_asociados.application.service.Formalitie.FormalitieService;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Formalitie;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalitieRequest;
+import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalityClientStats;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.SearchFormalitie;
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
@@ -130,6 +131,18 @@ public class FormalitieController {
                         messages.get("formality.success.handle"),
                         null));
         
+
+    }
+
+    @GetMapping
+    @RequestMapping("/count-by-client/{clientId}")
+    public ResponseEntity<ApiResponse<FormalityClientStats>> countFormalitiesByClientId(
+            @PathVariable int clientId) {
+        FormalityClientStats count = formalitieService.countFormalitiesByClientId(clientId);
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,
+                        messages.get("formality.success.count_by_client"),
+                        count));
 
     }
 }
