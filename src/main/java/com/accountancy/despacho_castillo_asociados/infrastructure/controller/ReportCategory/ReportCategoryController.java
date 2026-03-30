@@ -9,6 +9,7 @@ import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +23,7 @@ public class ReportCategoryController {
 
 
     @GetMapping
+    @PreAuthorize("hasAuthority('Obtener_Categorias_Reporte')")
     public ResponseEntity<ApiResponse<PageResult<ReportCategory>>> getAllReportsCategory(@RequestParam (required = false) String category,
                                                                                  @RequestParam (defaultValue = "0") int page,
                                                                                  @RequestParam (defaultValue = "10") int size) {
@@ -36,6 +38,7 @@ public class ReportCategoryController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Obtener_una_Categoria_Reporte')")
     public ResponseEntity<ApiResponse<ReportCategory>> findById(@PathVariable  int id
     ) {
         ReportCategory reportCategory = reportCategoryService.findByIdReportCategory(id);
@@ -48,6 +51,7 @@ public class ReportCategoryController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Crear_Categoria_Reporte')")
     public ResponseEntity<ApiResponse<ReportCategory>> createReportCategory(@RequestBody ReportCategoryRequest request) {
         ReportCategory createdReportCategory = reportCategoryService.createReportCategory(request);
 
@@ -57,6 +61,7 @@ public class ReportCategoryController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Actualizar_Categoria_Reporte')")
     public ResponseEntity<ApiResponse<ReportCategory>> updateReport(@RequestBody ReportCategoryRequest request
             , @PathVariable int id) {
         ReportCategory updateReportCategory = reportCategoryService.updateReportCategory(request, id);
@@ -67,6 +72,7 @@ public class ReportCategoryController {
     }
 
     @PatchMapping("/deactivate/{id}")
+    @PreAuthorize("hasAuthority('Desactivar_Categoria_Reporte')")
     public ResponseEntity<ApiResponse<Void>> deactivateReport(@PathVariable int id) {
         reportCategoryService.deactiveReportCategory(id);
         return ResponseEntity.ok(

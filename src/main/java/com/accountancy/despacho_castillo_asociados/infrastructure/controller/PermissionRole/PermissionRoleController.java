@@ -8,6 +8,7 @@ import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +19,7 @@ public class PermissionRoleController {
     private final PermissionRoleService permissionRoleService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('Obtener_Permisos_Rol')")
     public ResponseEntity<ApiResponse<PageResult<PermissionRole>>> getAllPermissionRoles(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
@@ -30,6 +32,7 @@ public class PermissionRoleController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Obtener_Permiso_Rol')")
     public ResponseEntity<ApiResponse<PermissionRole>> findById(@PathVariable int id) {
         PermissionRole permissionRole = permissionRoleService.findByIdPermissionRole(id);
 
@@ -39,6 +42,7 @@ public class PermissionRoleController {
     }
 
     @GetMapping("/role/{roleId}")
+    @PreAuthorize("hasAuthority('Buscar_Permisos_por_Rol')")
     public ResponseEntity<ApiResponse<PageResult<PermissionRole>>> findByRoleId(
             @PathVariable int roleId,
             @RequestParam(defaultValue = "0") int page,
@@ -52,6 +56,7 @@ public class PermissionRoleController {
     }
 
     @GetMapping("/permission/{permissionId}")
+    @PreAuthorize("hasAuthority('Buscar_Permisos_Role_por_ID')")
     public ResponseEntity<ApiResponse<PageResult<PermissionRole>>> findByPermissionId(
             @PathVariable int permissionId,
             @RequestParam(defaultValue = "0") int page,
@@ -65,6 +70,7 @@ public class PermissionRoleController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Crear_Permiso_Rol')")
     public ResponseEntity<ApiResponse<PermissionRole>> createPermissionRole(@RequestBody PermissionRoleRequest request) {
         PermissionRole createdPermissionRole = permissionRoleService.createPermissionRole(request);
 
@@ -74,6 +80,7 @@ public class PermissionRoleController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('Eliminar_Permiso_Rol')")
     public ResponseEntity<ApiResponse<Void>> deletePermissionRole(@PathVariable int id) {
         permissionRoleService.deletePermissionRole(id);
 

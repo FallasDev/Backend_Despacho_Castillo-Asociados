@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,6 +20,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('Obtener_Usuarios')")
     public ResponseEntity<ApiResponse<PageResult<User>>> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
@@ -31,6 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Obtener_un_Usuario')")
     public ResponseEntity<ApiResponse<User>> findById(@PathVariable int id) {
         User user = userService.findByIdUser(id);
 
@@ -40,6 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/name/{name}")
+    @PreAuthorize("hasAuthority('Buscar_Usuario_por_Nombre')")
     public ResponseEntity<ApiResponse<User>> findByName(@PathVariable String name) {
         User user = userService.findByNameUser(name);
 
@@ -49,6 +53,7 @@ public class UserController {
     }
 
     @GetMapping("/surname/{surname}")
+    @PreAuthorize("hasAuthority('Buscar_Usuario_por_Apellido')")
     public ResponseEntity<ApiResponse<User>> findBySurname(@PathVariable String surname) {
         User user = userService.findBySurnameUser(surname);
 
@@ -58,6 +63,7 @@ public class UserController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Crear_Usuario')")
     public ResponseEntity<ApiResponse<User>> createUser(@RequestBody UserRequest request) {
         User createdUser = userService.createUser(request);
 
@@ -67,6 +73,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Actualizar_Usuario')")
     public ResponseEntity<ApiResponse<User>> updateUser(
             @RequestBody UserRequest request,
             @PathVariable int id) {
@@ -78,6 +85,7 @@ public class UserController {
     }
 
     @PatchMapping("/deactivate/{id}")
+    @PreAuthorize("hasAuthority('Desactivar_Usuario')")
     public ResponseEntity<ApiResponse<Void>> deactivateUser(@PathVariable int id) {
         userService.deactivateUser(id);
 

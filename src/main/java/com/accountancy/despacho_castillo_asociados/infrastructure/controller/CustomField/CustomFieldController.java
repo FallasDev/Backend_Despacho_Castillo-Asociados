@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class CustomFieldController {
     private final Messages messages;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('Obtener_Campos_Personalizados')")
     public ResponseEntity<ApiResponse<PageResult<CustomField>>> getCustomFields(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
@@ -41,6 +43,7 @@ public class CustomFieldController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Obtener_un_Campo_Personalizado')")
     public ResponseEntity<ApiResponse<CustomField>> getCustomFieldById(
             @PathVariable int id) {
 
@@ -57,6 +60,7 @@ public class CustomFieldController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Crear_Campo_Personalizado')")
     public ResponseEntity<ApiResponse<CustomField>> createCustomField(
             @RequestBody CustomFieldRequest request) {
 
@@ -73,6 +77,7 @@ public class CustomFieldController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Actualizar_Campo_Personalizado')")
     public ResponseEntity<ApiResponse<CustomField>> updateCustomField(
             @RequestBody CustomFieldRequest request,
             @PathVariable int id) {
@@ -90,6 +95,7 @@ public class CustomFieldController {
     }
 
     @PatchMapping("/{id}/deactivate")
+    @PreAuthorize("hasAuthority('Desactivar_Campo_Personalizado')")
     public ResponseEntity<ApiResponse<Void>> deactivateCustomField(
             @PathVariable int id) {
 
