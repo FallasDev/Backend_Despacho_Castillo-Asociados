@@ -11,12 +11,9 @@ import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Type.Ty
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.CustomField.JPACustomFieldRepository;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import org.jspecify.annotations.NonNull;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -37,6 +34,9 @@ public class CustomFieldRepositoryImpl implements CustomFieldRepository {
         customFieldEntity.setRequired(customField.isRequired());
         customFieldEntity.setExclusive(customField.isExclusive());
         customFieldEntity.setActive(true);
+        customFieldEntity.setDefaultValue(customField.getDefaultValue());
+        customFieldEntity.setPlaceholder(customField.getPlaceholder());
+        customFieldEntity.setHelpText(customField.getHelpText());
         customFieldEntity.setType(
                 new TypeEntity(
                         type.getId(),
@@ -144,28 +144,17 @@ public class CustomFieldRepositoryImpl implements CustomFieldRepository {
     }
 
     @Override
-    public PageResult<CustomField> findAll(int page, int size) {
+    public List<CustomField> findAll() {
 
-        Pageable pageable = Pageable.ofSize(size).withPage(page);
-        Page<CustomFieldEntity> customFields = jPACustomFieldRepository.findAll(pageable);
+        List<CustomFieldEntity> customFields = jPACustomFieldRepository.findAll();
 
-        List<CustomFieldEntity> customFieldList = customFields.getContent();
 
-        List<CustomField> customFieldResultList = customFieldList.stream()
+        return customFields.stream()
                 .map(this::getCustomField)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .filter(CustomField::isActive)
                 .toList();
-
-        return new PageResult<>(
-                customFieldResultList,
-                page,
-                size,
-                customFieldResultList.size(),
-                customFields.getTotalPages()
-        );
-
     }
 
     @Override
@@ -184,6 +173,17 @@ public class CustomFieldRepositoryImpl implements CustomFieldRepository {
         return jPACustomFieldRepository.existsByNameAndActive(name,false);
     }
 
+    @Override
+    public List<CustomField> findAllByIds(List<Integer> ids) {
+        List<CustomFieldEntity> customFieldEntities = jPACustomFieldRepository.findAllById(ids);
+
+        return customFieldEntities.stream()
+                .map(this::getCustomField)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .filter(CustomField::isActive)
+                .toList();
+    }
 
 
     @Override
@@ -228,6 +228,9 @@ public class CustomFieldRepositoryImpl implements CustomFieldRepository {
                 .setIsExclusive(customField.isExclusive())
                 .setIsActive(customField.isActive())
                 .setType(type)
+                .setPlaceholder(customField.getPlaceholder())
+                .setHelpText(customField.getHelpText())
+                .setDefaultValue(customField.getDefaultValue())
                 .getResult();
 
         return Optional.of(result);

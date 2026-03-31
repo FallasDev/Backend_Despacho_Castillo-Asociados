@@ -16,6 +16,7 @@ public interface JPACustomFieldRepository extends JpaRepository<CustomFieldEntit
 
     boolean existsByNameAndActive(String name, boolean active);
 
+
     Optional<CustomFieldEntity> findByIdAndActiveIsTrue(int id);
     Optional<CustomFieldEntity> findByNameAndActiveIsTrue(String name);
     Optional<CustomFieldEntity> findByNameAndActiveIsFalse(String name);

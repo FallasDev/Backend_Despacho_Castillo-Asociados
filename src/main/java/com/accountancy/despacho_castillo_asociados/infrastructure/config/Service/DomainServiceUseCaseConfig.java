@@ -15,7 +15,7 @@ public class DomainServiceUseCaseConfig {
     }
 
     @Bean
-    public FindServicesUseCase findAllServicesUseCase(ServiceRepository serviceRepository, Messages messages) {
+    public FindServicesUseCase findServicesUseCase(ServiceRepository serviceRepository, Messages messages) {
         return new FindServicesUseCase(serviceRepository, messages);
     }
 
@@ -38,6 +38,11 @@ public class DomainServiceUseCaseConfig {
     @Bean
     public FindByContainsNameLetterUseCase findByContainsNameLetterServiceUseCase(ServiceRepository serviceRepository, Messages messages) {
         return new FindByContainsNameLetterUseCase(serviceRepository, messages);
+    }
+
+    @Bean
+    public FindAllServicesUseCase findAllServicesUseCase(ServiceRepository serviceRepository, Messages messages) {
+        return new FindAllServicesUseCase(serviceRepository, messages);
     }
 
 }

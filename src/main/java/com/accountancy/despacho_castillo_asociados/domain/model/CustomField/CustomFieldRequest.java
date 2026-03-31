@@ -1,7 +1,5 @@
 package com.accountancy.despacho_castillo_asociados.domain.model.CustomField;
 
-import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
-
 public class CustomFieldRequest {
 
 
@@ -9,12 +7,35 @@ public class CustomFieldRequest {
     private boolean isRequired;
     private boolean isExclusive;
     private int typeId;
+    private String placeholder;
+    private String helpText;
+    private String defaultValue;
 
     public CustomFieldRequest(String name, boolean isRequired, boolean isExclusive, int typeId) {
         this.name = name;
         this.isRequired = isRequired;
         this.isExclusive = isExclusive;
         this.typeId = typeId;
+    }
+
+    public CustomFieldRequest(String name, boolean isRequired, boolean isExclusive, int typeId, String placeholder, String helpText, String defaultValue) {
+        this.name = name;
+        this.isRequired = isRequired;
+        this.isExclusive = isExclusive;
+        this.typeId = typeId;
+        this.placeholder = placeholder;
+        this.helpText = helpText;
+        this.defaultValue = defaultValue;
+    }
+
+    public CustomFieldRequest() {
+        this.name = "";
+        this.isRequired = false;
+        this.isExclusive = false;
+        this.typeId = 0;
+        this.placeholder = "";
+        this.helpText = "";
+        this.defaultValue = "";
     }
 
     public String getName() {
@@ -50,6 +71,27 @@ public class CustomFieldRequest {
     }
 
 
+    public String getPlaceholder() {
+        return placeholder;
+    }
 
+    public void setPlaceholder(String placeholder) {
+        this.placeholder = placeholder;
+    }
 
+    public String getHelpText() {
+        return helpText;
+    }
+
+    public void setHelpText(String helpText) {
+        this.helpText = helpText;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
 }

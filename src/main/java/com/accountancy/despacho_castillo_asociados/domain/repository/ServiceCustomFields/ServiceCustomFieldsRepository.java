@@ -1,16 +1,19 @@
 package com.accountancy.despacho_castillo_asociados.domain.repository.ServiceCustomFields;
 
+import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.CustomField;
+import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
 import com.accountancy.despacho_castillo_asociados.domain.model.ServiceCustomFields.ServiceCustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.ServiceCustomFields.ServiceCustomFieldRequest;
-import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ServiceCustomFieldsRepository {
 
-    ServiceCustomField create(ServiceCustomFieldRequest request);
-    ServiceCustomField update(ServiceCustomFieldRequest request, int id);
+    ServiceCustomField create(ServiceCustomFieldRequest request, DomainService service, List<CustomField> customFields);
+    List<ServiceCustomField> createAll(List<ServiceCustomField> requests);
+    ServiceCustomField update(ServiceCustomFieldRequest request,  DomainService service, List<CustomField> customFields,  int id);
     boolean deactivate(int id);
     boolean deactivateByServiceId(int serviceId);
     boolean deactivateByCustomFieldId(int customFieldId);
@@ -23,8 +26,7 @@ public interface ServiceCustomFieldsRepository {
 
     boolean existsById(int id);
     boolean existsByServiceId(int serviceId);
-    Optional<ServiceCustomField> findByServiceIdAndCustomFieldIdAndIsInactive(int serviceId, int customFieldId);
-    Optional<ServiceCustomField> findByServiceIdAndCustomFieldId(int serviceId, int customFieldId);
+    Optional<ServiceCustomField> findByNameAndIsInactive(String name);
 
 
 }

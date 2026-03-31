@@ -5,6 +5,7 @@ import com.accountancy.despacho_castillo_asociados.domain.repository.ServiceCust
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.EmptyListException;
+import jakarta.transaction.Transactional;
 
 public class FindServicesCustomFieldsUseCase {
 
@@ -17,6 +18,7 @@ public class FindServicesCustomFieldsUseCase {
         this.messages = messages;
     }
 
+    @Transactional
     public PageResult<ServiceCustomField> execute(int serviceId, int page, int size) {
 
             if (serviceId > 0) {

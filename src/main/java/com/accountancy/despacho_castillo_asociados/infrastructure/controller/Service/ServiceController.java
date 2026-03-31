@@ -60,6 +60,20 @@ public class ServiceController {
         );
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<DomainService>>> getAllServices() {
+
+        List<DomainService> services = domainServiceService.findAllWithoutPagination();
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        messages.get("service.success.fetch_all"),
+                        services
+                )
+        );
+    }
+
     @PostMapping
     @PreAuthorize("hasAuthority('Crear_Servicio')")
     public ResponseEntity<ApiResponse<DomainService>> createService(@RequestBody ServiceRequest request) {

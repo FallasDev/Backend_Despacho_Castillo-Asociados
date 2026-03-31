@@ -28,6 +28,15 @@ public class CustomFieldEntity {
     @Column(name = "exclusive", nullable = false)
     private boolean exclusive = false;
 
+    @Column(name = "placeholder", length = 255)
+    private String placeholder = "";
+
+    @Column(name = "help_text", length = 255)
+    private String helpText = "";
+
+    @Column(name = "default_value", length = 255)
+    private String defaultValue = "";
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "type_id", nullable = false)
     private TypeEntity type;

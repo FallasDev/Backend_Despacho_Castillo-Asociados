@@ -1,9 +1,6 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.config.ServiceCustomField;
 
-import com.accountancy.despacho_castillo_asociados.application.usecase.ServiceCustomFields.CreateServiceCustomFieldsUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.ServiceCustomFields.DeactiveServiceCustomFieldsUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.ServiceCustomFields.FindByIdServiceCustomFieldsUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.ServiceCustomFields.FindServicesCustomFieldsUseCase;
+import com.accountancy.despacho_castillo_asociados.application.usecase.ServiceCustomFields.*;
 import com.accountancy.despacho_castillo_asociados.domain.repository.CustomField.CustomFieldRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Service.ServiceRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.ServiceCustomFields.ServiceCustomFieldsRepository;
@@ -37,6 +34,11 @@ public class ServiceCustomFieldUseCaseConfig {
     @Bean
     public FindByIdServiceCustomFieldsUseCase findByIdServiceCustomFieldUseCase(ServiceCustomFieldsRepository repository) {
         return new FindByIdServiceCustomFieldsUseCase();
+    }
+
+    @Bean
+    public UpdateServiceCustomFieldsUseCase updateServiceCustomFieldUseCase(ServiceCustomFieldsRepository serviceCustomFieldsRepository, CustomFieldRepository customFieldRepository, ServiceRepository serviceRepository, Messages messages) {
+        return new UpdateServiceCustomFieldsUseCase(serviceCustomFieldsRepository, customFieldRepository, serviceRepository, messages);
     }
 
 }

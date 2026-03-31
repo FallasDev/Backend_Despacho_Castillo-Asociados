@@ -7,6 +7,7 @@ import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.EmptyListException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
@@ -20,10 +21,11 @@ public class FindAllCustomFieldUseCase {
         this.customFieldRepository = customFieldRepository;
     }
 
-    public PageResult<CustomField> execute(int page, int size) {
-        PageResult<CustomField> customFields = customFieldRepository.findAll(page, size);
+    @Transactional
+    public List<CustomField> execute(String name) {
+        List<CustomField> customFields = customFieldRepository.findAll();
 
-        if (customFields.content().isEmpty()) {
+        if (customFields.isEmpty()) {
             throw new EmptyListException(messages.get("customfield.exception.fetch.all.none"));
         }
 

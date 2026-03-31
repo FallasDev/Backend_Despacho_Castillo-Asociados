@@ -11,6 +11,9 @@ public interface Builder {
     CustomFieldBuilder setIsActive(boolean isActive);
     CustomFieldBuilder setIsExclusive(boolean isExclusive);
     CustomFieldBuilder setType(Type type);
+    CustomFieldBuilder setPlaceholder(String placeholder);
+    CustomFieldBuilder setHelpText(String helpText);
+    CustomFieldBuilder setDefaultValue(String defaultValue);
     CustomField getResult();
 
 }

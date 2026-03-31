@@ -169,6 +169,16 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     }
 
     @Override
+    public List<DomainService> findAllWithoutPagination() {
+        return jpaServiceRepository.findAll().stream().map(entity -> new DomainService(
+                entity.getId(),
+                entity.getName(),
+                entity.getDescription(),
+                entity.isActive()
+        )).filter(DomainService::isActive).toList();
+    }
+
+    @Override
     public boolean existsByNameAndIsActive(String name) {
         return jpaServiceRepository.existsByNameAndActive(name, true);
     }

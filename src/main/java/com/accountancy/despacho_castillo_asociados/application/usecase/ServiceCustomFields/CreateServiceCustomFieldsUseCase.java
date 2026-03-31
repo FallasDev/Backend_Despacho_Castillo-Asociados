@@ -4,6 +4,7 @@ package com.accountancy.despacho_castillo_asociados.application.usecase.ServiceC
 
 import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.CustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
+import com.accountancy.despacho_castillo_asociados.domain.model.ServiceCustomFields.CustomFieldWithOrder;
 import com.accountancy.despacho_castillo_asociados.domain.model.ServiceCustomFields.ServiceCustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.ServiceCustomFields.ServiceCustomFieldRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.CustomField.CustomFieldRepository;
@@ -11,7 +12,9 @@ import com.accountancy.despacho_castillo_asociados.domain.repository.Service.Ser
 import com.accountancy.despacho_castillo_asociados.domain.repository.ServiceCustomFields.ServiceCustomFieldsRepository;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
+import jakarta.transaction.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public class CreateServiceCustomFieldsUseCase {
@@ -31,59 +34,30 @@ public class CreateServiceCustomFieldsUseCase {
         this.customFieldRepository = customFieldRepository;
     }
 
+    @Transactional
     public ServiceCustomField execute(ServiceCustomFieldRequest request) {
 
         if (request == null) {
             throw new BadRequestException(messages.get("servicecustomfield.exception.create.cannot_be_null"));
         }
 
+        List<CustomField> customFields = customFieldRepository.findAllByIds(request.getCustomFieldIds().stream().map(CustomFieldWithOrder::getCustomFieldId).toList());
 
-        Optional<ServiceCustomField> existingRelation = repository.findByServiceIdAndCustomFieldId(request.getServiceId(),
-                request.getCustomFieldId());
-
-        Optional<DomainService> service = serviceRepository.findById(request.getServiceId());
-        Optional<CustomField> customField = customFieldRepository.findById(request.getCustomFieldId());
-
-        if (existingRelation.isPresent() && existingRelation.get().isActive()) {
-            throw new BadRequestException(messages.get("servicecustomfield.exception.create.name.relation.already.exists"));
-        }
-
-        if (service.isEmpty()) {
-            throw new BadRequestException(messages.get("servicecustomfield.exception.create.service.not_found",
-                    new Object[]{request.getServiceId()}));
-        }
-
-        if (customField.isEmpty()) {
-            throw new BadRequestException(messages.get("servicecustomfield.exception.create.customfield.not_found",
-                    new Object[]{request.getCustomFieldId()}));
-        }
-
-        if (!service.get().isActive()) {
-            throw new BadRequestException(messages.get("servicecustomfield.exception.create.service.not_found",
-                    new Object[]{request.getServiceId()}));
-        }
-
-        if (!customField.get().isActive()) {
-            throw new BadRequestException(messages.get("servicecustomfield.exception.create.customfield.not_found",
-                    new Object[]{request.getCustomFieldId()}));
-        }
-
-        Optional<ServiceCustomField> inactive = repository.findByServiceIdAndCustomFieldIdAndIsInactive(request.getServiceId(), request.getCustomFieldId());
+        Optional<ServiceCustomField> inactive = repository.findByNameAndIsInactive(request.getName());
 
         if (inactive.isPresent()) {
             ServiceCustomField reactivatedServiceCustomField = inactive.get();
             reactivatedServiceCustomField.setActive(true);
             repository.activate(reactivatedServiceCustomField.getId());
-            return reactivatedServiceCustomField;
+            return  reactivatedServiceCustomField;
         }
 
-        ServiceCustomField created = repository.create(request);
+        DomainService service = serviceRepository.findById(request.getServiceId()).orElseThrow(
+                () -> new BadRequestException(
+                        messages.get("servicecustomfield.exception.create.service.not_found", new Object[]{request.getServiceId()})));
 
-        if (created == null) {
-            throw new BadRequestException(messages.get("servicecustomfield.exception.create.failed"));
-        }
 
-        return created;
+        return repository.create(request, service, customFields);
 
     }
 

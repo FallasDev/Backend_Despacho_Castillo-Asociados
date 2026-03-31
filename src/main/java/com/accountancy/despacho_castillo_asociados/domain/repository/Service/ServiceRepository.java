@@ -22,6 +22,7 @@ public interface ServiceRepository {
     Optional<DomainService> findByNameAndIsActive(String name);
     Optional<DomainService> findByNameAndIsInactive(String name);
     PageResult<DomainService> findAll(int page, int size);
+    List<DomainService> findAllWithoutPagination();
 
     boolean existsByNameAndIsActive(String name);
 
