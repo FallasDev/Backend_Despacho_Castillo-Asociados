@@ -205,6 +205,9 @@ public class FormalitieCustomFieldsRepositoryImpl implements FormalitieCustomFie
                         .setIsRequired(val.isRequired())
                         .setIsActive(val.isActive())
                         .setIsExclusive(val.isExclusive())
+                        .setDefaultValue(val.getDefaultValue())
+                        .setHelpText(val.getHelpText())
+                        .setPlaceholder(val.getPlaceholder())
                         .getResult(
                 ))
                 .orElseThrow(() -> new BadRequestException("CustomField with id " + entity.getCustomFieldId() + " not found"));

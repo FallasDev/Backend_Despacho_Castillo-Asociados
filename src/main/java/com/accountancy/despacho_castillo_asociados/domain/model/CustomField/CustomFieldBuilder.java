@@ -52,6 +52,24 @@ public class CustomFieldBuilder implements Builder {
     }
 
     @Override
+    public CustomFieldBuilder setPlaceholder(String placeholder) {
+        this.customField.setPlaceholder(placeholder);
+        return this;
+    }
+
+    @Override
+    public CustomFieldBuilder setHelpText(String helpText) {
+        this.customField.setHelpText(helpText);
+        return this;
+    }
+
+    @Override
+    public CustomFieldBuilder setDefaultValue(String defaultValue) {
+        this.customField.setDefaultValue(defaultValue);
+        return this;
+    }
+
+    @Override
     public CustomField getResult() {
         return this.customField;
     }

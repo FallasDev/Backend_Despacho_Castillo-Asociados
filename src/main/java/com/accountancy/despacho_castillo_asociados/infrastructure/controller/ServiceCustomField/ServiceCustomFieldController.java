@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/service-custom-fields")
 @RequiredArgsConstructor
@@ -40,13 +42,31 @@ public class ServiceCustomFieldController {
     public ResponseEntity<ApiResponse<ServiceCustomField>> createServiceCustomField(
             @RequestBody ServiceCustomFieldRequest request) {
 
-        ServiceCustomField createdField =
+
+        System.out.println("Received request: " + request);
+
+        ServiceCustomField createdFields =
                 service.createServiceCustomField(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse<>(true,
                         messages.get("servicecustomfield.success.create"),
-                        createdField));
+                        createdFields));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<ServiceCustomField>> updateServiceCustomField(
+            @PathVariable int id,
+            @RequestBody ServiceCustomFieldRequest request) {
+
+        System.out.println("Received update request for ID " + id + ": " + request);
+        ServiceCustomField updatedFields =
+                service.updateServiceCustomField(id,request);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse<>(true,
+                        messages.get("servicecustomfield.success.update"),
+                        updatedFields));
     }
 
     @PatchMapping("/{id}/deactivate")

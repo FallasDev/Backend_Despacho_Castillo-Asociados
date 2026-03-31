@@ -19,11 +19,13 @@ public interface CustomFieldRepository {
     Optional<CustomField> findByName(String name);
     Optional<CustomField> findByNameAndIsActive(String name);
     Optional<CustomField> findByNameAndIsInactive(String name);
-    PageResult<CustomField> findAll(int page, int size);
+    List<CustomField> findAll();
     PageResult<CustomField> findByTypeId(int typeId, int page, int size);
     PageResult<CustomField> findByIsRequired(boolean isRequired, int page, int size);
 
     boolean existsByNameAndIsActive(String name);
     boolean existsByNameAndIsInactive(String name);
+
+    List<CustomField> findAllByIds(List<Integer> ids);
 
 }

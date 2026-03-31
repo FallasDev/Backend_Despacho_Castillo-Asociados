@@ -17,19 +17,22 @@ public class DomainServiceService {
     private DeactiveServiceUseCase deactiveServiceUseCase;
     private FindServicesUseCase findServicesUseCase;
     private FindByIdServiceUseCase findByIdServiceUseCase;
+    private FindAllServicesUseCase findAllServicesUseCase;
 
     public DomainServiceService(
             CreateServiceUseCase createServiceUseCase,
             UpdateServiceUseCase updateServiceUseCase,
             DeactiveServiceUseCase deactiveServiceUseCase,
             FindServicesUseCase findServicesUseCase,
-            FindByIdServiceUseCase findByIdServiceUseCase
+            FindByIdServiceUseCase findByIdServiceUseCase,
+            FindAllServicesUseCase findAllServicesUseCase
     ) {
         this.createServiceUseCase = createServiceUseCase;
         this.updateServiceUseCase = updateServiceUseCase;
         this.deactiveServiceUseCase = deactiveServiceUseCase;
         this.findServicesUseCase = findServicesUseCase;
         this.findByIdServiceUseCase = findByIdServiceUseCase;
+        this.findAllServicesUseCase = findAllServicesUseCase;
     }
 
     public DomainService createService(ServiceRequest serviceRequest) {
@@ -50,6 +53,10 @@ public class DomainServiceService {
 
     public DomainService findByIdService(int id) {
         return findByIdServiceUseCase.execute(id);
+    }
+
+    public List<DomainService> findAllWithoutPagination() {
+        return findAllServicesUseCase.execute();
     }
 
 }
