@@ -16,17 +16,20 @@ public class ServiceCustomFieldsService {
     FindByIdServiceCustomFieldsUseCase findByIdServiceCustomFieldsUseCase;
     UpdateServiceCustomFieldsUseCase updateServiceCustomFieldsUseCase;
     FindServicesCustomFieldsUseCase findServicesCustomFieldsUseCase;
+    FindAllServiceCustomFields findAllServiceCustomFields;
 
     public ServiceCustomFieldsService(CreateServiceCustomFieldsUseCase createServiceCustomFieldsUseCase,
                                       DeactiveServiceCustomFieldsUseCase deactiveServiceCustomFieldsUseCase,
                                       FindByIdServiceCustomFieldsUseCase findByIdServiceCustomFieldsUseCase,
                                       FindServicesCustomFieldsUseCase findServicesCustomFieldsUseCase,
-                                      UpdateServiceCustomFieldsUseCase updateServiceCustomFieldsUseCase) {
+                                      UpdateServiceCustomFieldsUseCase updateServiceCustomFieldsUseCase,
+                                      FindAllServiceCustomFields findAllServiceCustomFields) {
         this.createServiceCustomFieldsUseCase = createServiceCustomFieldsUseCase;
         this.deactiveServiceCustomFieldsUseCase = deactiveServiceCustomFieldsUseCase;
         this.findByIdServiceCustomFieldsUseCase = findByIdServiceCustomFieldsUseCase;
         this.findServicesCustomFieldsUseCase = findServicesCustomFieldsUseCase;
         this.updateServiceCustomFieldsUseCase = updateServiceCustomFieldsUseCase;
+        this.findAllServiceCustomFields = findAllServiceCustomFields;
     }
 
     public ServiceCustomField createServiceCustomField(ServiceCustomFieldRequest request) {
@@ -38,8 +41,7 @@ public class ServiceCustomFieldsService {
     }
 
     public ServiceCustomField findByIdServiceCustomField(int id) {
-        // Not implemented
-        return null;
+        return findByIdServiceCustomFieldsUseCase.execute(id);
     }
 
     public PageResult<ServiceCustomField> findServicesCustomFields(int serviceId, int page, int size) {
@@ -50,6 +52,9 @@ public class ServiceCustomFieldsService {
         return updateServiceCustomFieldsUseCase.execute(request, id);
     }
 
+    public List<ServiceCustomField> findAllServiceCustomFields() {
+        return findAllServiceCustomFields.execute();
+    }
 
 
 }

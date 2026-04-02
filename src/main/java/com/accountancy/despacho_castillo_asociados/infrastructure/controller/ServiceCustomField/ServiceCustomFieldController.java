@@ -38,12 +38,30 @@ public class ServiceCustomFieldController {
                         result));
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<ServiceCustomField>>> getAllServiceCustomFields() {
+        List<ServiceCustomField> result = service.findAllServiceCustomFields();
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,
+                        messages.get("servicecustomfield.success.fetch_all"),
+                        result));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<ServiceCustomField>> getServiceCustomFieldById(@PathVariable int id) {
+        ServiceCustomField result = service.findByIdServiceCustomField(id);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,
+                        messages.get("servicecustomfield.success.fetch_by_id"),
+                        result));
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse<ServiceCustomField>> createServiceCustomField(
             @RequestBody ServiceCustomFieldRequest request) {
 
-
-        System.out.println("Received request: " + request);
 
         ServiceCustomField createdFields =
                 service.createServiceCustomField(request);

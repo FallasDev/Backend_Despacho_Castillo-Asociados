@@ -22,7 +22,7 @@ public interface ServiceCustomFieldsRepository {
     Optional<ServiceCustomField> findById(int id);
     PageResult<ServiceCustomField> findByServiceId(int serviceId, int page, int size);
     PageResult<ServiceCustomField> findAll(int page, int size);
-
+    List<ServiceCustomField> findAllWithoutPagination();
 
     boolean existsById(int id);
     boolean existsByServiceId(int serviceId);

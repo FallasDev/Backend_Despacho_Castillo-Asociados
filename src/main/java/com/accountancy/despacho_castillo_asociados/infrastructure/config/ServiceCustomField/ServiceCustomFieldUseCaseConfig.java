@@ -33,7 +33,7 @@ public class ServiceCustomFieldUseCaseConfig {
 
     @Bean
     public FindByIdServiceCustomFieldsUseCase findByIdServiceCustomFieldUseCase(ServiceCustomFieldsRepository repository) {
-        return new FindByIdServiceCustomFieldsUseCase();
+        return new FindByIdServiceCustomFieldsUseCase(repository);
     }
 
     @Bean
@@ -41,4 +41,8 @@ public class ServiceCustomFieldUseCaseConfig {
         return new UpdateServiceCustomFieldsUseCase(serviceCustomFieldsRepository, customFieldRepository, serviceRepository, messages);
     }
 
+    @Bean
+    public FindAllServiceCustomFields findAllServiceCustomFields(ServiceCustomFieldsRepository repository) {
+        return new FindAllServiceCustomFields(repository);
+    }
 }

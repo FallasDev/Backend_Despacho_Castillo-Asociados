@@ -161,8 +161,6 @@ public class ServiceCustomFieldImpl implements ServiceCustomFieldsRepository {
         return jpaServiceCustomField.findById(id).map(this::getServiceCustomField);
     }
 
-
-
     @Override
     public PageResult<ServiceCustomField> findByServiceId(int serviceId, int page, int size) {
 
@@ -181,6 +179,15 @@ public class ServiceCustomFieldImpl implements ServiceCustomFieldsRepository {
         Page<ServiceCustomFieldEntity> serviceCustomFieldPage = jpaServiceCustomField.findAll(pageable);
 
         return getServiceCustomFieldPageResult(serviceCustomFieldPage);
+    }
+
+    @Override
+    public List<ServiceCustomField> findAllWithoutPagination() {
+        return jpaServiceCustomField.findAll().stream()
+                .map(this::getServiceCustomField)
+                .filter(Objects::nonNull)
+                .filter(ServiceCustomField::isActive)
+                .toList();
     }
 
     @NonNull
