@@ -123,7 +123,10 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
         emailService.sendHtmlEmail(
             client.getEmail(),
             "Nuevo inicio de sesión",
-            new HtmlContent().generateLoginAlertEmail(client.getName())
+            "<p>Hola " + client.getName() + ",</p>" +
+            "<p>Se ha detectado un nuevo inicio de sesión en tu cuenta. Si no fuiste tú, por favor contacta con nuestro soporte.</p>" +
+            "<p>Si fuiste tú, puedes ignorar este mensaje.</p>" +
+            "<p>Saludos,<br/>Despacho Castillo & Asociados</p>"
         );
 
         return new LoginResponse(token, 3600, client.getId(), "CLIENT", client.getName());

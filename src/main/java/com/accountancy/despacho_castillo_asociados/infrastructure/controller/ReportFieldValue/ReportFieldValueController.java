@@ -11,6 +11,7 @@ import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +26,7 @@ public class ReportFieldValueController {
     private final Messages messages;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Crear_Valor_Campo_Reporte')")
     public ResponseEntity<ApiResponse<ReportFieldValue>> createReportFieldValue(
             @RequestBody ReportFieldValueRequest request
     ) {
@@ -42,6 +44,7 @@ public class ReportFieldValueController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Actualizar_Valor_Campo_Reporte')")
     public ResponseEntity<ApiResponse<ReportFieldValue>> updateReportFieldValue(
             @RequestBody ReportFieldValueRequest request,
             @PathVariable int id
@@ -58,6 +61,7 @@ public class ReportFieldValueController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('Obtener_Valores_Campo_Reporte')")
     public ResponseEntity<ApiResponse<PageResult<ReportFieldValue>>> getReportFieldValues(
             @RequestParam(defaultValue = "0") int reportId,
             @RequestParam(defaultValue = "0") int page,
@@ -76,6 +80,7 @@ public class ReportFieldValueController {
     }
 
     @PatchMapping("/{id}/deactivate")
+    @PreAuthorize("hasAuthority('Desactivar_Valor_Campo_Reporte')")
     public ResponseEntity<ApiResponse<Void>> deactivateReportFieldValue(@PathVariable int id) {
         service.deactive(id);
 
@@ -89,6 +94,7 @@ public class ReportFieldValueController {
     }
 
     @PostMapping("/{id}/upload")
+    @PreAuthorize("hasAuthority('Subir_Archivo_Valor_Campo_Reporte')")
     public ResponseEntity<ApiResponse<Void>> uploadFile(
             @PathVariable int id,
             @RequestParam MultipartFile file

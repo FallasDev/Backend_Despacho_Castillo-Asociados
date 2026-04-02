@@ -8,6 +8,7 @@ import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +19,7 @@ public class RoleController {
     private final RoleService roleService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('Obtener_Roles')")
     public ResponseEntity<ApiResponse<PageResult<Role>>> getAllRoles(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
@@ -30,6 +32,7 @@ public class RoleController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Obtener_un_Rol')")
     public ResponseEntity<ApiResponse<Role>> findById(@PathVariable int id) {
         Role role = roleService.findByIdRole(id);
 
@@ -39,6 +42,7 @@ public class RoleController {
     }
 
     @GetMapping("/name/{name}")
+    @PreAuthorize("hasAuthority('Buscar_Rol_por_Nombre')")
     public ResponseEntity<ApiResponse<Role>> findByName(@PathVariable String name) {
         Role role = roleService.findByNameRole(name);
 
@@ -48,6 +52,7 @@ public class RoleController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Crear_Rol')")
     public ResponseEntity<ApiResponse<Role>> createRole(@RequestBody RoleRequest request) {
         Role createdRole = roleService.createRole(request);
 
@@ -57,6 +62,7 @@ public class RoleController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Actualizar_Rol')")
     public ResponseEntity<ApiResponse<Role>> updateRole(
             @RequestBody RoleRequest request,
             @PathVariable int id) {
@@ -68,6 +74,7 @@ public class RoleController {
     }
 
     @PatchMapping("/deactivate/{id}")
+    @PreAuthorize("hasAuthority('Desactivar_Rol')")
     public ResponseEntity<ApiResponse<Void>> deactivateRole(@PathVariable int id) {
         roleService.deactivateRole(id);
 

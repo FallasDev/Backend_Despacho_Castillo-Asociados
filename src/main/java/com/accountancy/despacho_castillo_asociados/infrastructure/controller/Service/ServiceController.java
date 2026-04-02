@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class ServiceController {
     private final Messages messages;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('Obtener_Servicios')")
     public ResponseEntity<ApiResponse<PageResult<DomainService>>> getAllServices(
             @RequestParam(required = false) String name,
             @RequestParam(defaultValue = "0") int page,
@@ -44,6 +46,7 @@ public class ServiceController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Obtener_un_Servicio')")
     public ResponseEntity<ApiResponse<DomainService>> findById(@PathVariable int id) {
 
         DomainService service = domainServiceService.findByIdService(id);
@@ -72,6 +75,7 @@ public class ServiceController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Crear_Servicio')")
     public ResponseEntity<ApiResponse<DomainService>> createService(@RequestBody ServiceRequest request) {
 
         DomainService created = domainServiceService.createService(request);
@@ -86,6 +90,7 @@ public class ServiceController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Actualizar_Servicio')")
     public ResponseEntity<ApiResponse<DomainService>> updateService(
             @RequestBody ServiceRequest request,
             @PathVariable int id) {
@@ -102,6 +107,7 @@ public class ServiceController {
     }
 
     @PatchMapping("/deactivate/{id}")
+    @PreAuthorize("hasAuthority('Desactivar_Servicio')")
     public ResponseEntity<ApiResponse<Void>> deactivateService(@PathVariable int id) {
 
         domainServiceService.deactiveService(id);

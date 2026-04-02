@@ -9,6 +9,7 @@ import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +24,7 @@ public class ReportController {
 
 
     @GetMapping
+    @PreAuthorize("hasAuthority('Obtener_Reportes')")
     public ResponseEntity<ApiResponse<PageResult<Report>>> findReports(
             @RequestParam(required = false) String title,
             @RequestParam(defaultValue = "0") int page,
@@ -37,6 +39,7 @@ public class ReportController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Obtener_un_Reporte')")
     public ResponseEntity<ApiResponse<Report>> findById(@PathVariable int id) {
 
         Report report = reportService.findByIdReport(id);
@@ -48,6 +51,7 @@ public class ReportController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Crear_Reporte')")
     public ResponseEntity<ApiResponse<Report>> createReport(@RequestBody ReportRequest request) {
 
         Report createdReport = reportService.createReport(request);
@@ -58,8 +62,8 @@ public class ReportController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Report>> updateReport(@RequestBody ReportRequest request, @
-PathVariable int id) {
+    @PreAuthorize("hasAuthority('Actualizar_Reporte')")
+    public ResponseEntity<ApiResponse<Report>> updateReport(@RequestBody ReportRequest request, @PathVariable int id) {
 
         Report updatedReport = reportService.updateReport(request, id);
 
@@ -69,6 +73,7 @@ PathVariable int id) {
     }
 
     @PatchMapping("/deactivate/{id}")
+    @PreAuthorize("hasAuthority('Desactivar_Reporte')")
     public ResponseEntity<ApiResponse<Void>> deactiveReport(@PathVariable int id) {
 
         reportService.deactiveReport(id);

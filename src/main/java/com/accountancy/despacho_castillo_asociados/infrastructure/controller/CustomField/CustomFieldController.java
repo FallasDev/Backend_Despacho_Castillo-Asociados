@@ -24,12 +24,12 @@ public class CustomFieldController {
     private final Messages messages;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CustomField>>> getCustomFields(
-            @RequestParam(defaultValue = "") String name
-            ) {
+    public ResponseEntity<ApiResponse<PageResult<CustomField>>> getCustomFields(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        List<CustomField> result =
-                customFieldService.findAllCustomFields(name);
+        PageResult<CustomField> result =
+                customFieldService.findAllCustomFields(page, size);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
@@ -59,9 +59,6 @@ public class CustomFieldController {
     @PostMapping
     public ResponseEntity<ApiResponse<CustomField>> createCustomField(
             @RequestBody CustomFieldRequest request) {
-
-        System.out.println(request);
-
 
         CustomField created =
                 customFieldService.createCustomField(request);

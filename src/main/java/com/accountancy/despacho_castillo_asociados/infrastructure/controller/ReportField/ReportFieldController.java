@@ -10,6 +10,7 @@ import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +23,7 @@ public class ReportFieldController {
 
 
     @GetMapping
+    @PreAuthorize("hasAuthority('Obtener_Campos_Reporte')")
     public ResponseEntity<ApiResponse<PageResult<ReportField>>> getReportFields(
             @RequestParam (defaultValue = "0") int page,
             @RequestParam (defaultValue = "10") int size,
@@ -41,6 +43,7 @@ public class ReportFieldController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Obtener_un_Campo_Reporte')")
     public ResponseEntity<ApiResponse<ReportField>> getReportFieldById(@PathVariable int id) {
 
         ReportField reportField = reportFieldService.findByIdReportField(id);
@@ -55,6 +58,7 @@ public class ReportFieldController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Crear_Campo_Reporte')")
     public ResponseEntity<ApiResponse<ReportField>> createReportField(@RequestBody ReportFieldRequest reportFieldRequest) {
 
         ReportField reportField = reportFieldService.createReportField(reportFieldRequest);
@@ -69,6 +73,7 @@ public class ReportFieldController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Actualizar_Campo_Reporte')")
     public ResponseEntity<ApiResponse<ReportField>> updateReportField(@RequestBody ReportFieldRequest
                                                                                     reportFieldRequest, @PathVariable int id) {
 
@@ -84,6 +89,7 @@ public class ReportFieldController {
         }
 
     @PatchMapping("deactivate/{id}")
+    @PreAuthorize("hasAuthority('Desactivar_Campo_Reporte')")
     public ResponseEntity<ApiResponse<Void>> deactiveReportField(@PathVariable int id) {
 
         reportFieldService.deactiveReportField(id);

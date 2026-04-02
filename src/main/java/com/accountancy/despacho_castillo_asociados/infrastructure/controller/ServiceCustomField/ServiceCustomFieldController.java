@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class ServiceCustomFieldController {
     private final Messages messages;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('Obtener_Campos_Personalizados_Servicio')")
     public ResponseEntity<ApiResponse<PageResult<ServiceCustomField>>> getServicesCustomFields(
             @RequestParam(defaultValue = "0") int serviceId,
             @RequestParam(defaultValue = "0") int page,
@@ -59,6 +61,7 @@ public class ServiceCustomFieldController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Crear_Campo_Personalizado_Servicio')")
     public ResponseEntity<ApiResponse<ServiceCustomField>> createServiceCustomField(
             @RequestBody ServiceCustomFieldRequest request) {
 
@@ -88,6 +91,7 @@ public class ServiceCustomFieldController {
     }
 
     @PatchMapping("/{id}/deactivate")
+    @PreAuthorize("hasAuthority('Desactivar_Campo_Personalizado_Servicio')")
     public ResponseEntity<ApiResponse<Void>> deactivateServiceCustomField(
             @PathVariable int id) {
 

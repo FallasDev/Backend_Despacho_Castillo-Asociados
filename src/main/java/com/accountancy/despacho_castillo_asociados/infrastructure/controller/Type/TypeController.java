@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class TypeController {
     private final Messages messages;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('Obtener_Tipos')")
     public ResponseEntity<ApiResponse<PageResult<Type>>> getAllTypes(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
@@ -40,6 +42,7 @@ public class TypeController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Obtener_un_Tipo')")
     public ResponseEntity<ApiResponse<Type>> findById(@PathVariable int id) {
 
         Type type = serviceType.findByIdType(id);
@@ -54,6 +57,7 @@ public class TypeController {
     }
 
     @GetMapping("/name/{name}")
+    @PreAuthorize("hasAuthority('Buscar_Tipo_por_Nombre')")
     public ResponseEntity<ApiResponse<Type>> findByName(@PathVariable String name) {
 
         Type type = serviceType.findByNameType(name);
@@ -68,6 +72,7 @@ public class TypeController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Crear_Tipo')")
     public ResponseEntity<ApiResponse<Type>> createType(
             @RequestBody  TypeRequest request) {
 
@@ -83,6 +88,7 @@ public class TypeController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Actualizar_Tipo')")
     public ResponseEntity<ApiResponse<Type>> updateType(
             @RequestBody TypeRequest request,
             @PathVariable int id) {
@@ -99,6 +105,7 @@ public class TypeController {
     }
 
     @PatchMapping("/deactivate/{id}")
+    @PreAuthorize("hasAuthority('Desactivar_Tipo')")
     public ResponseEntity<ApiResponse<Void>> deactivateType(@PathVariable int id) {
 
         serviceType.deactiveType(id);

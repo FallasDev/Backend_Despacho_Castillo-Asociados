@@ -7,6 +7,7 @@ import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,6 +18,7 @@ public class PermissionController {
     private final PermissionService permissionService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('Obtener_Permisos')")
     public ResponseEntity<ApiResponse<PageResult<Permission>>> getAllPermissions(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
@@ -29,6 +31,7 @@ public class PermissionController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Obtener_un_Permiso')")
     public ResponseEntity<ApiResponse<Permission>> findById(@PathVariable int id) {
         Permission permission = permissionService.findByIdPermission(id);
 
@@ -38,6 +41,7 @@ public class PermissionController {
     }
 
     @GetMapping("/name/{name}")
+    @PreAuthorize("hasAuthority('Buscar_Permiso_por_Nombre')")
     public ResponseEntity<ApiResponse<Permission>> findByName(@PathVariable String name) {
         Permission permission = permissionService.findByNamePermission(name);
 
@@ -47,6 +51,7 @@ public class PermissionController {
     }
 
     @GetMapping("/description/{description}")
+    @PreAuthorize("hasAuthority('Buscar_Permiso_por_Descripcion')")
     public ResponseEntity<ApiResponse<Permission>> findByDescription(@PathVariable String description) {
         Permission permission = permissionService.findByDescriptionPermission(description);
 
@@ -56,6 +61,7 @@ public class PermissionController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Actualizar_Permiso')")
     public ResponseEntity<ApiResponse<Permission>> updatePermission(
             @RequestBody PermissionRequest request,
             @PathVariable int id) {
