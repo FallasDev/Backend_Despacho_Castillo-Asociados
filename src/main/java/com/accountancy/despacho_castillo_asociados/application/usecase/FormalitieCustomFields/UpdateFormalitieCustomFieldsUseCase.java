@@ -21,32 +21,32 @@ public class UpdateFormalitieCustomFieldsUseCase {
 
     public FormalitieCustomField execute(FormalitieCustomFieldRequest request, int id) {
 
-        if (request == null) {
-            throw new BadRequestException(messages.get("formalitycustomfield.exception.update.cannot_be_null"));
-        }
+//        if (request == null) {
+//            throw new BadRequestException(messages.get("formalitycustomfield.exception.update.cannot_be_null"));
+//        }
+//
+//        Optional<FormalitieCustomField> existingFormalitie = formalitieCustomFieldsRepository.findByFormalitieIdAndCustomFieldId(
+//                request.getFormalitieId(),
+//                request.getCustomFieldId());
+//
+//        if (existingFormalitie.isEmpty()) {
+//            throw new BadRequestException(messages.get("formalitycustomfield.exception.update.notfound",
+//                    new Object[]{request.getFormalitieId(), request.getCustomFieldId()}));
+//        }
+//
+//        if (!existingFormalitie.get().isActive()) {
+//            throw new BadRequestException(messages.get("formalitycustomfield.exception.update.notfound",
+//                    new Object[]{request.getFormalitieId(), request.getCustomFieldId()}));
+//        }
+//
+//        FormalitieCustomField updated = formalitieCustomFieldsRepository.update(request,id);
+//
+//
+//        if (updated == null) {
+//            throw new BadRequestException(messages.get("formalitycustomfield.exception.update.failed"));
+//        }
 
-        Optional<FormalitieCustomField> existingFormalitie = formalitieCustomFieldsRepository.findByFormalitieIdAndCustomFieldId(
-                request.getFormalitieId(),
-                request.getCustomFieldId());
-
-        if (existingFormalitie.isEmpty()) {
-            throw new BadRequestException(messages.get("formalitycustomfield.exception.update.notfound",
-                    new Object[]{request.getFormalitieId(), request.getCustomFieldId()}));
-        }
-
-        if (!existingFormalitie.get().isActive()) {
-            throw new BadRequestException(messages.get("formalitycustomfield.exception.update.notfound",
-                    new Object[]{request.getFormalitieId(), request.getCustomFieldId()}));
-        }
-
-        FormalitieCustomField updated = formalitieCustomFieldsRepository.update(request,id);
-
-
-        if (updated == null) {
-            throw new BadRequestException(messages.get("formalitycustomfield.exception.update.failed"));
-        }
-
-        return updated;
+        return null;
 
     }
 

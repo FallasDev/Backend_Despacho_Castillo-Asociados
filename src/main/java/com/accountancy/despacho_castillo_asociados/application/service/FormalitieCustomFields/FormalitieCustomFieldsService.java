@@ -17,19 +17,22 @@ public class FormalitieCustomFieldsService {
     private FindFormalitiesCustomFieldsUseCase findFormalitiesCustomFieldsUseCase;
     private DeactiveFormalitieCustomFieldsUseCase deactiveFormalitieCustomFieldsUseCase;
     private UploadFileFormalitieCustomFieldUseCase uploadFileFormalitieCustomFieldUseCase;
+    private GetFileUrlUseCase getFileUrlUseCase;
 
     public FormalitieCustomFieldsService(
         CreateFormalitieCustomFieldsUseCase createFormalitieCustomFieldsUseCase,
         UpdateFormalitieCustomFieldsUseCase updateFormalitieCustomFieldsUseCase,
         FindFormalitiesCustomFieldsUseCase findFormalitiesCustomFieldsUseCase,
         DeactiveFormalitieCustomFieldsUseCase deactiveFormalitieCustomFieldsUseCase,
-        UploadFileFormalitieCustomFieldUseCase uploadFileFormalitieCustomFieldUseCase
+        UploadFileFormalitieCustomFieldUseCase uploadFileFormalitieCustomFieldUseCase,
+        GetFileUrlUseCase getFileUrlUseCase
     ) {
         this.createFormalitieCustomFieldsUseCase = createFormalitieCustomFieldsUseCase;
         this.updateFormalitieCustomFieldsUseCase = updateFormalitieCustomFieldsUseCase;
         this.findFormalitiesCustomFieldsUseCase = findFormalitiesCustomFieldsUseCase;
         this.deactiveFormalitieCustomFieldsUseCase = deactiveFormalitieCustomFieldsUseCase;
         this.uploadFileFormalitieCustomFieldUseCase = uploadFileFormalitieCustomFieldUseCase;
+        this.getFileUrlUseCase = getFileUrlUseCase;
     }
 
     public FormalitieCustomField create(FormalitieCustomFieldRequest request) {
@@ -50,5 +53,9 @@ public class FormalitieCustomFieldsService {
 
     public boolean uploadFile(int formalitieCustomFieldId, MultipartFile file, String filename) throws IOException {
         return uploadFileFormalitieCustomFieldUseCase.execute(formalitieCustomFieldId, file, filename);
+    }
+
+    public String getFileUrl(int formalitieCustomFieldId) {
+        return getFileUrlUseCase.execute(formalitieCustomFieldId);
     }
 }

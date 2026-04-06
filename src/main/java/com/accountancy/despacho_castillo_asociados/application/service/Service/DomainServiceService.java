@@ -3,6 +3,7 @@ package com.accountancy.despacho_castillo_asociados.application.service.Service;
 
 import com.accountancy.despacho_castillo_asociados.application.usecase.Service.*;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
+import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainServiceMostPopularServices;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.ServiceRequest;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class DomainServiceService {
     private FindServicesUseCase findServicesUseCase;
     private FindByIdServiceUseCase findByIdServiceUseCase;
     private FindAllServicesUseCase findAllServicesUseCase;
+    private FindMostPopularServicesUseCase findMostPopularServicesUseCase;
 
     public DomainServiceService(
             CreateServiceUseCase createServiceUseCase,
@@ -25,7 +27,8 @@ public class DomainServiceService {
             DeactiveServiceUseCase deactiveServiceUseCase,
             FindServicesUseCase findServicesUseCase,
             FindByIdServiceUseCase findByIdServiceUseCase,
-            FindAllServicesUseCase findAllServicesUseCase
+            FindAllServicesUseCase findAllServicesUseCase,
+            FindMostPopularServicesUseCase findMostPopularServicesUseCase
     ) {
         this.createServiceUseCase = createServiceUseCase;
         this.updateServiceUseCase = updateServiceUseCase;
@@ -33,6 +36,7 @@ public class DomainServiceService {
         this.findServicesUseCase = findServicesUseCase;
         this.findByIdServiceUseCase = findByIdServiceUseCase;
         this.findAllServicesUseCase = findAllServicesUseCase;
+        this.findMostPopularServicesUseCase = findMostPopularServicesUseCase;
     }
 
     public DomainService createService(ServiceRequest serviceRequest) {
@@ -57,6 +61,10 @@ public class DomainServiceService {
 
     public List<DomainService> findAllWithoutPagination() {
         return findAllServicesUseCase.execute();
+    }
+
+    public List<DomainServiceMostPopularServices> findMostPopularServices() {
+        return findMostPopularServicesUseCase.execute();
     }
 
 }

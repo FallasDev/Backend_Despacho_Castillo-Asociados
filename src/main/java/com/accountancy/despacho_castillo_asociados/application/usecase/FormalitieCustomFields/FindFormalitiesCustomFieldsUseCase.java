@@ -18,25 +18,27 @@ public class FindFormalitiesCustomFieldsUseCase {
 
     public PageResult<FormalitieCustomField> execute(int formalitieId, int page, int size) {
 
-        if (formalitieId > 0) {
+//        if (formalitieId > 0) {
+//
+//            PageResult<FormalitieCustomField> formalitieCustomFieldPageResult = repository.findByFormalitieId(formalitieId, page, size);
+//
+//            if (formalitieCustomFieldPageResult.content().isEmpty()) {
+//                throw new EmptyListException(messages.get("formalitycustomfield.exception.fetch.by_formality_id.notfound", new Object[]{formalitieId}));
+//            }
+//
+//            return formalitieCustomFieldPageResult;
+//
+//        }
+//
+//        PageResult<FormalitieCustomField> formalitieCustomFields = repository.findAll(page, size);
+//        if (formalitieCustomFields.content().isEmpty()) {
+//            throw new EmptyListException(messages.get("formalitycustomfield.exception.fetch.all.none"));
+//        }
+//        return formalitieCustomFields;
+//
+//    }
 
-            PageResult<FormalitieCustomField> formalitieCustomFieldPageResult = repository.findByFormalitieId(formalitieId, page, size);
-
-            if (formalitieCustomFieldPageResult.content().isEmpty()) {
-                throw new EmptyListException(messages.get("formalitycustomfield.exception.fetch.by_formality_id.notfound", new Object[]{formalitieId}));
-            }
-
-            return formalitieCustomFieldPageResult;
-
-        }
-
-        PageResult<FormalitieCustomField> formalitieCustomFields = repository.findAll(page, size);
-        if (formalitieCustomFields.content().isEmpty()) {
-            throw new EmptyListException(messages.get("formalitycustomfield.exception.fetch.all.none"));
-        }
-        return formalitieCustomFields;
-
+        return null;
     }
-
 
 }

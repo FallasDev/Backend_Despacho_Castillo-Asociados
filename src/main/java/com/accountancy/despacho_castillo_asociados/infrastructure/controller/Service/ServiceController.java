@@ -3,6 +3,7 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.controller.Se
 
 import com.accountancy.despacho_castillo_asociados.application.service.Service.DomainServiceService;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
+import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainServiceMostPopularServices;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.ServiceRequest;
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
@@ -40,6 +41,20 @@ public class ServiceController {
                 new ApiResponse<>(
                         true,
                         messages.get("service.success.fetch_all"),
+                        result
+                )
+        );
+    }
+
+    @GetMapping("/most-popular")
+    public ResponseEntity<ApiResponse<List<DomainServiceMostPopularServices>>> getMostPopularServices() {
+
+        List<DomainServiceMostPopularServices> result = domainServiceService.findMostPopularServices();
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        messages.get("service.success.fetch_most_popular"),
                         result
                 )
         );

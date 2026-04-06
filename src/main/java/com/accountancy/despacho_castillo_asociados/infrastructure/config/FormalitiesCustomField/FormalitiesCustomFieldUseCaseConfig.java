@@ -14,9 +14,9 @@ public class FormalitiesCustomFieldUseCaseConfig {
 
     @Bean
     public CreateFormalitieCustomFieldsUseCase createFormalitieCustomFieldsUseCase(FormalitieCustomFieldRepository repository,
-        FormalitieRepository formalitieRepository, CustomFieldRepository customFieldRepository, Messages messages
+        CustomFieldRepository customFieldRepository, Messages messages
     ) {
-        return new CreateFormalitieCustomFieldsUseCase(repository,customFieldRepository, formalitieRepository, messages);
+        return new CreateFormalitieCustomFieldsUseCase(repository,customFieldRepository, messages);
     }
 
     @Bean
@@ -40,7 +40,10 @@ public class FormalitiesCustomFieldUseCaseConfig {
     }
 
 
-
+    @Bean
+    public GetFileUrlUseCase downloadFileFormalitieCustomFieldUseCase(UploadFileRepository storageRepository, FormalitieCustomFieldRepository formalitieCustomFieldRepository) {
+        return new GetFileUrlUseCase(formalitieCustomFieldRepository,storageRepository);
+    }
 
 
 }

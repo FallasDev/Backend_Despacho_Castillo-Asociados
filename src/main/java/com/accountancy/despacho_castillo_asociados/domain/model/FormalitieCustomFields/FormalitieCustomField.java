@@ -6,33 +6,38 @@ import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Forma
 public class FormalitieCustomField {
 
     private int id;
-    private Formalitie formalitie;
     private CustomField customField;
+    private Formalitie formalitie;
     private String value;
     private boolean active;
 
-    public FormalitieCustomField(int id, Formalitie formalitie, CustomField customField, String value, boolean active) {
+    public FormalitieCustomField(int id,CustomField customField, Formalitie formalitie , String value) {
         this.id = id;
-        this.formalitie = formalitie;
         this.customField = customField;
         this.value = value;
-        this.active = true;
+        this.formalitie = formalitie;
+    }
+
+    public FormalitieCustomField(int id,CustomField customField, Formalitie formalitie , String value, boolean active) {
+        this.id = id;
+        this.customField = customField;
+        this.value = value;
+        this.formalitie = formalitie;
+        this.active = active;
+    }
+
+    public FormalitieCustomField(CustomField customField, Formalitie formalitie, String value) {
+        this.customField = customField;
+        this.formalitie = formalitie;
+        this.value = value;
     }
 
     public int getId() {
         return id;
     }
 
-    public Formalitie getFormalitie() {
-        return formalitie;
-    }
-
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setFormalitie(Formalitie formalitie) {
-        this.formalitie = formalitie;
     }
 
     public CustomField getCustomField() {
@@ -41,6 +46,14 @@ public class FormalitieCustomField {
 
     public void setCustomField(CustomField customField) {
         this.customField = customField;
+    }
+
+    public Formalitie getFormalitie() {
+        return formalitie;
+    }
+
+    public void setFormalitie(Formalitie formalitie) {
+        this.formalitie = formalitie;
     }
 
     public String getValue() {
@@ -57,5 +70,16 @@ public class FormalitieCustomField {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    @Override
+    public String toString() {
+        return "FormalitieCustomField{" +
+                "id=" + id +
+                ", customField=" + customField.getId() +
+                ", formalitie=" + formalitie.getId() +
+                ", value='" + value + '\'' +
+                ", active=" + active +
+                '}';
     }
 }

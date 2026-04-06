@@ -4,11 +4,14 @@ import com.accountancy.despacho_castillo_asociados.domain.model.FormalitieCustom
 import com.accountancy.despacho_castillo_asociados.domain.model.FormalitieCustomFields.FormalitieCustomFieldRequest;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface FormalitieCustomFieldRepository {
 
     FormalitieCustomField create(FormalitieCustomFieldRequest request);
+    List<FormalitieCustomField> createBatch(List<FormalitieCustomField> formalitieCustomFields);
+    List<FormalitieCustomField> updateBatch(List<FormalitieCustomField> formalitieCustomFields);
     FormalitieCustomField update(FormalitieCustomFieldRequest request, int id);
     boolean deactivate(int id);
     boolean deactivateByCustomFieldId(int customFieldId);
@@ -16,12 +19,10 @@ public interface FormalitieCustomFieldRepository {
 
     Optional<FormalitieCustomField> findById(int id);
     PageResult<FormalitieCustomField> findAll(int page, int size);
-    PageResult<FormalitieCustomField> findByFormalitieId(int formalitieId, int page, int size);
 
-    Optional<FormalitieCustomField> findByFormalitieIdAndCustomFieldId(int formalitieId, int customFieldId);
-    Optional<FormalitieCustomField> findByFormalitieIdAndCustomFieldIdAndIsInactive(int formalitieId, int customFieldId);
+    Optional<FormalitieCustomField> findByCustomFieldIdAndIsInactive(int customFieldId);
 
-    void updateFilePath(int formalitieCustomFieldId, String filePath);
+    void updateFilePath(int formalitieCustomFieldId, String publicId);
 
 
 

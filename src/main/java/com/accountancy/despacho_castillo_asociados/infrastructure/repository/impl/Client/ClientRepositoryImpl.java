@@ -160,6 +160,14 @@ public class ClientRepositoryImpl implements ClientRepository {
     }
 
     @Override
+    public List<ClientResponse> findAllWithoutPagination() {
+        return jpaClientRepository.findAll().stream()
+                .map(this::getClientResponseFromEntity)
+                .filter(ClientResponse::isActive)
+                .toList();
+    }
+
+    @Override
     public void enabledClient(int id) {
 
         Optional<ClientEntity> client = jpaClientRepository.findById(id);

@@ -1,10 +1,13 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.config.Formalitie;
 
 
+import com.accountancy.despacho_castillo_asociados.application.service.Email.EmailService;
 import com.accountancy.despacho_castillo_asociados.application.usecase.Formalitie.*;
 import com.accountancy.despacho_castillo_asociados.application.usecase.Formalitie.FindFormalitiesUseCase;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Client.ClientRepository;
+import com.accountancy.despacho_castillo_asociados.domain.repository.CustomField.CustomFieldRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Formalitie.FormalitieRepository;
+import com.accountancy.despacho_castillo_asociados.domain.repository.FormalitieCustomFields.FormalitieCustomFieldRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Service.ServiceRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRepository;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
@@ -19,15 +22,17 @@ public class FormalitieUseCaseConfig {
     public CreateFormalitieUseCase createFormalitieUseCase(FormalitieRepository formalitieRepository,
                                                            ServiceRepository serviceRepository,
                                                            ClientRepository clientRepository,
+                                                           CustomFieldRepository customFieldRepository,
+                                                           FormalitieCustomFieldRepository formalitieCustomFieldRepository,
                                                            UserRepository userRepository,
                                                            Messages messages) {
-        return new CreateFormalitieUseCase(formalitieRepository,serviceRepository,clientRepository, userRepository, messages);
+        return new CreateFormalitieUseCase(formalitieRepository,serviceRepository, customFieldRepository ,clientRepository, userRepository, formalitieCustomFieldRepository ,messages);
 
     }
 
     @Bean
-    public ChangeFormalitieStateUseCase changeFormalitieStateUseCase(FormalitieRepository formalitieRepository, Messages messages) {
-        return new ChangeFormalitieStateUseCase(formalitieRepository, messages);
+    public ChangeFormalitieStateUseCase changeFormalitieStateUseCase(FormalitieRepository formalitieRepository, Messages messages, EmailService emailService) {
+        return new ChangeFormalitieStateUseCase(formalitieRepository, messages, emailService);
     }
 
     @Bean
@@ -43,10 +48,12 @@ public class FormalitieUseCaseConfig {
     @Bean
     public UpdateFormalitieUseCase updateFormalitieUseCase(FormalitieRepository formalitieRepository,
                                                            ClientRepository clientRepository,
+                                                           CustomFieldRepository customFieldRepository,
+                                                            FormalitieCustomFieldRepository formalitieCustomFieldRepository,
                                                               UserRepository userRepository,
             ServiceRepository serviceRepository
             ,Messages messages) {
-        return new UpdateFormalitieUseCase(formalitieRepository, clientRepository, userRepository , serviceRepository,messages);
+        return new UpdateFormalitieUseCase(formalitieRepository, clientRepository, userRepository , serviceRepository,customFieldRepository, formalitieCustomFieldRepository ,messages);
     }
 
     @Bean

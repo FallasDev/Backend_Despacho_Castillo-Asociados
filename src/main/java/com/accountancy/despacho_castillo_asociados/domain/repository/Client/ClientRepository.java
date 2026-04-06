@@ -6,6 +6,7 @@ import com.accountancy.despacho_castillo_asociados.domain.model.Client.ClientRes
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.UpdateClientRequest;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ClientRepository {
@@ -24,7 +25,7 @@ public interface ClientRepository {
     Optional<Client> findBySurnameAndIsInactive(String surname);
     Optional<Client> findByEmailAndActive(String email);
     PageResult<ClientResponse> findAll(int page, int size);
-
+    List<ClientResponse> findAllWithoutPagination();
     void enabledClient(int id);
 
 

@@ -6,8 +6,17 @@ import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Forma
 import com.accountancy.despacho_castillo_asociados.domain.model.FormalitieCustomFields.FormalitieCustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.FormalitieCustomFields.FormalitieCustomFieldRequest;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
+import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
 import com.accountancy.despacho_castillo_asociados.domain.repository.FormalitieCustomFields.FormalitieCustomFieldRepository;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Client.ClientEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.CustomField.CustomFieldEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Formalitie.FormalitieEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.FormalitieCustomFields.FormalitieCustomFieldsEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Role.RoleEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Service.ServiceEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.ServiceCustomField.ServiceCustomFieldEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Type.TypeEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.User.UserEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.CustomField.JPACustomFieldRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Formalitie.JPAFormalitieRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.FormalitieCustomFields.JPAFormalitieCustomFieldsRepository;
@@ -18,7 +27,6 @@ import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -40,14 +48,48 @@ public class FormalitieCustomFieldsRepositoryImpl implements FormalitieCustomFie
     @Override
     public FormalitieCustomField create(FormalitieCustomFieldRequest request) {
 
-        FormalitieCustomFieldsEntity entity = new FormalitieCustomFieldsEntity();
-        entity.setFormalitieId(request.getFormalitieId());
-        entity.setCustomFieldId(request.getCustomFieldId());
-        entity.setValue(request.getValue());
-        entity.setActive(true);
-        FormalitieCustomFieldsEntity savedEntity = jpaRepository.save(entity);
+        return null;
+    }
 
-        return getFormalitieCustomField(savedEntity);
+    @Override
+    public List<FormalitieCustomField> createBatch(List<FormalitieCustomField> formalitieCustomFields) {
+
+        List<FormalitieCustomFieldsEntity> entities = formalitieCustomFields.stream().map(fcf -> {
+
+            CustomFieldEntity customFieldEntity = jpaCustomFieldRepository.findById(fcf.getCustomField().getId())
+                    .orElseThrow(() -> new BadRequestException("CustomField with id " + fcf.getCustomField().getId() + " not found"));
+
+            FormalitieEntity formalitieEntity = jpaFormalitieRepository.findById(fcf.getFormalitie().getId())
+                    .orElseThrow(() -> new BadRequestException("Formalitie with id " + fcf.getFormalitie().getId() + " not found"));
+
+            return new FormalitieCustomFieldsEntity(
+                    customFieldEntity,
+                    formalitieEntity,
+                    true,
+                    fcf.getValue()
+                );
+                }
+        ).toList();
+
+        return jpaRepository.saveAll(entities).stream().map(this::getFormalitieCustomField).toList();
+    }
+
+    @Override
+    public List<FormalitieCustomField> updateBatch(List<FormalitieCustomField> formalitieCustomFields) {
+
+        List<FormalitieCustomFieldsEntity> entities = formalitieCustomFields.stream().map(fcf -> {
+
+            System.out.println(fcf);
+
+            FormalitieCustomFieldsEntity entity = jpaRepository.findById(fcf.getId())
+                    .orElseThrow(() -> new BadRequestException("FormalitieCustomField with id " + fcf.getId() + " not found"));
+
+            entity.setValue(fcf.getValue());
+
+            return entity;
+        }).toList();
+
+        return jpaRepository.saveAll(entities).stream().map(this::getFormalitieCustomField).toList();
     }
 
     @Override
@@ -56,7 +98,7 @@ public class FormalitieCustomFieldsRepositoryImpl implements FormalitieCustomFie
         FormalitieCustomFieldsEntity entity     = jpaRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("FormalitieCustomField with id " + id + " not found"));
 
-        entity.setValue(request.getValue());
+//        entity.setValue(request.getValue());
 
         FormalitieCustomFieldsEntity updatedEntity = jpaRepository.save(entity);
         return getFormalitieCustomField(updatedEntity);
@@ -125,53 +167,23 @@ public class FormalitieCustomFieldsRepositoryImpl implements FormalitieCustomFie
     }
 
     @Override
-    public PageResult<FormalitieCustomField> findByFormalitieId(int formalitieId, int page, int size) {
-
-        Pageable pageable = Pageable.ofSize(size).withPage(page);
-
-        Page<FormalitieCustomFieldsEntity> entityPage = jpaRepository.findByFormalitieId(formalitieId, pageable);
-
-        List<FormalitieCustomFieldsEntity> entities = entityPage.getContent();
-
-        List<FormalitieCustomField> formalitieCustomFields = entities.stream().map(this::getFormalitieCustomField)
-                .filter(FormalitieCustomField::isActive).toList();
-
-        return new PageResult<>(
-                formalitieCustomFields,
-                entityPage.getNumber(),
-                entityPage.getSize(),
-                formalitieCustomFields.size(),
-                entityPage.getTotalPages()
-        );
-
+    public Optional<FormalitieCustomField> findByCustomFieldIdAndIsInactive(int customFieldId) {
+        return Optional.empty();
     }
 
-    @Override
-    public Optional<FormalitieCustomField> findByFormalitieIdAndCustomFieldId(int formalitieId, int customFieldId) {
 
-        Optional<FormalitieCustomFieldsEntity> entity = jpaRepository.findByFormalitieIdAndCustomFieldIdAndActive(formalitieId, customFieldId, true);
 
-        return entity.map(this::getFormalitieCustomField);
-
-    }
 
     @Override
-    public Optional<FormalitieCustomField> findByFormalitieIdAndCustomFieldIdAndIsInactive(int formalitieId, int customFieldId) {
-        Optional<FormalitieCustomFieldsEntity> entity = jpaRepository.findByFormalitieIdAndCustomFieldIdAndActive(formalitieId, customFieldId, false);
-
-        return entity.map(this::getFormalitieCustomField);
-    }
-
-    @Override
-    public void updateFilePath(int id, String filePath) {
+    public void updateFilePath(int id, String publicId) {
         FormalitieCustomFieldsEntity entity     = jpaRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("FormalitieCustomField with id " + id + " not found"));
 
-        entity.setValue(filePath);
+        entity.setValue(publicId);
 
         FormalitieCustomFieldsEntity updatedEntity = jpaRepository.save(entity);
 
-        if (!updatedEntity.getValue().equals(filePath)) {
+        if (!updatedEntity.getValue().equals(publicId)) {
             throw new BadRequestException("Failed to update file path for FormalitieCustomField with id " + id);
         }
     }
@@ -180,7 +192,7 @@ public class FormalitieCustomFieldsRepositoryImpl implements FormalitieCustomFie
     @NonNull
     private FormalitieCustomField getFormalitieCustomField(@NonNull FormalitieCustomFieldsEntity entity) {
 
-        Formalitie formalitie = jpaFormalitieRepository.findById(entity.getFormalitieId())
+        Formalitie formalitie = jpaFormalitieRepository.findById(entity.getFormalitie().getId())
                 .map(f -> new Formalitie(
                         f.getId(),
                         new DomainService(
@@ -192,15 +204,16 @@ public class FormalitieCustomFieldsRepositoryImpl implements FormalitieCustomFie
                         null,
                         null,
                         FormalitiesState.fromId(f.getState()),
-                        f.getCreatedAt()
+                        f.getCreatedAt(),
+                        f.getTemplateId()
                 ))
-                .orElseThrow(() -> new BadRequestException("Formalitie with id " + entity.getFormalitieId() + " not found"));
+                .orElseThrow(() -> new BadRequestException("Formalitie with id " + entity.getId() + " not found"));
 
         CustomFieldBuilder customFieldBuilder = new CustomFieldBuilder();
 
-        CustomField customField = jpaCustomFieldRepository.findById(entity.getCustomFieldId())
+        CustomField customField = jpaCustomFieldRepository.findById(entity.getCustomField().getId())
                 .map((val) -> customFieldBuilder
-                        .setId(entity.getCustomFieldId())
+                        .setId(entity.getCustomField().getId())
                         .setName(val.getName())
                         .setIsRequired(val.isRequired())
                         .setIsActive(val.isActive())
@@ -208,14 +221,21 @@ public class FormalitieCustomFieldsRepositoryImpl implements FormalitieCustomFie
                         .setDefaultValue(val.getDefaultValue())
                         .setHelpText(val.getHelpText())
                         .setPlaceholder(val.getPlaceholder())
+                        .setType(
+                                new Type(
+                                        val.getType().getId(),
+                                        val.getType().getName(),
+                                        val.getType().isActive()
+                                )
+                        )
                         .getResult(
                 ))
-                .orElseThrow(() -> new BadRequestException("CustomField with id " + entity.getCustomFieldId() + " not found"));
+                .orElseThrow(() -> new BadRequestException("CustomField with id " + entity.getCustomField().getId() + " not found"));
 
         return new FormalitieCustomField(
                 entity.getId(),
-                formalitie,
                 customField,
+                formalitie,
                 entity.getValue(),
                 entity.isActive()
         );

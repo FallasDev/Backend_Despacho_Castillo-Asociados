@@ -24,12 +24,10 @@ public class CustomFieldController {
     private final Messages messages;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResult<CustomField>>> getCustomFields(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<ApiResponse<List<CustomField>>> getCustomFields() {
 
-        PageResult<CustomField> result =
-                customFieldService.findAllCustomFields(page, size);
+        List<CustomField> result =
+                customFieldService.findAllCustomFields();
 
         return ResponseEntity.ok(
                 new ApiResponse<>(

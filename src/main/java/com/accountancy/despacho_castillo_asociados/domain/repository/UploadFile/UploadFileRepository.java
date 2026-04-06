@@ -8,5 +8,7 @@ import java.io.IOException;
 public interface UploadFileRepository {
 
     UploadFile uploadFile(int formalitieCustomFieldId, MultipartFile file, String filename) throws IOException;
+    String getFileUrl(String publicId);
+
 
 }

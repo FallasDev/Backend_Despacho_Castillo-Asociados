@@ -8,6 +8,7 @@ import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRe
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 import com.accountancy.despacho_castillo_asociados.shared.utils.UserValidationsHelper;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 import java.util.Optional;
 
@@ -21,6 +22,7 @@ public class UpdateUserUseCase {
         this.roleRepository = roleRepository;
     }
 
+    @Transactional
     public User execute(UserRequest userRequest, int id) {
 
         if (userRequest == null) {
@@ -32,7 +34,7 @@ public class UpdateUserUseCase {
         }
 
         UserValidationsHelper.validateEmail(userRequest.getEmail());
-        UserValidationsHelper.validatePassword(userRequest.getPassword());
+
 
         Optional<User> existingUser = userRepository.findById(id);
 

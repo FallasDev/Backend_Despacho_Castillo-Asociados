@@ -13,6 +13,7 @@ public interface JPARoleRepository extends JpaRepository<RoleEntity, Integer> {
     Optional<RoleEntity> findByName(String name);
     Optional<RoleEntity> findByNameAndActiveTrue(String name);
     Optional<RoleEntity> findByNameAndActiveFalse(String name);
-    Page<RoleEntity> findAll(Pageable pageable);
+
+    Page<RoleEntity> findAllByActive(boolean active, Pageable pageable);
 }
 

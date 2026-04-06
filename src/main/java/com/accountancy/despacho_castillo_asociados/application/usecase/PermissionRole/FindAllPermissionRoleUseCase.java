@@ -4,6 +4,7 @@ import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.P
 import com.accountancy.despacho_castillo_asociados.domain.repository.PermissionRole.PermissionRoleRepository;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.EmptyListException;
+import jakarta.transaction.Transactional;
 
 public class FindAllPermissionRoleUseCase {
 
@@ -13,6 +14,7 @@ public class FindAllPermissionRoleUseCase {
         this.permissionRoleRepository = permissionRoleRepository;
     }
 
+    @Transactional
     public PageResult<PermissionRole> execute(int page, int size) {
 
         PageResult<PermissionRole> permissionRoles = permissionRoleRepository.findAll(page, size);

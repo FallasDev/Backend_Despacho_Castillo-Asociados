@@ -43,8 +43,8 @@ public class CustomFieldService {
         deactiveCustomFieldUseCase.execute(id);
     }
 
-    public List<CustomField> findAllCustomFields(String name) {
-        return findAllCustomFieldUseCase.execute(name);
+    public List<CustomField> findAllCustomFields() {
+        return findAllCustomFieldUseCase.execute();
     }
 
     public CustomField findByIdCustomField(int id) {

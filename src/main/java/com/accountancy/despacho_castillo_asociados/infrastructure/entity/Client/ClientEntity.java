@@ -77,5 +77,7 @@ public class ClientEntity {
         this.isActive = isActive;
         this.enabled = enabled;
     }
+
+
 }
 

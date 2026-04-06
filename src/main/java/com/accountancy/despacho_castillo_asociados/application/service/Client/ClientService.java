@@ -9,6 +9,8 @@ import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import jakarta.mail.MessagingException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ClientService {
 
@@ -19,6 +21,7 @@ public class ClientService {
     private final FindByIdClientUseCase findByIdClientUseCase;
     private final FindByNameClientUseCase findByNameClientUseCase;
     private final FindBySurnameClientUseCase findBySurnameClientUseCase;
+    private final FindAllClientsWithoutPaginationUseCase findAllClientsWithoutPaginationUseCase;
 
     public ClientService(
             CreateClientUseCase createClientUseCase,
@@ -27,7 +30,7 @@ public class ClientService {
             FindAllClientUseCase findAllClientUseCase,
             FindByIdClientUseCase findByIdClientUseCase,
             FindByNameClientUseCase findByNameClientUseCase,
-            FindBySurnameClientUseCase findBySurnameClientUseCase
+            FindBySurnameClientUseCase findBySurnameClientUseCase, FindAllClientsWithoutPaginationUseCase findAllClientsWithoutPaginationUseCase
     ) {
         this.createClientUseCase = createClientUseCase;
         this.updateClientUseCase = updateClientUseCase;
@@ -36,6 +39,7 @@ public class ClientService {
         this.findByIdClientUseCase = findByIdClientUseCase;
         this.findByNameClientUseCase = findByNameClientUseCase;
         this.findBySurnameClientUseCase = findBySurnameClientUseCase;
+        this.findAllClientsWithoutPaginationUseCase = findAllClientsWithoutPaginationUseCase;
     }
 
     public Client createClient(ClientRequest clientRequest) throws MessagingException {
@@ -66,5 +70,8 @@ public class ClientService {
         return findBySurnameClientUseCase.execute(surname);
     }
 
+    public List<ClientResponse> findAllClientsWithoutPagination() {
+        return findAllClientsWithoutPaginationUseCase.execute();
+    }
 }
 

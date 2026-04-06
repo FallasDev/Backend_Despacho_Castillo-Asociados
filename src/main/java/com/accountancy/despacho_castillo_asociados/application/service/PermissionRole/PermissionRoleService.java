@@ -3,6 +3,7 @@ package com.accountancy.despacho_castillo_asociados.application.service.Permissi
 import com.accountancy.despacho_castillo_asociados.application.usecase.PermissionRole.*;
 import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRole;
 import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRoleRequest;
+import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRoleResponse;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +49,7 @@ public class PermissionRoleService {
         return findByIdPermissionRoleUseCase.execute(id);
     }
 
-    public PageResult<PermissionRole> findByIdRolePermissionRole(int idRole, int page, int size) {
+    public PermissionRoleResponse findByIdRolePermissionRole(int idRole, int page, int size) {
         return findByIdRolePermissionRoleUseCase.execute(idRole, page, size);
     }
 

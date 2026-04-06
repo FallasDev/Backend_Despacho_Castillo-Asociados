@@ -188,9 +188,80 @@ public class HtmlContent {
             </html>
             """;
 
+    private final String TEMPLATE_IN_PROGRESS = """
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Estado de Formalitie</title>
+                <style>
+                    body {
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        background-color: #f5f6f8;
+                        margin: 0;
+                        padding: 0;
+                        color: #2d3748;
+                        line-height: 1.6;
+                    }
+                    .container {
+                        max-width: 580px;
+                        margin: 40px auto;
+                        background-color: white;
+                        border-radius: 12px;
+                        overflow: hidden;
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+                    }
+                    .header {
+                        background: linear-gradient(135deg, #1e3a8a 0%%, #1e40af 100%%);
+                        color: white;
+                        padding: 32px 40px;
+                        text-align: center;
+                    }
+                    .header h1 {
+                        margin: 0;
+                        font-size: 28px;
+                        font-weight: 600;
+                    }
+                    .content {
+                        padding: 40px;
+                    }
+                    .footer {
+                        background-color: #f8fafc;
+                        padding: 24px 40px;
+                        text-align: center;
+                        font-size: 14px;
+                        color: #64748b;
+                        border-top: 1px solid #e2e8f0;
+                    }
+                    p {
+                        margin: 16px 0;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>Hola %s</h1>
+                    </div>
+                    <div class="content">
+                        <p>Queremos informarte que tu tramite sobre el servicio %s ha cambiado su estado a "En Progreso".</p>
+                        <p>Estamos trabajando para completar tu tramite lo antes posible. Te notificaremos cuando haya un nuevo cambio de estado.</p>
+                    </div>
+                    <div class="footer">
+                        <p>Saludos cordiales,</p>
+                        <p><strong>Despacho Castillo & Asociados</strong></p>
+                    </div>
+                </div>
+        """;
 
     public String generateVerificationEmail(String name, String code) {
         return String.format(TEMPLATE_CODE, name, code);
+    }
+
+
+    public String generateInProgressEmail(String name, String serviceName) {
+        return String.format(TEMPLATE_IN_PROGRESS, name, serviceName);
     }
 
     public String generateLoginAlertEmail(String name) {

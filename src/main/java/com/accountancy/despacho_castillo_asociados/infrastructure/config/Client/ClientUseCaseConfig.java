@@ -45,5 +45,9 @@ public class ClientUseCaseConfig {
         return new FindBySurnameClientUseCase(clientRepository);
     }
 
+    @Bean
+    public FindAllClientsWithoutPaginationUseCase findAllClientsWithoutPaginationUseCase(ClientRepository clientRepository) {
+        return new FindAllClientsWithoutPaginationUseCase(clientRepository);
+    }
 }
 

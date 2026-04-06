@@ -22,7 +22,7 @@ public class FindAllCustomFieldUseCase {
     }
 
     @Transactional
-    public List<CustomField> execute(String name) {
+    public List<CustomField> execute() {
         List<CustomField> customFields = customFieldRepository.findAll();
 
         if (customFields.isEmpty()) {

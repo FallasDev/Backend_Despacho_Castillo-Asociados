@@ -2,14 +2,12 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.controller.Fo
 
 
 import com.accountancy.despacho_castillo_asociados.application.service.Formalitie.FormalitieService;
-import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Formalitie;
-import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalitieRequest;
-import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalityClientStats;
-import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.SearchFormalitie;
+import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.*;
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import com.accountancy.despacho_castillo_asociados.shared.utils.DateUtils;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -95,7 +93,9 @@ public class FormalitieController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Formalitie>> updateFormalitie(
             @PathVariable int id,
-             @RequestBody FormalitieRequest request) {
+             @RequestBody FormalitieRequestUpdate request) {
+
+        System.out.println("BODY: " + request);
 
         Formalitie updated =
                 formalitieService.updateFormalitie(id, request);
@@ -109,7 +109,7 @@ public class FormalitieController {
     @PatchMapping("/{id}/state")
     public ResponseEntity<ApiResponse<Void>> changeFormalitieState(
             @PathVariable int id,
-            @RequestParam int newState) {
+            @RequestParam int newState) throws MessagingException {
 
         formalitieService.changeFormalitieState(id, newState);
 

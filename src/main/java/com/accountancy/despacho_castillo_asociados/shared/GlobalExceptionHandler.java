@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.naming.AuthenticationException;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -117,8 +119,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneric(Exception ex) {
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(false, ex.getMessage(), null));
+        throw new RuntimeException(ex);
+
     }
 
     @ExceptionHandler(IOException.class)
@@ -128,4 +130,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ApiResponse<>(false, messages.get("file.io.exception"), null));
     }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Object>> handleAccessDenied(AccessDeniedException ex) {
+        System.out.println("AccessDeniedException: " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                new ApiResponse<>(false, "Access Denied", null)
+        );
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiResponse<Object>> handleAuth(AuthenticationException ex) {
+        System.out.println("AuthenticationException: " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                new ApiResponse<>(false, "Unauthorized", null)
+        );
+    }
+
 }

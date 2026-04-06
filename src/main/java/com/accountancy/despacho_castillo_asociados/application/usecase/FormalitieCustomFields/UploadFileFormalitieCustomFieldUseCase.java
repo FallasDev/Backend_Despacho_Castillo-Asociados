@@ -22,7 +22,7 @@ public class UploadFileFormalitieCustomFieldUseCase {
 
             formalitieCustomFieldRepository.updateFilePath(
                 formalitieCustomFieldId,
-                result.getSecureUrl()
+                result.getUrl()
             );
 
             return true;

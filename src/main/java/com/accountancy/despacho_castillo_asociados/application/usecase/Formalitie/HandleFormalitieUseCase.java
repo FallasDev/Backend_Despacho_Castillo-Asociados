@@ -7,6 +7,7 @@ import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRe
 import com.accountancy.despacho_castillo_asociados.shared.FormalitiesState;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
+import jakarta.transaction.Transactional;
 
 public class HandleFormalitieUseCase {
 
@@ -20,6 +21,7 @@ public class HandleFormalitieUseCase {
         this.messages = messages;
     }
 
+    @Transactional
     public void execute(int id, int userId) {
 
         if (id <= 0) {
@@ -38,7 +40,7 @@ public class HandleFormalitieUseCase {
 
         Formalitie formalitie = formalitieRepository.findById(id).orElse(null);
 
-        if (formalitie == null || !formalitie.getState().equals(FormalitiesState.PENDING)) {
+        if (formalitie == null) {
             throw new BadRequestException(messages.get("formality.exception.handle.formality.not_found", new Object[]{id}));
         }
 

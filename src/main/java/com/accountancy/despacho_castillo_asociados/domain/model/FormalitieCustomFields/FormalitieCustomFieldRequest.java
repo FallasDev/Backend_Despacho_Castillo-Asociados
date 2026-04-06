@@ -3,39 +3,21 @@ package com.accountancy.despacho_castillo_asociados.domain.model.FormalitieCusto
 import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.CustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Formalitie;
 
+import java.util.List;
+
 public class FormalitieCustomFieldRequest {
 
-    private int formalitieId;
-    private int customFieldId;
-    private String value;
+    List<FormalitieCustomFieldWithValue> customFields;
 
-    public FormalitieCustomFieldRequest(int formalitieId, int customFieldId, String value) {
-        this.formalitieId = formalitieId;
-        this.customFieldId = customFieldId;
-        this.value = value;
+    public FormalitieCustomFieldRequest(int formalitieId, List<FormalitieCustomFieldWithValue> customFields) {
+        this.customFields = customFields;
     }
 
-    public int getFormalitieId() {
-        return formalitieId;
+    public List<FormalitieCustomFieldWithValue> getCustomFields() {
+        return customFields;
     }
 
-    public void setFormalitieId(int formalitieId) {
-        this.formalitieId = formalitieId;
-    }
-
-    public int getCustomFieldId() {
-        return customFieldId;
-    }
-
-    public void setCustomFieldId(int customFieldId) {
-        this.customFieldId = customFieldId;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
+    public void setCustomFields(List<FormalitieCustomFieldWithValue> customFields) {
+        this.customFields = customFields;
     }
 }

@@ -17,6 +17,7 @@ public interface Builder {
     FormalitieBuilder setClient(Client client);
     FormalitieBuilder setState(FormalitiesState state);
     FormalitieBuilder setApplicationDate(LocalDateTime applicationDate);
+    FormalitieBuilder setTemplateId(int templateId);
     Formalitie getResult();
 
 }

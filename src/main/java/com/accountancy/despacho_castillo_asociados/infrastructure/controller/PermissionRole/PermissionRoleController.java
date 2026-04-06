@@ -3,6 +3,7 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.controller.Pe
 import com.accountancy.despacho_castillo_asociados.application.service.PermissionRole.PermissionRoleService;
 import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRole;
 import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRoleRequest;
+import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRoleResponse;
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import lombok.RequiredArgsConstructor;
@@ -43,12 +44,12 @@ public class PermissionRoleController {
 
     @GetMapping("/role/{roleId}")
     @PreAuthorize("hasAuthority('Buscar_Permisos_por_Rol')")
-    public ResponseEntity<ApiResponse<PageResult<PermissionRole>>> findByRoleId(
+    public ResponseEntity<ApiResponse<PermissionRoleResponse>> findByRoleId(
             @PathVariable int roleId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        PageResult<PermissionRole> permissionRoles = permissionRoleService.findByIdRolePermissionRole(roleId, page, size);
+        PermissionRoleResponse permissionRoles = permissionRoleService.findByIdRolePermissionRole(roleId, page, size);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Permission roles found by role", permissionRoles)

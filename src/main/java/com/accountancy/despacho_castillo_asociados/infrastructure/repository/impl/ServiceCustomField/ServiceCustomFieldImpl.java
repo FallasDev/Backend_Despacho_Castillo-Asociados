@@ -182,6 +182,11 @@ public class ServiceCustomFieldImpl implements ServiceCustomFieldsRepository {
     }
 
     @Override
+    public Optional<ServiceCustomField> findByFormalitieId(int customFieldId) {
+        return null;
+    }
+
+    @Override
     public List<ServiceCustomField> findAllWithoutPagination() {
         return jpaServiceCustomField.findAll().stream()
                 .map(this::getServiceCustomField)

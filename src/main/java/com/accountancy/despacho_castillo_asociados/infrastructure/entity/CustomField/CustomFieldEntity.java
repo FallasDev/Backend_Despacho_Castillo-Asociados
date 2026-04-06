@@ -53,6 +53,15 @@ public class CustomFieldEntity {
         this.type = type;
     }
 
-
-
+    public CustomFieldEntity(TypeEntity type, String defaultValue, String helpText, String placeholder, boolean exclusive, boolean active, boolean required, String name, int id) {
+        this.type = type;
+        this.defaultValue = defaultValue;
+        this.helpText = helpText;
+        this.placeholder = placeholder;
+        this.exclusive = exclusive;
+        this.active = active;
+        this.required = required;
+        this.name = name;
+        this.id = id;
+    }
 }

@@ -18,7 +18,7 @@ public class FormalitieBuilder implements Builder {
 
     @Override
     public void reset() {
-        this.formalitie = new Formalitie(0, null, null, null, null, null);
+        this.formalitie = new Formalitie(0, null, null, null, null, null, 0);
     }
 
     @Override
@@ -54,6 +54,12 @@ public class FormalitieBuilder implements Builder {
     @Override
     public FormalitieBuilder setApplicationDate(LocalDateTime applicationDate) {
         this.formalitie.setApplicationDate(applicationDate);
+        return this;
+    }
+
+    @Override
+    public FormalitieBuilder setTemplateId(int templateId) {
+        this.formalitie.setTemplateId(templateId);
         return this;
     }
 

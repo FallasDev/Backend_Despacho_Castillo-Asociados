@@ -16,6 +16,7 @@ public class UploadCloudinaryImpl implements UploadFileRepository {
 
     private  Cloudinary cloudinary;
 
+
     public UploadCloudinaryImpl() {
 
         this.cloudinary = new Cloudinary(
@@ -32,10 +33,15 @@ public class UploadCloudinaryImpl implements UploadFileRepository {
     @Override
     public UploadFile uploadFile(int formalitieCustomFieldId, MultipartFile file, String filename) throws IOException {
 
+
+
         Map params = ObjectUtils.asMap(
-            "public_id", "formalitie_custom_field_" + formalitieCustomFieldId + "_" + filename,
-            "folder", "formalities_custom_fields",
-                "resource_type", "auto"
+                "folder", "formalities_custom_fields",
+                "type", "upload",
+                "resource_type", "auto",
+                "access_mode", "public",
+                "use_filename", true,
+                "unique_filename", true
         );
 
         Map uploadResult = this.cloudinary.uploader().upload(
@@ -43,7 +49,19 @@ public class UploadCloudinaryImpl implements UploadFileRepository {
             params
         );
 
+
         return mapToDomain(uploadResult);
+    }
+
+    @Override
+    public String getFileUrl(String publicId) {
+
+        return cloudinary.url()
+                .resourceType("raw")
+                .type("upload")
+                .publicId(publicId)
+                .signed(true)
+                .generate();
     }
 
     public UploadFile mapToDomain(Map result) {

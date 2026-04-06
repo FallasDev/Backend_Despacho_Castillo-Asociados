@@ -17,11 +17,6 @@ public class FormalitieCustomFieldsEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "formalitie_id", nullable = false)
-    private int formalitieId;
-
-    @Column(name = "custom_field_id", nullable = false)
-    private int customFieldId;
 
     @Column(nullable = false)
     private String value;
@@ -29,5 +24,29 @@ public class FormalitieCustomFieldsEntity {
     @Column(nullable = false)
     private boolean active;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "formalitie_id")
+    private FormalitieEntity formalitie;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "custom_field_id")
+    private CustomFieldEntity customField;
+
+    public FormalitieCustomFieldsEntity() {
+    }
+
+    public FormalitieCustomFieldsEntity(CustomFieldEntity customField, FormalitieEntity formalitie, boolean active, String value) {
+        this.customField = customField;
+        this.formalitie = formalitie;
+        this.active = active;
+        this.value = value;
+    }
+
+    public FormalitieCustomFieldsEntity(int id, String value, boolean active, FormalitieEntity formalitie, CustomFieldEntity customField) {
+        this.id = id;
+        this.value = value;
+        this.active = active;
+        this.formalitie = formalitie;
+        this.customField = customField;
+    }
 }

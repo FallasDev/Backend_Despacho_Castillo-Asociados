@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/clients")
 @RequiredArgsConstructor
@@ -26,6 +28,15 @@ public class ClientController {
             @RequestParam(defaultValue = "10") int size) {
 
         PageResult<ClientResponse> clients = clientService.findAllClients(page, size);
+
+        return ResponseEntity.ok().body(
+                new ApiResponse<>(true, "Clients retrieved successfully", clients)
+        );
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<ClientResponse>>> getAllClientsWithoutPagination() {
+        List<ClientResponse> clients = clientService.findAllClientsWithoutPagination();
 
         return ResponseEntity.ok().body(
                 new ApiResponse<>(true, "Clients retrieved successfully", clients)

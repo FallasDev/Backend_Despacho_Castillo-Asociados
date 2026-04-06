@@ -2,10 +2,13 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.repository.jp
 
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalityClientStats;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Stats;
+import com.accountancy.despacho_castillo_asociados.domain.model.Service.ServiceCountProjection;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Formalitie.FormalitieEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface JPAFormalitieRepository extends JpaRepository<FormalitieEntity, Integer>, JpaSpecificationExecutor<FormalitieEntity> {
 
@@ -17,4 +20,19 @@ public interface JPAFormalitieRepository extends JpaRepository<FormalitieEntity,
                    "FROM FormalitieEntity f WHERE f.client.id = :clientId"
     )
     Stats countFormalitiesByClientId(int clientId);
+
+    @Query(value = """
+    SELECT 
+        s.id as id,
+        s.name as name,
+        s.description as description,
+        s.active as active,
+        COUNT(f.id) as totalFormalities
+    FROM formalities f
+    INNER JOIN services s ON s.id = f.service_id
+    GROUP BY s.id
+    LIMIT 6
+""", nativeQuery = true)
+    List<ServiceCountProjection> findServiceCounts();
 }
+

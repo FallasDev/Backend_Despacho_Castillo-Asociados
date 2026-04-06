@@ -3,6 +3,7 @@ package com.accountancy.despacho_castillo_asociados.application.usecase.Permissi
 import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRole;
 import com.accountancy.despacho_castillo_asociados.domain.repository.PermissionRole.PermissionRoleRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 import java.util.Optional;
 
@@ -14,6 +15,7 @@ public class FindByIdPermissionRoleUseCase {
         this.permissionRoleRepository = permissionRoleRepository;
     }
 
+    @Transactional
     public PermissionRole execute(int id) {
         Optional<PermissionRole> permissionRole = permissionRoleRepository.findById(id);
 

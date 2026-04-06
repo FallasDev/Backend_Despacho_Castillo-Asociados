@@ -102,7 +102,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     @Override
     public PageResult<Role> findAll(int page, int size) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
-        Page<RoleEntity> entityPage = jpaRoleRepository.findAll(pageable);
+        Page<RoleEntity> entityPage = jpaRoleRepository.findAllByActive(true,pageable);
 
         List<RoleEntity> roles = entityPage.getContent();
 

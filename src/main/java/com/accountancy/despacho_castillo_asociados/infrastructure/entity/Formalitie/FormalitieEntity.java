@@ -41,5 +41,21 @@ public class FormalitieEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    @Column(name = "template_id", nullable = false)
+    private int templateId;
+
+    public FormalitieEntity() {
+    }
+
+    public FormalitieEntity(int id, int state, LocalDateTime createdAt, boolean active, ServiceEntity service, ClientEntity client, UserEntity user, int templateId) {
+        this.id = id;
+        this.state = state;
+        this.createdAt = createdAt;
+        this.active = active;
+        this.service = service;
+        this.client = client;
+        this.user = user;
+    }
+
     // Getters & setters ya los tienes con Lombok @Getter @Setter
 }

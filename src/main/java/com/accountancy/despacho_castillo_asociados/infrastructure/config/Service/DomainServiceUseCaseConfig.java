@@ -1,5 +1,6 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.config.Service;
 import com.accountancy.despacho_castillo_asociados.application.usecase.Service.*;
+import com.accountancy.despacho_castillo_asociados.domain.repository.Formalitie.FormalitieRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Service.ServiceRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.ServiceCustomFields.ServiceCustomFieldsRepository;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
@@ -43,6 +44,10 @@ public class DomainServiceUseCaseConfig {
     @Bean
     public FindAllServicesUseCase findAllServicesUseCase(ServiceRepository serviceRepository, Messages messages) {
         return new FindAllServicesUseCase(serviceRepository, messages);
+    }
+
+    @Bean FindMostPopularServicesUseCase findMostPopularServicesUseCase(FormalitieRepository serviceRepository) {
+        return new FindMostPopularServicesUseCase(serviceRepository);
     }
 
 }

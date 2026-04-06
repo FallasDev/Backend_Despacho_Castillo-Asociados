@@ -22,6 +22,8 @@ public interface ServiceCustomFieldsRepository {
     Optional<ServiceCustomField> findById(int id);
     PageResult<ServiceCustomField> findByServiceId(int serviceId, int page, int size);
     PageResult<ServiceCustomField> findAll(int page, int size);
+    Optional<ServiceCustomField> findByFormalitieId(int customFieldId);
+
     List<ServiceCustomField> findAllWithoutPagination();
 
     boolean existsById(int id);

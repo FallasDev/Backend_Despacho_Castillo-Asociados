@@ -114,4 +114,17 @@ public class FormalitieCustomFieldController {
                 )
         );
     }
+
+    @GetMapping("/file-url/{id}")
+    public ResponseEntity<ApiResponse<String>> getFileUrl(@PathVariable int id) {
+        String fileUrl = formalitieCustomFieldService.getFileUrl(id);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        messages.get("formalitycustomfield.success.file_url"),
+                        fileUrl
+                )
+        );
+    }
 }

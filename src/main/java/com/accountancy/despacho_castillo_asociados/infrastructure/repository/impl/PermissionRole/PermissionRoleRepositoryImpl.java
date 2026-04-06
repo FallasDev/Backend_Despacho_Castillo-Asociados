@@ -3,6 +3,7 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.repository.im
 import com.accountancy.despacho_castillo_asociados.domain.model.Permission.Permission;
 import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRole;
 import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRoleRequest;
+import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRoleResponse;
 import com.accountancy.despacho_castillo_asociados.domain.model.Role.Role;
 import com.accountancy.despacho_castillo_asociados.domain.repository.PermissionRole.PermissionRoleRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.PermissionRole.PermissionRoleEntity;
@@ -98,21 +99,15 @@ public class PermissionRoleRepositoryImpl implements PermissionRoleRepository {
     }
 
     @Override
-    public PageResult<PermissionRole> findByIdRole(int idRole, int page, int size) {
+    public Optional<PermissionRoleResponse> findByIdRole(int idRole, int page, int size) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         Page<PermissionRoleEntity> entityPage = jpaPermissionRoleRepository.findByRoleId(idRole, pageable);
 
         List<PermissionRoleEntity> permissionRoles = entityPage.getContent();
 
-        return new PageResult<>(
-                permissionRoles.stream()
-                        .map(this::getPermissionRoleFromEntity)
-                        .toList(),
-                page,
-                size,
-                entityPage.getTotalElements(),
-                entityPage.getTotalPages()
-        );
+        PermissionRoleResponse permissionRoleResponses = getPermissionsByRoleResponseFromEntity(permissionRoles);
+
+        return Optional.of(permissionRoleResponses);
     }
 
     @Override
@@ -131,6 +126,33 @@ public class PermissionRoleRepositoryImpl implements PermissionRoleRepository {
                 entityPage.getTotalElements(),
                 entityPage.getTotalPages()
         );
+    }
+
+    @NonNull
+    private PermissionRoleResponse getPermissionsByRoleResponseFromEntity(@NonNull List<PermissionRoleEntity> list) {
+
+        List<Permission> permission = list.stream().map(
+                e -> new Permission(
+                        e.getPermission().getId(),
+                        e.getPermission().getName(),
+                        e.getPermission().getDescription()
+                )
+        ).toList();
+
+        Role role = new Role(
+                list.getFirst().getRole().getId(),
+                list.getFirst().getRole().getName(),
+                list.getFirst().getRole().getDescription(),
+                new java.util.ArrayList<>(),
+                list.getFirst().getRole().isActive()
+        );
+
+        PermissionRoleResponse response = new PermissionRoleResponse();
+        response.setRole(role);
+        response.setPermissions(permission);
+
+        return  response;
+
     }
 
     @NonNull

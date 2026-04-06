@@ -1,5 +1,7 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.repository.impl.User;
 
+import com.accountancy.despacho_castillo_asociados.domain.model.Permission.Permission;
+import com.accountancy.despacho_castillo_asociados.domain.model.Role.Role;
 import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
 import com.accountancy.despacho_castillo_asociados.domain.model.User.UserRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRepository;
@@ -16,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class UserRepositoryImpl implements UserRepository {
+public class  UserRepositoryImpl implements UserRepository {
 
     private final JPAUserRepository jpaUserRepository;
 
@@ -25,7 +27,16 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User create(UserRequest userRequest) {
+    public User create(UserRequest userRequest, Role role) {
+
+        RoleEntity roleEntity = new RoleEntity(
+                role.getId(),
+                role.getName(),
+                role.getDescription(),
+                new java.util.ArrayList<>(),
+                role.isActive()
+        );
+
         UserEntity entity = new UserEntity(
                 userRequest.getName(),
                 userRequest.getSuername(),
@@ -33,8 +44,7 @@ public class UserRepositoryImpl implements UserRepository {
                 userRequest.getPhoneNumber(),
                 userRequest.getPerosnalId(),
                 userRequest.getEmail(),
-                userRequest.getRole() != null ?
-                    new RoleEntity(userRequest.getRole().getId(), "", "", new java.util.ArrayList<>(), true) : null,
+                roleEntity,
                 userRequest.getPassword(),
                 userRequest.getAddress(),
                 true
@@ -45,12 +55,18 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User update(UserRequest userRequest, int id) {
+    public User update(UserRequest userRequest, int id, Role role) {
         Optional<UserEntity> existing = jpaUserRepository.findById(id);
 
         if (existing.isEmpty()) {
             return null;
         }
+
+        RoleEntity roleEntity = new RoleEntity();
+        roleEntity.setId(role.getId());
+        roleEntity.setName(role.getName());
+        roleEntity.setDescription(role.getDescription());
+        roleEntity.setActive(role.isActive());
 
         UserEntity entity = existing.get();
         entity.setName(userRequest.getName());
@@ -59,10 +75,7 @@ public class UserRepositoryImpl implements UserRepository {
         entity.setPhoneNumber(userRequest.getPhoneNumber());
         entity.setPerosnalId(userRequest.getPerosnalId());
         entity.setEmail(userRequest.getEmail());
-        if (userRequest.getRole() != null) {
-            entity.setRole(new RoleEntity(userRequest.getRole().getId(), "", "", new java.util.ArrayList<>(), true));
-        }
-        entity.setPassword(userRequest.getPassword());
+        entity.setRole(roleEntity);
         entity.setAddress(userRequest.getAddress());
 
         UserEntity updated = jpaUserRepository.save(entity);

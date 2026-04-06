@@ -1,9 +1,13 @@
 package com.accountancy.despacho_castillo_asociados.application.usecase.PermissionRole;
 
 import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRole;
+import com.accountancy.despacho_castillo_asociados.domain.model.PermissionRole.PermissionRoleResponse;
 import com.accountancy.despacho_castillo_asociados.domain.repository.PermissionRole.PermissionRoleRepository;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.EmptyListException;
+import jakarta.transaction.Transactional;
+
+import java.util.Optional;
 
 public class FindByIdRolePermissionRoleUseCase {
 
@@ -13,19 +17,20 @@ public class FindByIdRolePermissionRoleUseCase {
         this.permissionRoleRepository = permissionRoleRepository;
     }
 
-    public PageResult<PermissionRole> execute(int idRole, int page, int size) {
+    @Transactional
+    public PermissionRoleResponse execute(int idRole, int page, int size) {
 
         if (idRole <= 0) {
             throw new IllegalArgumentException("Role id cannot be less than 1");
         }
 
-        PageResult<PermissionRole> permissionRoles = permissionRoleRepository.findByIdRole(idRole, page, size);
+        Optional<PermissionRoleResponse> permissionRoles = permissionRoleRepository.findByIdRole(idRole, page, size);
 
-        if (permissionRoles.content().isEmpty()) {
+        if (permissionRoles.isEmpty()) {
             throw new EmptyListException("No permission roles found for role id " + idRole);
         }
 
-        return permissionRoles;
+        return permissionRoles.get();
     }
 
 }

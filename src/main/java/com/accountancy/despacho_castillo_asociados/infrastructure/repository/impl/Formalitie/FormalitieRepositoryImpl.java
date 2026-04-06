@@ -1,18 +1,25 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.repository.impl.Formalitie;
 
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
+import com.accountancy.despacho_castillo_asociados.domain.model.CustomField.CustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.*;
+import com.accountancy.despacho_castillo_asociados.domain.model.FormalitieCustomFields.FormalitieCustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.Role.Role;
 import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
+import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainServiceMostPopularServices;
+import com.accountancy.despacho_castillo_asociados.domain.model.Type.Type;
 import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Formalitie.FormalitieRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Client.ClientEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.CustomField.CustomFieldEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Formalitie.FormalitieEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Role.RoleEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Service.ServiceEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.User.UserEntity;
+import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.CustomField.JPACustomFieldRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Formalitie.FormalitieJpaSpecificationBuilder;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Formalitie.JPAFormalitieRepository;
+import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.FormalitieCustomFields.JPAFormalitieCustomFieldsRepository;
 import com.accountancy.despacho_castillo_asociados.shared.FormalitiesState;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import lombok.NonNull;
@@ -30,22 +37,27 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
 
 
     private final JPAFormalitieRepository jpaFormalitieRepository;
+    private final JPAFormalitieCustomFieldsRepository jpaFormalitieCustomFieldsRepository;
+    private final JPACustomFieldRepository jpaCustomFieldRepository;
     private final FormalitieJpaSpecificationBuilder specBuilder;
 
-    public FormalitieRepositoryImpl(JPAFormalitieRepository jpaFormalitieRepository, FormalitieJpaSpecificationBuilder specBuilder) {
+    public FormalitieRepositoryImpl(JPAFormalitieRepository jpaFormalitieRepository, JPAFormalitieCustomFieldsRepository jpaFormalitieCustomFieldsRepository, JPACustomFieldRepository jpaCustomFieldRepository, FormalitieJpaSpecificationBuilder specBuilder) {
         this.jpaFormalitieRepository = jpaFormalitieRepository;
+        this.jpaFormalitieCustomFieldsRepository = jpaFormalitieCustomFieldsRepository;
+        this.jpaCustomFieldRepository = jpaCustomFieldRepository;
         this.specBuilder = specBuilder;
     }
 
 
     @Override
-    public Formalitie create(FormalitieRequest formalitieRequest, DomainService service, Client client, User user) {
+    public Formalitie create(Formalitie formalitieRequest, DomainService service, Client client, User user) {
 
 
         FormalitieEntity entity = new FormalitieEntity();
-        entity.setState(FormalitiesState.PENDING.getId());
+        entity.setState(formalitieRequest.getState().getId());
         entity.setCreatedAt(LocalDateTime.now());
         entity.setActive(true);
+        entity.setTemplateId(formalitieRequest.getTemplateId());
         return setFormalitie(service, client, user, entity);
     }
 
@@ -107,7 +119,7 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
     }
 
     @Override
-    public Formalitie update(FormalitieRequest formalitieRequest, int id, DomainService service, Client client, User user) {
+    public Formalitie update(FormalitieRequestUpdate formalitieRequest, int id, DomainService service, Client client, User user) {
 
         FormalitieEntity existingEntity = jpaFormalitieRepository.findById(id).orElse(null);
 
@@ -176,6 +188,23 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
     }
 
     @Override
+    public List<DomainServiceMostPopularServices> findMostPopularServices() {
+        return jpaFormalitieRepository.findServiceCounts().stream()
+                .map(record -> {
+                    int serviceId = record.getId();
+                    String serviceName = record.getName();
+                    String serviceDescription = record.getDescription();
+                    boolean active = record.getActive();
+                    long count = record.getTotalFormalities();
+
+                    DomainService service = new DomainService(serviceId, serviceName, serviceDescription, active);
+
+                    return new DomainServiceMostPopularServices(service, (int) count);
+                })
+                .toList();
+    }
+
+    @Override
     public boolean handleFormalitie(int id, User user) {
 
         FormalitieEntity entity = jpaFormalitieRepository.findById(id).orElse(null);
@@ -216,7 +245,8 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
 
     @NonNull
     private Formalitie getFormalitieFromEntity(@NonNull FormalitieEntity entity) {
-        return new Formalitie(
+
+        Formalitie formalitie = new Formalitie(
                 entity.getId(),
                 new DomainService(
                         entity.getService().getId(),
@@ -258,7 +288,44 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                         entity.getClient().getCreatedAt()
                 ),
                 FormalitiesState.fromId(entity.getState()),
-                entity.getCreatedAt()
+                entity.getCreatedAt(),
+                entity.getTemplateId()
+                );
+
+        List<FormalitieCustomField> customFields = jpaFormalitieCustomFieldsRepository.findByFormalitieId(entity.getId())
+                .stream()
+                .map(fc -> new FormalitieCustomField(
+                        fc.getId(),
+                        getCustomFieldFromEntity(fc.getCustomField()),
+                        null,
+                        fc.getValue(),
+                        fc.isActive()
+                ))
+                .toList();
+
+        formalitie.setCustomFields(customFields);
+
+        return formalitie;
+    }
+
+
+
+    @NonNull
+    private CustomField getCustomFieldFromEntity(@NonNull CustomFieldEntity entity) {
+        return new CustomField(
+                entity.getId(),
+                entity.getName(),
+                entity.isRequired(),
+                entity.isActive(),
+                entity.isExclusive(),
+                entity.getPlaceholder(),
+                entity.getHelpText(),
+                entity.getDefaultValue(),
+                new Type(
+                        entity.getType().getId(),
+                        entity.getType().getName(),
+                        entity.getType().isActive()
+                )
         );
     }
 

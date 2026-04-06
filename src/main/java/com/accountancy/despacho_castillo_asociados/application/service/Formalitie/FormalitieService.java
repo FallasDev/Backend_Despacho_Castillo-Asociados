@@ -1,11 +1,9 @@
 package com.accountancy.despacho_castillo_asociados.application.service.Formalitie;
 
 import com.accountancy.despacho_castillo_asociados.application.usecase.Formalitie.*;
-import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.Formalitie;
-import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalitieRequest;
-import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.FormalityClientStats;
-import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.SearchFormalitie;
+import com.accountancy.despacho_castillo_asociados.domain.model.Formalitie.*;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
+import jakarta.mail.MessagingException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -39,7 +37,7 @@ public class FormalitieService {
         return createFormalitieUseCase.execute(formalitie);
     }
 
-    public void changeFormalitieState(int formalitieId, int newState) {
+    public void changeFormalitieState(int formalitieId, int newState) throws MessagingException {
         changeFormalitieStateUseCase.execute(formalitieId, newState);
     }
 
@@ -52,7 +50,7 @@ public class FormalitieService {
     }
 
 
-    public Formalitie updateFormalitie(int id, FormalitieRequest formalitieRequest) {
+    public Formalitie updateFormalitie(int id, FormalitieRequestUpdate formalitieRequest) {
         return updateFormalitieUseCase.execute(formalitieRequest, id);
     }
 

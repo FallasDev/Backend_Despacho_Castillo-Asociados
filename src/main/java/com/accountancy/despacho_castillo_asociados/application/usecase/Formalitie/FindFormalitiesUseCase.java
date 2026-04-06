@@ -7,7 +7,6 @@ import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.EmptyListException;
 import jakarta.transaction.Transactional;
-import lombok.NonNull;
 
 public class FindFormalitiesUseCase {
 

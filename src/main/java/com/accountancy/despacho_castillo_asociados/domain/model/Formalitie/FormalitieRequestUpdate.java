@@ -1,33 +1,31 @@
 package com.accountancy.despacho_castillo_asociados.domain.model.Formalitie;
 
 import com.accountancy.despacho_castillo_asociados.domain.model.FormalitieCustomFields.FormalitieCustomFieldWithValue;
-import com.accountancy.despacho_castillo_asociados.domain.model.Service.DomainService;
+import com.accountancy.despacho_castillo_asociados.domain.model.FormalitieCustomFields.FormalitieCustomFieldWithValueUpdate;
 
 import java.util.List;
 
-public class FormalitieRequest {
+public class FormalitieRequestUpdate {
 
     private int serviceId;
     private int clientId;
     private int userId;
-    List<FormalitieCustomFieldWithValue> customFields;
-    private int templateId;
+    List<FormalitieCustomFieldWithValueUpdate> customFields;
 
-    public FormalitieRequest() {
+    public FormalitieRequestUpdate() {
     }
 
-    public FormalitieRequest(int userId, int clientId, int serviceId) {
+    public FormalitieRequestUpdate(int userId, int clientId, int serviceId) {
         this.userId = userId;
         this.clientId = clientId;
         this.serviceId = serviceId;
     }
 
-    public FormalitieRequest(int serviceId, int clientId, int userId, List<FormalitieCustomFieldWithValue> customFields, int templateId) {
+    public FormalitieRequestUpdate(int serviceId, int clientId, int userId, List<FormalitieCustomFieldWithValueUpdate> customFields) {
         this.serviceId = serviceId;
         this.clientId = clientId;
         this.userId = userId;
         this.customFields = customFields;
-        this.templateId = templateId;
     }
 
     public int getServiceId() {
@@ -54,18 +52,21 @@ public class FormalitieRequest {
         this.userId = userId;
     }
 
-    public List<FormalitieCustomFieldWithValue> getCustomFields() {
+    public List<FormalitieCustomFieldWithValueUpdate> getCustomFields() {
         return customFields;
     }
 
-    public void setCustomFields(List<FormalitieCustomFieldWithValue> customFields) {
+    public void setCustomFields(List<FormalitieCustomFieldWithValueUpdate> customFields) {
         this.customFields = customFields;
     }
 
-    public int getTemplateId() {
-        return templateId;
-    }
-    public void setTemplateId(int templateId) {
-        this.templateId = templateId;
+    @Override
+    public String toString() {
+        return "FormalitieRequestUpdate{" +
+                "serviceId=" + serviceId +
+                ", clientId=" + clientId +
+                ", userId=" + userId +
+                ", customFields=" + customFields.toString() +
+                '}';
     }
 }
