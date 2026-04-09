@@ -2,6 +2,7 @@ package com.accountancy.despacho_castillo_asociados.shared;
 
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.EmptyListException;
+import com.accountancy.despacho_castillo_asociados.shared.exceptions.RedirectionException;
 import com.accountancy.despacho_castillo_asociados.shared.utils.ExtractColumn;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.MessageSource;
@@ -119,8 +120,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneric(Exception ex) {
 
-        throw new RuntimeException(ex);
+        System.out.println("Unhandled exception: " + ex.getMessage());
 
+        return new ResponseEntity<>(
+                new ApiResponse<>(false, messages.get("generic.error"), null),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
     @ExceptionHandler(IOException.class)
@@ -144,6 +149,14 @@ public class GlobalExceptionHandler {
         System.out.println("AuthenticationException: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                 new ApiResponse<>(false, "Unauthorized", null)
+        );
+    }
+
+    @ExceptionHandler(RedirectionException.class)
+    public ResponseEntity<ApiResponse<Object>> handleRedirection(RedirectionException ex) {
+        System.out.println("RedirectionException: " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                new ApiResponse<>(false, ex.getMessage(), null)
         );
     }
 

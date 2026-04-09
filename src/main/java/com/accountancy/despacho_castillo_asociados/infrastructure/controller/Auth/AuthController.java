@@ -87,5 +87,24 @@ public class AuthController {
                     .body(new ApiResponse<>(false, "Error interno del servidor", null));
         }
     }
+
+    @GetMapping("/resend-code")
+    public ResponseEntity<?> resendCode(@RequestParam String email) {
+        try {
+            Optional<String> result = authService.resendCode(email);
+
+            if (result.isPresent()) {
+                return ResponseEntity.ok(
+                        new ApiResponse<>(true, result.get(), null)
+                );
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ApiResponse<>(false, "No se pudo reenviar el código de verificación", null));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Error interno del servidor", null));
+        }
+    }
 }
 

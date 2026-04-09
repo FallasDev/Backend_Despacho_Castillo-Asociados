@@ -1,10 +1,7 @@
 package com.accountancy.despacho_castillo_asociados.application.service.Auth;
 
 import com.accountancy.despacho_castillo_asociados.application.service.Email.EmailService;
-import com.accountancy.despacho_castillo_asociados.application.usecase.Auth.IFindCodeByEmail;
-import com.accountancy.despacho_castillo_asociados.application.usecase.Auth.ILoginClientUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.Auth.ILoginUseCase;
-import com.accountancy.despacho_castillo_asociados.application.usecase.Auth.IRefreshTokenUseCase;
+import com.accountancy.despacho_castillo_asociados.application.usecase.Auth.*;
 import com.accountancy.despacho_castillo_asociados.config.jwt.JwtService;
 import com.accountancy.despacho_castillo_asociados.domain.model.Auth.LoginRequest;
 import com.accountancy.despacho_castillo_asociados.domain.model.Auth.LoginResponse;
@@ -16,6 +13,7 @@ import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRe
 import com.accountancy.despacho_castillo_asociados.domain.repository.verificationcode.VerificationCodeRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.security.CustomUserDetailsService;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
+import com.accountancy.despacho_castillo_asociados.shared.utils.GenerateOtp;
 import com.accountancy.despacho_castillo_asociados.shared.utils.HtmlContent;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
@@ -26,7 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginClientUseCase, IFindCodeByEmail {
+public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginClientUseCase, IFindCodeByEmail, IResendCode {
 
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
@@ -158,5 +156,39 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
 
         return Optional.of(opt);
     }
+
+    @Override
+    public Optional<String> resendCode(String email) throws MessagingException {
+        System.out.println("Intentando reenviar código de verificación a email: " + email);
+        Client client = clientRepository.findByEmailAndActive(email)
+                .orElse(null);
+
+        if (client == null) {
+            System.out.println("Cliente con email " + email + " no encontrado");
+            throw new BadRequestException("Cliente no encontrado");
+        }
+
+        if (client.isEnabled()) {
+            throw new BadRequestException("El cliente ya ha verificado su cuenta");
+        }
+
+        String otp = GenerateOtp.execute();
+
+
+        String subject = "Código de verificación para tu cuenta";
+        String body = new HtmlContent().generateVerificationEmail(client.getName(), otp);
+
+        emailService.sendHtmlEmail(client.getEmail(), subject, body);
+
+        VerificationCode verificationCode = new VerificationCode();
+        verificationCode.setEmail(client.getEmail());
+        verificationCode.setCode(otp);
+        verificationCode.setExpiryDate(java.time.LocalDateTime.now().plusMinutes(15));
+
+        verificationCodeRepository.save(verificationCode);
+
+        return Optional.of("Código de verificación reenviado exitosamente");
+        }
 }
+
 

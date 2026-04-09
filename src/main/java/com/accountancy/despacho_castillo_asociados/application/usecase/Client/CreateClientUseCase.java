@@ -7,6 +7,7 @@ import com.accountancy.despacho_castillo_asociados.domain.model.Auth.Verificatio
 import com.accountancy.despacho_castillo_asociados.domain.repository.Client.ClientRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.verificationcode.VerificationCodeRepository;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
+import com.accountancy.despacho_castillo_asociados.shared.exceptions.RedirectionException;
 import com.accountancy.despacho_castillo_asociados.shared.utils.GenerateOtp;
 import com.accountancy.despacho_castillo_asociados.shared.utils.HtmlContent;
 import com.accountancy.despacho_castillo_asociados.shared.utils.UserValidationsHelper;
@@ -41,9 +42,17 @@ public class CreateClientUseCase {
         UserValidationsHelper.validateEmail(clientRequest.getEmail());
         UserValidationsHelper.validatePassword(clientRequest.getPassword());
 
-        boolean existingClient = clientRepository.findByEmailAndActive(clientRequest.getEmail()).isPresent();
+        Optional<Client> existingClient = clientRepository.findByEmailAndActive(clientRequest.getEmail());
 
-        if (existingClient) {
+        if (existingClient.isPresent() && !existingClient.get().isEnabled()) {
+
+            String otp = GenerateOtp.execute();
+            sendAndSaveEmailVerification(existingClient.get(), otp);
+            throw new RedirectionException("Cliente con email " + clientRequest.getEmail() + " no se ha verificado. " +
+                    "Se ha enviado un nuevo código de verificación a su correo electrónico.");
+        }
+
+        if (existingClient.isPresent()) {
             throw new BadRequestException("Client with email " + clientRequest.getEmail() + " already exists");
         }
 
@@ -59,23 +68,28 @@ public class CreateClientUseCase {
 
         String otp = GenerateOtp.execute();
 
+        sendAndSaveEmailVerification(client, otp);
+
+        return client;
+    }
+
+    private void sendAndSaveEmailVerification(Client client, String code) throws MessagingException {
+
         VerificationCode verificationCode = new VerificationCode();
         verificationCode.setEmail(client.getEmail());
-        verificationCode.setCode(otp);
+        verificationCode.setCode(code);
         verificationCode.setExpiryDate(LocalDateTime.now().plusMinutes(15));
 
         VerificationCode codeSaved = verificationCodeRepository.save(verificationCode);
 
         String subject = "Codigo de verificación para tu cuenta";
-        String body = new HtmlContent().generateVerificationEmail(client.getName(),codeSaved.getCode());
+        String body = new HtmlContent().generateVerificationEmail(client.getName(),code);
 
         emailService.sendHtmlEmail(
             client.getEmail(),
             subject,
             body
         );
-
-        return client;
     }
 
 }
