@@ -66,7 +66,7 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                         client.getSurname(),
                         client.getPhotoProfileUrl(),
                         client.getPhoneNumber(),
-                        client.getPerosnalId(),
+                        client.getPersonalId(),
                         client.getEmail(),
                         client.getPassword(),
                         client.getAddress(),
@@ -87,10 +87,10 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                 new UserEntity(
                         user.getId(),
                         user.getName(),
-                        user.getSuername(),
+                        user.getSurname(),
                         user.getPhotoProfileUrl(),
                         user.getPhoneNumber(),
-                        user.getPerosnalId(),
+                        user.getPersonalId(),
                         user.getEmail(),
                         new RoleEntity(
                                 user.getRole().getId(),
@@ -227,10 +227,10 @@ public class FormalitieRepositoryImpl implements FormalitieRepository {
                 new User(
                         entity.getUser() != null ? entity.getUser().getId() : 0,
                         entity.getUser() != null ? entity.getUser().getName() : null,
-                        entity.getUser() != null ? entity.getUser().getSuername() : null,
+                        entity.getUser() != null ? entity.getUser().getSurname() : null,
                         entity.getUser() != null ? entity.getUser().getPhotoProfileUrl() : null,
                         entity.getUser() != null ? entity.getUser().getPhoneNumber() : null,
-                        entity.getUser() != null ? entity.getUser().getPerosnalId() : null,
+                        entity.getUser() != null ? entity.getUser().getPersonalId() : null,
                         entity.getUser() != null ? entity.getUser().getEmail() : null,
                         new Role(
                                 entity.getUser() != null && entity.getUser().getRole() != null ? entity.getUser().getRole().getId() : 0,

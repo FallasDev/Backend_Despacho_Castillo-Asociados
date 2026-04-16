@@ -43,10 +43,10 @@ public class UserRepositoryImpl implements UserRepository {
 
         UserEntity entity = new UserEntity(
                 userRequest.getName(),
-                userRequest.getSuername(),
+                userRequest.getSurname(),
                 userRequest.getPhotoProfileUrl(),
                 userRequest.getPhoneNumber(),
-                userRequest.getPerosnalId(),
+                userRequest.getPersonalId(),
                 userRequest.getEmail(),
                 roleEntity,
                 userRequest.getPassword(),
@@ -76,10 +76,10 @@ public class UserRepositoryImpl implements UserRepository {
 
         UserEntity entity = existing.get();
         entity.setName(userRequest.getName());
-        entity.setSuername(userRequest.getSuername());
+        entity.setSurname(userRequest.getSurname());
         entity.setPhotoProfileUrl(userRequest.getPhotoProfileUrl());
         entity.setPhoneNumber(userRequest.getPhoneNumber());
-        entity.setPerosnalId(userRequest.getPerosnalId());
+        entity.setPersonalId(userRequest.getPersonalId());
         entity.setEmail(userRequest.getEmail());
         entity.setRole(roleEntity);
         entity.setPassword(userRequest.getPassword());
@@ -159,7 +159,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> fintBySurname(String surname) {
-        return jpaUserRepository.findBySuername(surname)
+        return jpaUserRepository.findBySurname(surname)
                 .map(this::getUserFromEntity)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -169,7 +169,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> fintBySurnameAndIsActive(String surname) {
-        return jpaUserRepository.findBySuernameAndIsActiveTrue(surname)
+        return jpaUserRepository.findBySurnameAndIsActiveTrue(surname)
                 .map(this::getUserFromEntity)
                 .filter(Optional::isPresent)
                 .map(Optional::get);
@@ -177,7 +177,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> fintBySurnameAndIsInactive(String surname) {
-        return jpaUserRepository.findBySuernameAndIsActiveFalse(surname)
+        return jpaUserRepository.findBySurnameAndIsActiveFalse(surname)
                 .map(this::getUserFromEntity)
                 .filter(Optional::isPresent)
                 .map(Optional::get);
@@ -220,10 +220,10 @@ public class UserRepositoryImpl implements UserRepository {
         return Optional.of(new User(
                 entity.getId(),
                 entity.getName(),
-                entity.getSuername(),
+                entity.getSurname(),
                 entity.getPhotoProfileUrl(),
                 entity.getPhoneNumber(),
-                entity.getPerosnalId(),
+                entity.getPersonalId(),
                 entity.getEmail(),
                 domainRole,
                 entity.getPassword(),
@@ -233,3 +233,4 @@ public class UserRepositoryImpl implements UserRepository {
     }
 }
 
+                                                                                                                                                                                    

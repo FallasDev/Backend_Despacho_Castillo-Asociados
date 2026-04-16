@@ -74,14 +74,6 @@ public class Client {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getPerosnalId() {
-        return personalId;
-    }
-
-    public void setPerosnalId(String perosnalId) {
-        this.personalId = perosnalId;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -130,11 +122,4 @@ public class Client {
         this.personalId = personalId;
     }
 
-    public LocalDate getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
-}
+ 
