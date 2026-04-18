@@ -1,6 +1,7 @@
 package com.accountancy.despacho_castillo_asociados.config.jwt;
 
 import com.accountancy.despacho_castillo_asociados.infrastructure.security.CustomUserDetailsService;
+import jakarta.servlet.http.Cookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.Claims;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,41 +37,65 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
+        final String token = getTokenFromCookie(request);
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+
+
+        if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        final String token = authHeader.substring(7);
-        final String username = jwtService.extractUsername(token);
+        try {
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            final String username = jwtService.extractUsername(token);
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            if (jwtService.isTokenValid(token, userDetails)) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                // Extraemos permisos del token
-                Claims claims = jwtService.extractAllClaims(token);
-                List<String> permissions = claims.get("permissions", List.class);
+                if (jwtService.isTokenValid(token, userDetails)) {
 
-                Collection<GrantedAuthority> authorities = permissions.stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+                    // Extraemos permisos del token
+                    Claims claims = jwtService.extractAllClaims(token);
+                    List<String> permissions = claims.get("permissions", List.class);
 
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                authorities
-                        );
+                    Collection<GrantedAuthority> authorities = permissions != null
+                            ? permissions.stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList())
+                            : Collections.emptyList();
 
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    authorities
+                            );
+
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
+
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            // 🔥 CLAVE: token expirado = NO autenticado, pero no error
+            // No haces nada, dejas continuar el flujo
+        } catch (Exception e) {
+            // Opcional: loggear otros errores
+            System.out.println("JWT error: " + e.getMessage());
+        }
+        
+        filterChain.doFilter(request, response);
+    }
+
+    private String getTokenFromCookie(HttpServletRequest request) {
+        if (request.getCookies() == null) return null;
+
+        for (Cookie cookie : request.getCookies()) {
+            if ("auth_token".equals(cookie.getName())) {
+                return cookie.getValue();
             }
         }
-
-        filterChain.doFilter(request, response);
+        return null;
     }
 }

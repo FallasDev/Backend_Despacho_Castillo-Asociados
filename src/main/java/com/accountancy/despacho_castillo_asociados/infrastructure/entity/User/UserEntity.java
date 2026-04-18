@@ -46,6 +46,8 @@ public class UserEntity {
     @Column(nullable = false)
     private boolean isActive;
 
+
+
     public UserEntity() {}
 
     public UserEntity(String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, RoleEntity role, String password, String address, boolean isActive) {

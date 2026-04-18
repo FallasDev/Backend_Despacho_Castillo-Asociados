@@ -6,6 +6,7 @@ import com.accountancy.despacho_castillo_asociados.application.usecase.Auth.ILog
 import com.accountancy.despacho_castillo_asociados.application.usecase.Auth.IRefreshTokenUseCase;
 import com.accountancy.despacho_castillo_asociados.config.jwt.JwtService;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Client.ClientRepository;
+import com.accountancy.despacho_castillo_asociados.domain.repository.RefreshToken.RefreshTokenRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.verificationcode.VerificationCodeRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.security.CustomUserDetailsService;
@@ -21,8 +22,10 @@ public class AuthUseCaseConfig {
                                    JwtService jwtService,
                                    ClientRepository clientRepository,
                                    EmailService emailService,
-                                   VerificationCodeRepository verificationCodeRepository) {
-        return new AuthService(userRepository, clientRepository, userDetailsService, jwtService, emailService, verificationCodeRepository);
+                                   VerificationCodeRepository verificationCodeRepository,
+                                   RefreshTokenRepository refreshTokenRepository) {
+        return new AuthService(userRepository, clientRepository, userDetailsService, jwtService, emailService,
+                verificationCodeRepository, refreshTokenRepository);
     }
 
     @Bean

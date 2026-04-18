@@ -109,9 +109,10 @@ public class FormalitieController {
     @PatchMapping("/{id}/state")
     public ResponseEntity<ApiResponse<Void>> changeFormalitieState(
             @PathVariable int id,
-            @RequestParam int newState) throws MessagingException {
+            @RequestParam int newState,
+            @RequestParam String additionalNote) throws MessagingException {
 
-        formalitieService.changeFormalitieState(id, newState);
+        formalitieService.changeFormalitieState(id, newState, additionalNote);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true,

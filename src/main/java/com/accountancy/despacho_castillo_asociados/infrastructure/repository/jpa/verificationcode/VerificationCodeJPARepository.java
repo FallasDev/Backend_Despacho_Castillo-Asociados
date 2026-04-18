@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VerificationCodeJPARepository extends JpaRepository<VerificationCodeEntity, Integer> {
     VerificationCodeEntity findByEmailAndCodeAndUsedFalse(String email, String code);
+
+    VerificationCodeEntity findFirstByEmailOrderByCreatedAtDesc(String email);
 }

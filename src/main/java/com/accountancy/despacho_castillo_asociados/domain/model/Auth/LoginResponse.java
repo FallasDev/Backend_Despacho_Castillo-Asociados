@@ -4,6 +4,7 @@ import com.accountancy.despacho_castillo_asociados.domain.model.Role.Role;
 
 public class LoginResponse {
     private String token;
+    private String refreshToken;
     private long expiresIn;
     private long userId;
     private String role;
@@ -11,8 +12,9 @@ public class LoginResponse {
 
     public LoginResponse() {}
 
-    public LoginResponse(String token, long expiresIn, long userId, String role, String name) {
+    public LoginResponse(String token, long expiresIn, long userId, String role, String name, String refreshToken) {
         this.token = token;
+        this.refreshToken = refreshToken;
         this.expiresIn = expiresIn;
         this.userId = userId;
         this.role = role;
@@ -57,6 +59,14 @@ public class LoginResponse {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
 

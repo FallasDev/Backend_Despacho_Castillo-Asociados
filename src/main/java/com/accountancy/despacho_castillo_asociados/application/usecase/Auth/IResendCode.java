@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface IResendCode {
 
-    Optional<String> resendCode(String email) throws MessagingException;
+    void resendCode(String email) throws MessagingException;
 
 }

@@ -5,7 +5,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +53,23 @@ public class JwtService {
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+
+    public String extractUsernameFromContext() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof UserDetails userDetails) {
+            return userDetails.getUsername();
+        }
+
+        return null;
+    }
+
 
     public <T> T extractClaim(String token, Function<Claims, T> resolver) {
         final Claims claims = extractAllClaims(token);

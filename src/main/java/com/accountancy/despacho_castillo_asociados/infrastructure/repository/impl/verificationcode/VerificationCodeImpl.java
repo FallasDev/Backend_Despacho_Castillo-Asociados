@@ -1,7 +1,6 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.repository.impl.verificationcode;
 
 import com.accountancy.despacho_castillo_asociados.domain.model.Auth.VerificationCode;
-import com.accountancy.despacho_castillo_asociados.domain.model.Auth.VerificationCodeRequest;
 import com.accountancy.despacho_castillo_asociados.domain.repository.verificationcode.VerificationCodeRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.verificationcode.VerificationCodeEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.verificationcode.VerificationCodeJPARepository;
@@ -62,6 +61,24 @@ public class VerificationCodeImpl implements VerificationCodeRepository  {
                 savedEntity.getCreatedAt()
         );
 
+    }
+
+    @Override
+    public Optional<VerificationCode> findLastCodeByEmail(String email) {
+        VerificationCodeEntity verificationCode = verificationCodeJpaRepository.findFirstByEmailOrderByCreatedAtDesc(email);
+
+        if (verificationCode == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(new VerificationCode(
+                Math.toIntExact(verificationCode.getId()),
+                verificationCode.getEmail(),
+                verificationCode.getCode(),
+                verificationCode.getExpiryDate(),
+                verificationCode.isUsed(),
+                verificationCode.getCreatedAt()
+        ));
     }
 
     @Override

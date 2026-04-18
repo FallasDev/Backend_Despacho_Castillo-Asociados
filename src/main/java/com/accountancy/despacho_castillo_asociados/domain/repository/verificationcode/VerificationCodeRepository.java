@@ -10,5 +10,7 @@ public interface VerificationCodeRepository {
 
     VerificationCode save(VerificationCode verificationCode);
 
+    Optional<VerificationCode> findLastCodeByEmail(String email);
+
     void MarkAsUsed(int id);
 }

@@ -1,7 +1,6 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.Report;
 
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Report.ReportEntity;
-import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Service.ServiceEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

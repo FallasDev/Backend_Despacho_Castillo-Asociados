@@ -5,44 +5,52 @@ import com.accountancy.despacho_castillo_asociados.application.usecase.Auth.*;
 import com.accountancy.despacho_castillo_asociados.config.jwt.JwtService;
 import com.accountancy.despacho_castillo_asociados.domain.model.Auth.LoginRequest;
 import com.accountancy.despacho_castillo_asociados.domain.model.Auth.LoginResponse;
+import com.accountancy.despacho_castillo_asociados.domain.model.Auth.RefreshToken;
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
 import com.accountancy.despacho_castillo_asociados.domain.model.Auth.VerificationCode;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Client.ClientRepository;
+import com.accountancy.despacho_castillo_asociados.domain.repository.RefreshToken.RefreshTokenRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.verificationcode.VerificationCodeRepository;
 import com.accountancy.despacho_castillo_asociados.infrastructure.security.CustomUserDetailsService;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 import com.accountancy.despacho_castillo_asociados.shared.utils.GenerateOtp;
+import com.accountancy.despacho_castillo_asociados.shared.utils.GenerateRefreshToken;
 import com.accountancy.despacho_castillo_asociados.shared.utils.HtmlContent;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Service
-public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginClientUseCase, IFindCodeByEmail, IResendCode {
+public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginClientUseCase, IFindCodeByEmail,
+        IResendCode, IGetCurrentUser, ICreateRefreshToken, IValidateRefreshToken {
 
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
     private final CustomUserDetailsService userDetailsService;
     private final JwtService jwtService;
     private final VerificationCodeRepository verificationCodeRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final EmailService emailService;
 
     public AuthService(UserRepository userRepository, ClientRepository clientRepository,
                        CustomUserDetailsService userDetailsService,
                        JwtService jwtService, EmailService emailService,
-                       VerificationCodeRepository verificationCodeRepository) {
+                       VerificationCodeRepository verificationCodeRepository, RefreshTokenRepository repository) {
         this.userRepository = userRepository;
         this.clientRepository = clientRepository;
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
         this.emailService = emailService;
             this.verificationCodeRepository = verificationCodeRepository;
+        this.refreshTokenRepository = repository;
     }
 
     @Override
@@ -69,32 +77,37 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
 
         // Generar token JWT
         String token = jwtService.generateToken(userDetails);
+        String refreshToken = createRefreshToken(user).getToken();
 
-        return new LoginResponse(token, 3600, user.getId() ,user.getRole().getName(), user.getName());
+        return new LoginResponse(token, 3600, user.getId() ,user.getRole().getName(), user.getName(), refreshToken);
     }
 
-    @Override
     @Transactional
-    public LoginResponse execute(String token) {
-        try {
-            String username = jwtService.extractUsername(token);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+    public LoginResponse refresh(String refreshToken) {
 
-            if (jwtService.isTokenValid(token, userDetails)) {
-                String newToken = jwtService.generateToken(userDetails);
-                User user = userRepository.findByEmail(username).orElse(null);
+        RefreshToken rt = validateRefreshToken(refreshToken);
 
-                if (user != null) {
-                    return new LoginResponse(newToken, 3600, user.getId(), user.getRole().getName(), user.getName());
-                }
-            }
+        User user = rt.getUser();
 
-            throw new BadRequestException("Token inválido o expirado");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw new BadRequestException("No se pudo renovar el token");
-        }
+        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+
+        String newAccessToken = jwtService.generateToken(userDetails);
+
+        rt.setRevoked(true);
+        refreshTokenRepository.save(rt);
+
+        RefreshToken newRefreshToken = createRefreshToken(user);
+
+        return new LoginResponse(
+                newAccessToken,
+                3600,
+                user.getId(),
+                user.getRole().getName(),
+                user.getName(),
+                newRefreshToken.getToken()
+        );
     }
+
 
     @Override
     @Transactional
@@ -117,6 +130,7 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
         UserDetails userDetails = userDetailsService.loadClientByUserName(request.getEmail());
 
         String token = jwtService.generateToken(userDetails);
+        String refreshToken = createRefreshToken(userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new BadRequestException("Usuario no encontrado"))).getToken();
 
         emailService.sendHtmlEmail(
             client.getEmail(),
@@ -127,7 +141,7 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
             "<p>Saludos,<br/>Despacho Castillo & Asociados</p>"
         );
 
-        return new LoginResponse(token, 3600, client.getId(), "CLIENT", client.getName());
+        return new LoginResponse(token, 3600, client.getId(), "CLIENT", client.getName(), refreshToken);
 
     }
 
@@ -158,18 +172,22 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
     }
 
     @Override
-    public Optional<String> resendCode(String email) throws MessagingException {
-        System.out.println("Intentando reenviar código de verificación a email: " + email);
-        Client client = clientRepository.findByEmailAndActive(email)
-                .orElse(null);
+    public void resendCode(String email) throws MessagingException {
 
-        if (client == null) {
-            System.out.println("Cliente con email " + email + " no encontrado");
-            throw new BadRequestException("Cliente no encontrado");
-        }
+        Client client = clientRepository.findByEmailAndActive(email)
+                .orElseThrow(() -> new BadRequestException("Cliente no encontrado"));
+
 
         if (client.isEnabled()) {
             throw new BadRequestException("El cliente ya ha verificado su cuenta");
+        }
+
+        VerificationCode existingCode = verificationCodeRepository.findLastCodeByEmail(client.getEmail()).orElse(null);
+
+        boolean isCodeAlreadySent = existingCode != null && existingCode.getCreatedAt().isAfter(LocalDateTime.now().minusMinutes(2));
+
+        if (isCodeAlreadySent) {
+            throw new BadRequestException("Ya se ha enviado un código de verificación recientemente. Por favor, espere 2 minutos antes de solicitar otro.");
         }
 
         String otp = GenerateOtp.execute();
@@ -180,15 +198,50 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
 
         emailService.sendHtmlEmail(client.getEmail(), subject, body);
 
+
         VerificationCode verificationCode = new VerificationCode();
         verificationCode.setEmail(client.getEmail());
         verificationCode.setCode(otp);
         verificationCode.setExpiryDate(java.time.LocalDateTime.now().plusMinutes(15));
 
-        verificationCodeRepository.save(verificationCode);
 
-        return Optional.of("Código de verificación reenviado exitosamente");
+        verificationCodeRepository.save(verificationCode);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        String username = jwtService.extractUsernameFromContext();
+
+        if (username == null) {
+            throw new BadRequestException("Usuario no autenticado");
         }
+
+        return userRepository.findByEmail(username)
+                .orElseThrow(() -> new BadRequestException("Usuario no encontrado"));
+    }
+
+    @Override
+    public RefreshToken createRefreshToken(User user) {
+        RefreshToken token = new RefreshToken();
+        token.setUser(user);
+        token.setToken(GenerateRefreshToken.execute());
+        token.setExpiryDate(Instant.now().plus(7, ChronoUnit.DAYS));
+        token.setRevoked(false);
+
+        return refreshTokenRepository.save(token);
+    }
+
+    @Override
+    public RefreshToken validateRefreshToken(String token) {
+        RefreshToken rt = Optional.ofNullable(refreshTokenRepository.findByToken(token))
+                .orElseThrow(() -> new BadRequestException("Refresh token inválido"));
+
+        if (rt.isRevoked() || rt.getExpiryDate().isBefore(Instant.now())) {
+            throw new BadRequestException("Expired or revoked refresh token");
+        }
+
+        return rt;
+    }
 }
 
 

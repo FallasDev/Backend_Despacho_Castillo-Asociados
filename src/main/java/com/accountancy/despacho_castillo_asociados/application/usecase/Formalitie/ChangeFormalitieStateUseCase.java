@@ -24,7 +24,7 @@ public class ChangeFormalitieStateUseCase {
 
 
     @Transactional
-    public void execute(int formalitieId, int newState) throws MessagingException {
+    public void execute(int formalitieId, int newState, String additionalNote) throws MessagingException {
 
         int MIN_STATE = 1;
         int MAX_STATE = 4;
@@ -42,15 +42,22 @@ public class ChangeFormalitieStateUseCase {
                 () -> new BadRequestException(messages.get("formality.exception.change_status.formality.not_found", new Object[]{formalitieId}))
         );
 
-        String body = new HtmlContent().generateInProgressEmail(formalitie.getClient().getName(), formalitie.getService().getName());
 
-
-
-        if (newState == FormalitiesState.IN_PROGRESS.getId()) {
+        if (newState == FormalitiesState.COMPLETED.getId()) {
+            String completedBody = new HtmlContent().generateCompletedEmail(formalitie.getClient().getName(), formalitie.getService().getName(), additionalNote);
             this.emailService.sendHtmlEmail(
-                formalitie.getClient().getEmail(),
-                    "Cambio de estado de su trámite",
-                    body
+                    formalitie.getClient().getEmail(),
+                    "Trámite completado",
+                    completedBody
+            );
+        }
+
+        if (newState == FormalitiesState.REFUSED.getId()) {
+            String rejectedBody = new HtmlContent().generateRejectedEmail(formalitie.getClient().getName(), formalitie.getService().getName(), additionalNote);
+            this.emailService.sendHtmlEmail(
+                    formalitie.getClient().getEmail(),
+                    "Trámite rechazado",
+                    rejectedBody
             );
         }
 

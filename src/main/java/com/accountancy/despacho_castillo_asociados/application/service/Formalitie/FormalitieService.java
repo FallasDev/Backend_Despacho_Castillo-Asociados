@@ -37,8 +37,8 @@ public class FormalitieService {
         return createFormalitieUseCase.execute(formalitie);
     }
 
-    public void changeFormalitieState(int formalitieId, int newState) throws MessagingException {
-        changeFormalitieStateUseCase.execute(formalitieId, newState);
+    public void changeFormalitieState(int formalitieId, int newState, String additionalNote) throws MessagingException {
+        changeFormalitieStateUseCase.execute(formalitieId, newState, additionalNote);
     }
 
     public PageResult<Formalitie> findFormalities(SearchFormalitie searchFormalitie, int page, int size) {
