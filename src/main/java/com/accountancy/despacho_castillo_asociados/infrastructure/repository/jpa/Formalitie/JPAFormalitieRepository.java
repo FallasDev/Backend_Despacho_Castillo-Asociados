@@ -6,6 +6,10 @@ import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Formali
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public interface JPAFormalitieRepository extends JpaRepository<FormalitieEntity, Integer>, JpaSpecificationExecutor<FormalitieEntity> {
 
@@ -17,4 +21,28 @@ public interface JPAFormalitieRepository extends JpaRepository<FormalitieEntity,
                    "FROM FormalitieEntity f WHERE f.client.id = :clientId"
     )
     Stats countFormalitiesByClientId(int clientId);
+
+    // --- Dashboard queries ---
+
+    long countByActiveTrue();
+
+    long countByStateAndActiveTrue(int state);
+
+    @Query("SELECT YEAR(f.createdAt), MONTH(f.createdAt), COUNT(f) " +
+           "FROM FormalitieEntity f " +
+           "WHERE f.active = true AND f.createdAt >= :since " +
+           "GROUP BY YEAR(f.createdAt), MONTH(f.createdAt) " +
+           "ORDER BY YEAR(f.createdAt), MONTH(f.createdAt)")
+    List<Object[]> countByMonthSince(@Param("since") LocalDateTime since);
+
+    @Query("SELECT f.service.name, COUNT(f) " +
+           "FROM FormalitieEntity f " +
+           "WHERE f.active = true " +
+           "GROUP BY f.service.name " +
+           "ORDER BY COUNT(f) DESC")
+    List<Object[]> countByService();
+
+    List<FormalitieEntity> findTop10ByActiveTrueOrderByCreatedAtDesc();
+
+    List<FormalitieEntity> findByUserIsNullAndActiveTrueAndStateInOrderByCreatedAtDesc(List<Integer> states);
 }

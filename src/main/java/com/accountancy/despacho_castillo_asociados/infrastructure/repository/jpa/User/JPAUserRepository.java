@@ -18,4 +18,7 @@ public interface JPAUserRepository extends JpaRepository<UserEntity, Integer> {
     Optional<UserEntity> findBySurnameAndIsActiveFalse(String surname);
     Optional<UserEntity> findByEmail(String email);
     Page<UserEntity> findAll(Pageable pageable);
+
+    // --- Dashboard queries ---
+    long countByIsActiveTrue();
 }

@@ -24,5 +24,6 @@ public interface JPAServiceRepository extends JpaRepository<ServiceEntity, Integ
 
     Page<ServiceEntity> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
-
+    // --- Dashboard queries ---
+    long countByActiveTrue();
 }

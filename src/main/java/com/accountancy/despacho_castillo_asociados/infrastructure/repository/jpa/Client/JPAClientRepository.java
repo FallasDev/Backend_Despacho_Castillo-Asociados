@@ -19,5 +19,9 @@ public interface JPAClientRepository extends JpaRepository<ClientEntity, Integer
     Optional<ClientEntity> findBySurnameAndIsActiveFalse(String surname);
     List<ClientEntity> findByEmailAndIsActive(String email, boolean isActive);
     Page<ClientEntity> findAll(Pageable pageable);
+
+    // --- Dashboard queries ---
+    long countByIsActiveTrue();
+    List<ClientEntity> findTop5ByIsActiveTrueOrderByCreatedAtDesc();
 }
 
