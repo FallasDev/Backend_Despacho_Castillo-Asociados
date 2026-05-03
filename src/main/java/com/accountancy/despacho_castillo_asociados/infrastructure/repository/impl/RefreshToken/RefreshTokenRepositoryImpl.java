@@ -1,12 +1,16 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.repository.impl.RefreshToken;
 
 import com.accountancy.despacho_castillo_asociados.domain.model.Auth.RefreshToken;
+import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
 import com.accountancy.despacho_castillo_asociados.domain.repository.RefreshToken.RefreshTokenRepository;
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Client.ClientEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.RefreshToken.RefreshTokenEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.User.UserEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.RefreshToken.RefreshTokenJPARepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
@@ -24,9 +28,18 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
         RefreshTokenEntity refreshTokenEntity = new RefreshTokenEntity();
         refreshTokenEntity.setToken(refreshToken.getToken());
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(refreshToken.getUser().getId());
-        refreshTokenEntity.setUser(userEntity);
+        if (refreshToken.getUser() != null) {
+            UserEntity userEntity = new UserEntity();
+            userEntity.setId(refreshToken.getUser().getId());
+            refreshTokenEntity.setUser(userEntity);
+        }
+
+        if (refreshToken.getClient() != null) {
+            ClientEntity clientEntity = new ClientEntity();
+            clientEntity.setId(refreshToken.getClient().getId());
+            refreshTokenEntity.setClient(clientEntity);
+        }
+
         refreshTokenEntity.setExpiryDate(refreshToken.getExpiryDate());
         refreshTokenEntity.setRevoked(refreshToken.isRevoked());
 
@@ -41,24 +54,37 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
         return savedRefreshToken;
 
 
-
-
     }
 
     @Override
     public RefreshToken findByToken(String token) {
 
-        RefreshTokenEntity refreshTokenEntity = refreshTokenJPARepository.findByToken(token).getFirst();
-
-        if (refreshTokenEntity == null) {
+        Optional<RefreshTokenEntity> opt = refreshTokenJPARepository.findByToken(token);
+        if (opt.isEmpty()) {
             return null;
         }
+        RefreshTokenEntity e = opt.get();
 
         RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setId(refreshTokenEntity.getId());
-        refreshToken.setToken(refreshTokenEntity.getToken());
-        refreshToken.setExpiryDate(refreshTokenEntity.getExpiryDate());
-        refreshToken.setRevoked(refreshTokenEntity.isRevoked());
+        refreshToken.setId(e.getId());
+        refreshToken.setToken(e.getToken());
+        refreshToken.setExpiryDate(e.getExpiryDate());
+        refreshToken.setRevoked(e.isRevoked());
+
+        if (e.getUser() != null) {
+            User user = new User();
+            user.setId(e.getUser().getId());
+            // mapear email para que el AuthService pueda recargar UserDetails
+            user.setEmail(e.getUser().getEmail());
+            refreshToken.setUser(user);
+        }
+
+        if (e.getClient() != null) {
+            Client client = new Client();
+            client.setId(e.getClient().getId());
+            client.setEmail(e.getClient().getEmail());
+            refreshToken.setClient(client);
+        }
 
         return refreshToken;
 

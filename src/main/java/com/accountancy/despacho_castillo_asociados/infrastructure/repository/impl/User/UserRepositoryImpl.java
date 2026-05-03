@@ -170,6 +170,11 @@ public class  UserRepositoryImpl implements UserRepository {
         );
     }
 
+    public Optional<User> findByEmailWithRole(String email) {
+        return jpaUserRepository.findByEmailWithRoleAndPermissions(email)
+                .map(this::getUserFromEntity);
+    }
+
     @NonNull
     private User getUserFromEntity(@NonNull UserEntity entity) {
         com.accountancy.despacho_castillo_asociados.domain.model.Role.Role domainRole = null;
@@ -198,4 +203,3 @@ public class  UserRepositoryImpl implements UserRepository {
         );
     }
 }
-

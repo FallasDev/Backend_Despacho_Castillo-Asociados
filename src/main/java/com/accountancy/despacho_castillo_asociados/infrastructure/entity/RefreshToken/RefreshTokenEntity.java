@@ -1,5 +1,6 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.entity.RefreshToken;
 
+import com.accountancy.despacho_castillo_asociados.infrastructure.entity.Client.ClientEntity;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.User.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,8 +22,12 @@ public class RefreshTokenEntity {
     private String token;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private UserEntity user;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id", nullable = true)
+    private ClientEntity client;
 
     private Instant expiryDate;
 

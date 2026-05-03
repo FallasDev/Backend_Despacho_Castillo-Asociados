@@ -4,6 +4,7 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.controller.Se
 import com.accountancy.despacho_castillo_asociados.application.service.ServiceCustomFields.ServiceCustomFieldsService;
 import com.accountancy.despacho_castillo_asociados.domain.model.ServiceCustomFields.ServiceCustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.ServiceCustomFields.ServiceCustomFieldRequest;
+import com.accountancy.despacho_castillo_asociados.infrastructure.dto.servicecustomfield.ServiceCustomFieldDTO;
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
 import com.accountancy.despacho_castillo_asociados.shared.Messages;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
@@ -41,8 +42,13 @@ public class ServiceCustomFieldController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<ApiResponse<List<ServiceCustomField>>> getAllServiceCustomFields() {
-        List<ServiceCustomField> result = service.findAllServiceCustomFields();
+    public ResponseEntity<ApiResponse<PageResult<ServiceCustomFieldDTO>>> getAllServiceCustomFields(
+            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        com.accountancy.despacho_castillo_asociados.shared.PageResult<com.accountancy.despacho_castillo_asociados.infrastructure.dto.servicecustomfield.ServiceCustomFieldDTO> result =
+                service.findAllServiceCustomFieldsDtoPaginated(name, page, size);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true,

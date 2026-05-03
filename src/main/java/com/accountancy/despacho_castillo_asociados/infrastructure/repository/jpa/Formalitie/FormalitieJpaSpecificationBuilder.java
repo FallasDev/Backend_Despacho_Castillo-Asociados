@@ -18,6 +18,10 @@ public class FormalitieJpaSpecificationBuilder {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            if (searchFormalitie.getClientId() != null && searchFormalitie.getClientId() > 0) {
+                predicates.add(cb.equal(root.get("client").get("id"), searchFormalitie.getClientId()));
+            }
+
             if (searchFormalitie.getClientName() != null && !searchFormalitie.getClientName().isEmpty()) {
                 predicates.add(cb.like(cb.lower(root.get("client").get("name")), "%" + searchFormalitie.getClientName().toLowerCase() + "%"));
             }

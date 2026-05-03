@@ -9,6 +9,7 @@ import com.accountancy.despacho_castillo_asociados.domain.model.Auth.RefreshToke
 import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
 import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
 import com.accountancy.despacho_castillo_asociados.domain.model.Auth.VerificationCode;
+import com.accountancy.despacho_castillo_asociados.domain.model.User.UserSummary;
 import com.accountancy.despacho_castillo_asociados.domain.repository.Client.ClientRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.RefreshToken.RefreshTokenRepository;
 import com.accountancy.despacho_castillo_asociados.domain.repository.User.UserRepository;
@@ -20,6 +21,7 @@ import com.accountancy.despacho_castillo_asociados.shared.utils.GenerateRefreshT
 import com.accountancy.despacho_castillo_asociados.shared.utils.HtmlContent;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +32,7 @@ import java.util.Optional;
 
 @Service
 public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginClientUseCase, IFindCodeByEmail,
-        IResendCode, IGetCurrentUser, ICreateRefreshToken, IValidateRefreshToken {
+        IResendCode, IGetCurrentUser, IGetCurrentClient ,ICreateRefreshToken, IValidateRefreshToken {
 
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
@@ -43,7 +45,7 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
     public AuthService(UserRepository userRepository, ClientRepository clientRepository,
                        CustomUserDetailsService userDetailsService,
                        JwtService jwtService, EmailService emailService,
-                       VerificationCodeRepository verificationCodeRepository, RefreshTokenRepository repository) {
+                       VerificationCodeRepository verificationCodeRepository, @Qualifier("refreshTokenRepository") RefreshTokenRepository repository) {
         this.userRepository = userRepository;
         this.clientRepository = clientRepository;
         this.userDetailsService = userDetailsService;
@@ -57,10 +59,9 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
     @Transactional
     public LoginResponse execute(LoginRequest request) throws BadRequestException {
 
-        // Buscar usuario por email
-        var user = userRepository.findByEmail(request.getEmail())
+        // Buscar usuario por email con role eager-loaded
+        var user = userRepository.findByEmailWithRole(request.getEmail())
                 .orElseThrow(() -> new BadRequestException("Email o contraseña incorrectos"));
-
 
         // Validar contraseña (comparación directa)
         if (!request.getPassword().equals(user.getPassword())) {
@@ -72,6 +73,9 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
             throw new BadRequestException("El usuario está inactivo");
         }
 
+        // Inicializar nombre del role dentro de la transacción
+        String roleName = user.getRole() != null ? user.getRole().getName() : null;
+
         // Cargar detalles del usuario para obtener autoridades
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 
@@ -79,7 +83,7 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
         String token = jwtService.generateToken(userDetails);
         String refreshToken = createRefreshToken(user).getToken();
 
-        return new LoginResponse(token, 3600, user.getId() ,user.getRole().getName(), user.getName(), refreshToken);
+        return new LoginResponse(token, 3600, user.getId(), roleName, user.getName(), refreshToken);
     }
 
     @Transactional
@@ -88,6 +92,8 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
         RefreshToken rt = validateRefreshToken(refreshToken);
 
         User user = rt.getUser();
+
+        String roleName = user.getRole() != null ? user.getRole().getName() : null;
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
 
@@ -102,7 +108,7 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
                 newAccessToken,
                 3600,
                 user.getId(),
-                user.getRole().getName(),
+                roleName,
                 user.getName(),
                 newRefreshToken.getToken()
         );
@@ -114,6 +120,8 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
     public LoginResponse executeClient(LoginRequest request) throws BadRequestException, MessagingException {
         Client client = clientRepository.findByEmailAndActive(request.getEmail())
                 .orElseThrow(() -> new BadRequestException("Email o contraseña incorrectos"));
+
+        System.out.println("Contraseña ingresada: " + request.getPassword() + ", Contraseña almacenada: " + client.getPassword());
 
         if (!request.getPassword().equals(client.getPassword())) {
             throw new BadRequestException("Email o contraseña incorrectos");
@@ -127,10 +135,11 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
             throw new BadRequestException("El cliente no ha verificado su cuenta");
         }
 
-        UserDetails userDetails = userDetailsService.loadClientByUserName(request.getEmail());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+        System.out.println("UserDetails cargados para cliente: " + userDetails.getUsername() + ", Authorities: " + userDetails.getAuthorities());
 
         String token = jwtService.generateToken(userDetails);
-        String refreshToken = createRefreshToken(userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new BadRequestException("Usuario no encontrado"))).getToken();
+        String refreshToken = createClientRefreshToken(clientRepository.findByEmailAndActive(request.getEmail()).orElseThrow(() -> new BadRequestException("Usuario no encontrado"))).getToken();
 
         emailService.sendHtmlEmail(
             client.getEmail(),
@@ -209,21 +218,52 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
     }
 
     @Override
+    @Transactional
     public User getCurrentUser() {
+        System.out.println("Intentando obtener el usuario actual del contexto de seguridad...");
         String username = jwtService.extractUsernameFromContext();
 
         if (username == null) {
             throw new BadRequestException("Usuario no autenticado");
         }
 
-        return userRepository.findByEmail(username)
+        return userRepository.findByEmailWithRole(username)
                 .orElseThrow(() -> new BadRequestException("Usuario no encontrado"));
+    }
+
+    // Nuevo: devolver resumen seguro para /me (solo campos necesarios)
+    @Transactional
+    public UserSummary getCurrentUserSummary() {
+        System.out.println("Intentando obtener resumen del usuario actual...");
+        String username = jwtService.extractUsernameFromContext();
+
+        if (username == null) {
+            throw new BadRequestException("Usuario no autenticado");
+        }
+
+        User user = userRepository.findByEmailWithRole(username)
+                .orElseThrow(() -> new BadRequestException("Usuario no encontrado"));
+
+        String roleName = user.getRole() != null ? user.getRole().getName() : null;
+
+        return new UserSummary(user.getId(), user.getName(), user.getEmail(), roleName);
     }
 
     @Override
     public RefreshToken createRefreshToken(User user) {
         RefreshToken token = new RefreshToken();
         token.setUser(user);
+        token.setToken(GenerateRefreshToken.execute());
+        token.setExpiryDate(Instant.now().plus(7, ChronoUnit.DAYS));
+        token.setRevoked(false);
+
+        return refreshTokenRepository.save(token);
+    }
+
+    @Override
+    public RefreshToken createClientRefreshToken(Client client) {
+        RefreshToken token = new RefreshToken();
+        token.setClient(client);
         token.setToken(GenerateRefreshToken.execute());
         token.setExpiryDate(Instant.now().plus(7, ChronoUnit.DAYS));
         token.setRevoked(false);
@@ -242,6 +282,24 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
 
         return rt;
     }
+
+    @Override
+    public Client getCurrentClient() {
+
+        String username = jwtService.extractClientFromContext();
+
+        System.out.println("Username extraído del contexto: " + username);
+
+        if (username == null) {
+            throw new BadRequestException("Cliente no autenticado");
+        }
+
+        return clientRepository.findByEmailAndActive(username)
+                .orElseThrow(() -> new BadRequestException("Cliente no encontrado"));
+
+    }
 }
+
+
 
 

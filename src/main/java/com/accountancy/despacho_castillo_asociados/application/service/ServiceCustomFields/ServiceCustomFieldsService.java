@@ -3,6 +3,7 @@ package com.accountancy.despacho_castillo_asociados.application.service.ServiceC
 import com.accountancy.despacho_castillo_asociados.application.usecase.ServiceCustomFields.*;
 import com.accountancy.despacho_castillo_asociados.domain.model.ServiceCustomFields.ServiceCustomField;
 import com.accountancy.despacho_castillo_asociados.domain.model.ServiceCustomFields.ServiceCustomFieldRequest;
+import com.accountancy.despacho_castillo_asociados.infrastructure.dto.servicecustomfield.ServiceCustomFieldDTO;
 import com.accountancy.despacho_castillo_asociados.shared.PageResult;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +18,25 @@ public class ServiceCustomFieldsService {
     UpdateServiceCustomFieldsUseCase updateServiceCustomFieldsUseCase;
     FindServicesCustomFieldsUseCase findServicesCustomFieldsUseCase;
     FindAllServiceCustomFields findAllServiceCustomFields;
+    FindAllServiceCustomFieldsDto findAllServiceCustomFieldsDto;
+    FindAllServiceCustomFieldsDtoPaginated findAllServiceCustomFieldsDtoPaginated;
 
     public ServiceCustomFieldsService(CreateServiceCustomFieldsUseCase createServiceCustomFieldsUseCase,
                                       DeactiveServiceCustomFieldsUseCase deactiveServiceCustomFieldsUseCase,
                                       FindByIdServiceCustomFieldsUseCase findByIdServiceCustomFieldsUseCase,
                                       FindServicesCustomFieldsUseCase findServicesCustomFieldsUseCase,
                                       UpdateServiceCustomFieldsUseCase updateServiceCustomFieldsUseCase,
-                                      FindAllServiceCustomFields findAllServiceCustomFields) {
+                                      FindAllServiceCustomFields findAllServiceCustomFields,
+                                      FindAllServiceCustomFieldsDto findAllServiceCustomFieldsDto,
+                                      FindAllServiceCustomFieldsDtoPaginated findAllServiceCustomFieldsDtoPaginated) {
         this.createServiceCustomFieldsUseCase = createServiceCustomFieldsUseCase;
         this.deactiveServiceCustomFieldsUseCase = deactiveServiceCustomFieldsUseCase;
         this.findByIdServiceCustomFieldsUseCase = findByIdServiceCustomFieldsUseCase;
         this.findServicesCustomFieldsUseCase = findServicesCustomFieldsUseCase;
         this.updateServiceCustomFieldsUseCase = updateServiceCustomFieldsUseCase;
         this.findAllServiceCustomFields = findAllServiceCustomFields;
+        this.findAllServiceCustomFieldsDto = findAllServiceCustomFieldsDto;
+        this.findAllServiceCustomFieldsDtoPaginated = findAllServiceCustomFieldsDtoPaginated;
     }
 
     public ServiceCustomField createServiceCustomField(ServiceCustomFieldRequest request) {
@@ -54,6 +61,14 @@ public class ServiceCustomFieldsService {
 
     public List<ServiceCustomField> findAllServiceCustomFields() {
         return findAllServiceCustomFields.execute();
+    }
+
+    public List<ServiceCustomFieldDTO> findAllServiceCustomFieldsDto() {
+        return findAllServiceCustomFieldsDto.execute();
+    }
+
+    public PageResult<ServiceCustomFieldDTO> findAllServiceCustomFieldsDtoPaginated(String name, int page, int size) {
+        return findAllServiceCustomFieldsDtoPaginated.execute(name, page, size);
     }
 
 

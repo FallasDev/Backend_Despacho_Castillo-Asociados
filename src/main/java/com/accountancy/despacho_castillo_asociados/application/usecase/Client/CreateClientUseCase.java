@@ -80,7 +80,7 @@ public class CreateClientUseCase {
         verificationCode.setCode(code);
         verificationCode.setExpiryDate(LocalDateTime.now().plusMinutes(15));
 
-        VerificationCode codeSaved = verificationCodeRepository.save(verificationCode);
+        verificationCodeRepository.save(verificationCode);
 
         String subject = "Codigo de verificación para tu cuenta";
         String body = new HtmlContent().generateVerificationEmail(client.getName(),code);

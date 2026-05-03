@@ -11,6 +11,7 @@ public class SearchFormalitie {
     private Integer stateId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private Integer clientId;
 
     public SearchFormalitie(String serviceName, String clientName, String userName, Integer stateId, LocalDateTime startDate, LocalDateTime endDate) {
         this.serviceName = serviceName;
@@ -71,6 +72,14 @@ public class SearchFormalitie {
 
     public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
+    }
+
+    public Integer getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(Integer clientId) {
+        this.clientId = clientId;
     }
 
     @Override

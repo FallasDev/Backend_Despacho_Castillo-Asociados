@@ -28,6 +28,7 @@ public class FormalitieController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResult<Formalitie>>> getFormalities(
+            @RequestParam(required = false) Integer clientId,
             @RequestParam(required = false) String serviceName,
             @RequestParam(required = false) Integer state,
             @RequestParam(required = false) String clientName,
@@ -49,6 +50,7 @@ public class FormalitieController {
         }
 
         SearchFormalitie search = new SearchFormalitie();
+        search.setClientId(clientId);
         search.setServiceName(serviceName);
         search.setStateId(state);
         search.setClientName(clientName);

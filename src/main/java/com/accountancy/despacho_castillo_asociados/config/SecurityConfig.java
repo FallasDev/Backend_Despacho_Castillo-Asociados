@@ -53,12 +53,18 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
-                        // públicas
-                        .requestMatchers("/auth/**").permitAll()
+                        // públicas - solo login
+                        .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/auth/login-client").permitAll()
+                        .requestMatchers("/auth/verify").permitAll()
+                        .requestMatchers("/auth/resend-code").permitAll()
                         .requestMatchers(HttpMethod.POST, "/clients/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/services/most-popular").permitAll()
 
-                        // protegidas
+                        // protegidas - requieren JWT
+                        .requestMatchers("/auth/me").authenticated()
+                        .requestMatchers("/auth/me/client").authenticated()
+                        .requestMatchers("/auth/refresh").authenticated()
                         .requestMatchers(HttpMethod.GET, "/users/**")
                         .hasAuthority("Obtener_Usuarios")
 

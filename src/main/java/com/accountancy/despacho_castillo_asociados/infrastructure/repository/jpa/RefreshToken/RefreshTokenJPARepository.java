@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RefreshTokenJPARepository extends JpaRepository<RefreshTokenEntity, Long> {
 
-    List<RefreshTokenEntity> findByToken(String token);
+    Optional<RefreshTokenEntity> findByToken(String token);
 
 
 }

@@ -188,7 +188,7 @@ public class ServiceCustomFieldImpl implements ServiceCustomFieldsRepository {
 
     @Override
     public List<ServiceCustomField> findAllWithoutPagination() {
-        return jpaServiceCustomField.findAll().stream()
+        return jpaServiceCustomField.findAllWithCustomFieldsAndType().stream()
                 .map(this::getServiceCustomField)
                 .filter(Objects::nonNull)
                 .filter(ServiceCustomField::isActive)
@@ -236,8 +236,17 @@ public class ServiceCustomFieldImpl implements ServiceCustomFieldsRepository {
 
         System.out.println("Mapping ServiceCustomFieldEntity to ServiceCustomField: " + entity.toString());
 
-        List<CustomField> domainCustomFields = entity.getCustomFields().stream().map(
-                customFieldEntity -> new CustomField(
+        // Deduplicar customFields por id para evitar repeticiones
+        List<CustomField> domainCustomFields = entity.getCustomFields().stream()
+                .filter(java.util.Objects::nonNull)
+                .collect(java.util.stream.Collectors.toMap(
+                        CustomFieldEntity::getId,
+                        cf -> cf,
+                        (existing, replacement) -> existing
+                ))
+                .values()
+                .stream()
+                .map(customFieldEntity -> new CustomField(
                         customFieldEntity.getId(),
                         customFieldEntity.getName(),
                         customFieldEntity.isRequired(),
@@ -251,8 +260,8 @@ public class ServiceCustomFieldImpl implements ServiceCustomFieldsRepository {
                                 customFieldEntity.getType().getName(),
                                 customFieldEntity.getType().isActive()
                         )
-                )
-        ).toList();
+                ))
+                .toList();
 
         DomainService domainService = new DomainService(
                 entity.getService().getId(),

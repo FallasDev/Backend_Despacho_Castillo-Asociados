@@ -38,4 +38,25 @@ public interface JPAServiceCustomFieldRepository extends JpaRepository<ServiceCu
     Optional<ServiceCustomFieldEntity> findByIdAndActive(int id, boolean active);
 
     Optional<ServiceCustomFieldEntity> findByNameAndActive(String name, boolean active);
+
+    // Get all active ServiceCustomFieldEntity with their custom fields, types and service using a single query to avoid N+1 problem
+    @Query("select distinct scf from ServiceCustomFieldEntity scf " +
+            "left join fetch scf.customFields cf " +
+            "left join fetch cf.type t " +
+            "left join fetch scf.service s " +
+            "where scf.active = true")
+    List<ServiceCustomFieldEntity> findAllWithCustomFieldsAndType();
+
+    // Nuevo: paginación y filtro por nombre (solo activos)
+    Page<ServiceCustomFieldEntity> findByNameContainingIgnoreCaseAndActiveTrue(String name, Pageable pageable);
+
+    Page<ServiceCustomFieldEntity> findByActiveTrue(Pageable pageable);
+
+    // Nuevo: obtener entidades completas por ids con join fetch (para evitar N+1 después de paginar)
+    @Query("select distinct scf from ServiceCustomFieldEntity scf " +
+            "left join fetch scf.customFields cf " +
+            "left join fetch cf.type t " +
+            "left join fetch scf.service s " +
+            "where scf.id in :ids")
+    List<ServiceCustomFieldEntity> findAllByIdInWithCustomFieldsAndType(@Param("ids") List<Integer> ids);
 }

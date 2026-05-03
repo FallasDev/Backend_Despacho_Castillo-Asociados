@@ -9,6 +9,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -156,6 +157,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleRedirection(RedirectionException ex) {
         System.out.println("RedirectionException: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                new ApiResponse<>(false, ex.getMessage(), null)
+        );
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleUsernameNotFound(UsernameNotFoundException ex) {
+        System.out.println("UsernameNotFoundException: " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ApiResponse<>(false, ex.getMessage(), null)
         );
     }

@@ -26,6 +26,6 @@ public interface UserRepository {
     PageResult<User> findAll(int page, int size);
 
 
-
+    Optional<User> findByEmailWithRole(String email);
 
 }

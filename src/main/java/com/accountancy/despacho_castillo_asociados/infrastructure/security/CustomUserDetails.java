@@ -1,43 +1,42 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.security;
 
-import com.accountancy.despacho_castillo_asociados.infrastructure.entity.User.UserEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 public class CustomUserDetails implements UserDetails {
 
-    private final UserEntity user;
+    private final String username;
+    private final String password;
+    private final boolean active;
+    private final Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(UserEntity user) {
-        this.user = user;
+    public CustomUserDetails(String username, String password, boolean active, Collection<? extends GrantedAuthority> authorities) {
+        this.username = username;
+        this.password = password;
+        this.active = active;
+        this.authorities = authorities;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRole()
-                .getPermissions()
-                .stream()
-                .map(permissionRole -> new SimpleGrantedAuthority(permissionRole.getPermission().getName()))
-                .collect(Collectors.toSet());
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return username;
     }
 
     @Override
     public boolean isEnabled() {
-        return user.isActive();
+        return active;
     }
 
     @Override

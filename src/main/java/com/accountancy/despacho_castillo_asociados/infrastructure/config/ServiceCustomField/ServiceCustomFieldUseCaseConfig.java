@@ -45,4 +45,14 @@ public class ServiceCustomFieldUseCaseConfig {
     public FindAllServiceCustomFields findAllServiceCustomFields(ServiceCustomFieldsRepository repository) {
         return new FindAllServiceCustomFields(repository);
     }
+
+    @Bean
+    public FindAllServiceCustomFieldsDto findAllServiceCustomFieldsDto(com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.ServiceCustomField.JPAServiceCustomFieldRepository jpaRepository) {
+        return new FindAllServiceCustomFieldsDto(jpaRepository);
+    }
+
+    @Bean
+    public FindAllServiceCustomFieldsDtoPaginated findAllServiceCustomFieldsDtoPaginated(com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.ServiceCustomField.JPAServiceCustomFieldRepository jpaRepository) {
+        return new FindAllServiceCustomFieldsDtoPaginated(jpaRepository);
+    }
 }

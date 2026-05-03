@@ -58,20 +58,16 @@ public class JwtFilter extends OncePerRequestFilter {
 
                     // Extraemos permisos del token
                     Claims claims = jwtService.extractAllClaims(token);
-                    List<String> permissions = claims.get("permissions", List.class);
 
-                    Collection<GrantedAuthority> authorities = permissions != null
-                            ? permissions.stream()
-                            .map(SimpleGrantedAuthority::new)
-                            .collect(Collectors.toList())
-                            : Collections.emptyList();
+
 
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(
                                     userDetails,
                                     null,
-                                    authorities
+                                    userDetails.getAuthorities()
                             );
+
 
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }

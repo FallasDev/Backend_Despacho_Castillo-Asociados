@@ -50,6 +50,10 @@ public class CreateFormalitieUseCase {
             throw new BadRequestException(messages.get("formality.exception.create.cannot_be_null"));
         }
 
+
+
+
+
         if (request.getServiceId() <= 0) {
             throw new BadRequestException(messages.get("formality.exception.create.service.invalid", new Object[]{request.getServiceId()}));
         }

@@ -2,18 +2,21 @@ package com.accountancy.despacho_castillo_asociados.infrastructure.controller.Au
 
 import com.accountancy.despacho_castillo_asociados.application.service.Auth.AuthService;
 import com.accountancy.despacho_castillo_asociados.domain.model.Auth.*;
+import com.accountancy.despacho_castillo_asociados.domain.model.Client.Client;
+import com.accountancy.despacho_castillo_asociados.domain.model.User.UserSummary;
 import com.accountancy.despacho_castillo_asociados.shared.ApiResponse;
 import com.accountancy.despacho_castillo_asociados.shared.exceptions.BadRequestException;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
 
 import java.util.Optional;
 
@@ -43,30 +46,43 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<User>> getCurrentUser() {
-
-            User user = authService.getCurrentUser();
+    @Transactional
+    public ResponseEntity<ApiResponse<UserSummary>> getCurrentUser() {
+        System.out.println("Obteniendo usuario autenticado...");
+            UserSummary user = authService.getCurrentUserSummary();
             return ResponseEntity.ok(
                     new ApiResponse<>(true, "Usuario autenticado", user));
+    }
 
+    @GetMapping("/me/client")
+    @Transactional
+    public ResponseEntity<ApiResponse<Client>> getCurrentClient() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        System.out.println("Autenticación actual: " + authentication);
+        Client client = authService.getCurrentClient();
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Cliente autenticado", client));
     }
 
 
 
     @PostMapping("/login-client")
-    public ResponseEntity<ApiResponse<LoginResponse>> loginClient(@RequestBody LoginRequest request) {
-        try {
-            LoginResponse response = authService.executeClient(request);
-            return ResponseEntity.ok(
-                    new ApiResponse<>(true, "Login exitoso", response)
-            );
-        } catch (BadRequestException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse<>(false, e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse<>(false, "Error interno del servidor", null));
-        }
+    public ResponseEntity<ApiResponse<LoginResponse>> loginClient(@RequestBody LoginRequest request) throws MessagingException {
+
+        System.out.println("Intentando login para cliente con email: " + request.getEmail());
+
+        LoginResponse response = authService.executeClient(request);
+
+        ResponseCookie authCookie = createAuthCookie(response.getToken());
+        ResponseCookie refreshCookie = createRefreshCookie(response.getRefreshToken());
+
+        return ResponseEntity.ok()
+                .headers(headers -> {
+                    headers.add(HttpHeaders.SET_COOKIE, authCookie.toString());
+                    headers.add(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+                })
+                .body(new ApiResponse<>(true, "Login exitoso", null));
     }
 
 
@@ -120,5 +136,21 @@ public class AuthController {
         );
 
     }
-}
 
+    @PostMapping("/verify")
+    public ResponseEntity<?> verifyCode(@RequestBody VerificationCodeRequest request) {
+
+        Optional<VerificationCode> verificationCode = authService.verifyCode(request.getEmail(), request.getCode());
+
+        if (verificationCode.isPresent()) {
+            return ResponseEntity.ok(
+                    new ApiResponse<>(true, "Código verificado exitosamente", null)
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse<>(false, "Código de verificación inválido o expirado", null));
+        }
+
+    }
+
+}
