@@ -18,8 +18,8 @@ public class UserEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String suername;
+    @Column(name = "suername", nullable = false)
+    private String surname;
 
     @Column(nullable = true)
     private String photoProfileUrl;
@@ -27,8 +27,8 @@ public class UserEntity {
     @Column(nullable = false)
     private String phoneNumber;
 
-    @Column(nullable = false, unique = true)
-    private String perosnalId;
+    @Column(name = "perosnal_id", nullable = false, unique = true)
+    private String personalId;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -50,12 +50,12 @@ public class UserEntity {
 
     public UserEntity() {}
 
-    public UserEntity(String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, RoleEntity role, String password, String address, boolean isActive) {
+    public UserEntity(String name, String surname, String photoProfileUrl, String phoneNumber, String personalId, String email, RoleEntity role, String password, String address, boolean isActive) {
         this.name = name;
-        this.suername = suername;
+        this.surname = surname;
         this.photoProfileUrl = photoProfileUrl;
         this.phoneNumber = phoneNumber;
-        this.perosnalId = perosnalId;
+        this.personalId = personalId;
         this.email = email;
         this.role = role;
         this.password = password;
@@ -63,13 +63,13 @@ public class UserEntity {
         this.isActive = isActive;
     }
 
-    public UserEntity(int id, String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, RoleEntity role, String password, String address, boolean isActive) {
+    public UserEntity(int id, String name, String surname, String photoProfileUrl, String phoneNumber, String personalId, String email, RoleEntity role, String password, String address, boolean isActive) {
         this.id = id;
         this.name = name;
-        this.suername = suername;
+        this.surname = surname;
         this.photoProfileUrl = photoProfileUrl;
         this.phoneNumber = phoneNumber;
-        this.perosnalId = perosnalId;
+        this.personalId = personalId;
         this.email = email;
         this.role = role;
         this.password = password;
@@ -77,4 +77,3 @@ public class UserEntity {
         this.isActive = isActive;
     }
 }
-

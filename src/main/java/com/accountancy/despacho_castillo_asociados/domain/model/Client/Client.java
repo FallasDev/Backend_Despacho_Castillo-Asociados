@@ -74,14 +74,6 @@ public class Client {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getPerosnalId() {
-        return personalId;
-    }
-
-    public void setPerosnalId(String perosnalId) {
-        this.personalId = perosnalId;
-    }
-
     public String getEmail() {
         return email;
     }

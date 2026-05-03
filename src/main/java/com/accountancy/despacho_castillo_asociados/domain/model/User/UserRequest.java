@@ -4,21 +4,21 @@ import com.accountancy.despacho_castillo_asociados.domain.model.Role.Role;
 
 public class UserRequest {
     private String name;
-    private String suername;
+    private String surname;
     private String photoProfileUrl;
     private String phoneNumber;
-    private String perosnalId;
+    private String personalId;
     private String email;
     private int roleId;
     private String password;
     private String address;
 
-    public UserRequest(String name, String suername, String photoProfileUrl, String phoneNumber, String perosnalId, String email, int roleId, String password, String address) {
+    public UserRequest(String name, String surname, String photoProfileUrl, String phoneNumber, String personalId, String email, int roleId, String password, String address) {
         this.name = name;
-        this.suername = suername;
+        this.surname = surname;
         this.photoProfileUrl = photoProfileUrl;
         this.phoneNumber = phoneNumber;
-        this.perosnalId = perosnalId;
+        this.personalId = personalId;
         this.email = email;
         this.roleId = roleId;
         this.password = password;
@@ -35,12 +35,12 @@ public class UserRequest {
         this.name = name;
     }
 
-    public String getSuername() {
-        return suername;
+    public String getSurname() {
+        return surname;
     }
 
-    public void setSuername(String suername) {
-        this.suername = suername;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getPhotoProfileUrl() {
@@ -59,12 +59,12 @@ public class UserRequest {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getPerosnalId() {
-        return perosnalId;
+    public String getPersonalId() {
+        return personalId;
     }
 
-    public void setPerosnalId(String perosnalId) {
-        this.perosnalId = perosnalId;
+    public void setPersonalId(String personalId) {
+        this.personalId = personalId;
     }
 
     public String getEmail() {

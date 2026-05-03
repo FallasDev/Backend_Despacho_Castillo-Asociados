@@ -33,16 +33,16 @@ public class  UserRepositoryImpl implements UserRepository {
                 role.getId(),
                 role.getName(),
                 role.getDescription(),
-                new java.util.ArrayList<>(),
+                new ArrayList<>(),
                 role.isActive()
         );
 
         UserEntity entity = new UserEntity(
                 userRequest.getName(),
-                userRequest.getSuername(),
+                userRequest.getSurname(),
                 userRequest.getPhotoProfileUrl(),
                 userRequest.getPhoneNumber(),
-                userRequest.getPerosnalId(),
+                userRequest.getPersonalId(),
                 userRequest.getEmail(),
                 roleEntity,
                 userRequest.getPassword(),
@@ -70,10 +70,10 @@ public class  UserRepositoryImpl implements UserRepository {
 
         UserEntity entity = existing.get();
         entity.setName(userRequest.getName());
-        entity.setSuername(userRequest.getSuername());
+        entity.setSurname(userRequest.getSurname());
         entity.setPhotoProfileUrl(userRequest.getPhotoProfileUrl());
         entity.setPhoneNumber(userRequest.getPhoneNumber());
-        entity.setPerosnalId(userRequest.getPerosnalId());
+        entity.setPersonalId(userRequest.getPersonalId());
         entity.setEmail(userRequest.getEmail());
         entity.setRole(roleEntity);
         entity.setAddress(userRequest.getAddress());
@@ -191,10 +191,10 @@ public class  UserRepositoryImpl implements UserRepository {
         return new User(
                 entity.getId(),
                 entity.getName(),
-                entity.getSuername(),
+                entity.getSurname(),
                 entity.getPhotoProfileUrl(),
                 entity.getPhoneNumber(),
-                entity.getPerosnalId(),
+                entity.getPersonalId(),
                 entity.getEmail(),
                 domainRole,
                 entity.getPassword(),

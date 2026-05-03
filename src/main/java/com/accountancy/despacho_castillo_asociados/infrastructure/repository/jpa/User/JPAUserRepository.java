@@ -15,9 +15,9 @@ public interface JPAUserRepository extends JpaRepository<UserEntity, Integer> {
     Optional<UserEntity> findByName(String name);
     Optional<UserEntity> findByNameAndIsActiveTrue(String name);
     Optional<UserEntity> findByNameAndIsActiveFalse(String name);
-    Optional<UserEntity> findBySuername(String suername);
-    Optional<UserEntity> findBySuernameAndIsActiveTrue(String suername);
-    Optional<UserEntity> findBySuernameAndIsActiveFalse(String suername);
+    Optional<UserEntity> findBySurname(String surname);
+    Optional<UserEntity> findBySurnameAndIsActiveTrue(String surname);
+    Optional<UserEntity> findBySurnameAndIsActiveFalse(String surname);
     Optional<UserEntity> findByEmail(String email);
     Page<UserEntity> findAll(Pageable pageable);
 
@@ -31,4 +31,8 @@ public interface JPAUserRepository extends JpaRepository<UserEntity, Integer> {
             "left join fetch pr.permission p " +
             "where u.email = :email")
     Optional<UserEntity> findByEmailWithRoleAndPermissions(@Param("email") String email);
+}
+
+    // --- Dashboard queries ---
+    long countByIsActiveTrue();
 }

@@ -44,8 +44,8 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Client>> findById(@PathVariable int id) {
-        Client client = clientService.findByIdClient(id);
+    public ResponseEntity<ApiResponse<ClientResponse>> findById(@PathVariable int id) {
+        ClientResponse client = toResponse(clientService.findByIdClient(id));
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Client found", client)
@@ -53,8 +53,8 @@ public class ClientController {
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<ApiResponse<Client>> findByName(@PathVariable String name) {
-        Client client = clientService.findByNameClient(name);
+    public ResponseEntity<ApiResponse<ClientResponse>> findByName(@PathVariable String name) {
+        ClientResponse client = toResponse(clientService.findByNameClient(name));
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Client found", client)
@@ -62,8 +62,8 @@ public class ClientController {
     }
 
     @GetMapping("/surname/{surname}")
-    public ResponseEntity<ApiResponse<Client>> findBySurname(@PathVariable String surname) {
-        Client client = clientService.findBySurnameClient(surname);
+    public ResponseEntity<ApiResponse<ClientResponse>> findBySurname(@PathVariable String surname) {
+        ClientResponse client = toResponse(clientService.findBySurnameClient(surname));
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Client found", client)
@@ -71,8 +71,8 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Client>> createClient(@RequestBody ClientRequest request) throws MessagingException {
-        Client createdClient = clientService.createClient(request);
+    public ResponseEntity<ApiResponse<ClientResponse>> createClient(@RequestBody ClientRequest request) throws MessagingException {
+        ClientResponse createdClient = toResponse(clientService.createClient(request));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new ApiResponse<>(true, "Client created successfully", createdClient)
@@ -80,10 +80,10 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Client>> updateClient(
+    public ResponseEntity<ApiResponse<ClientResponse>> updateClient(
             @RequestBody UpdateClientRequest request,
             @PathVariable int id) {
-        Client updatedClient = clientService.updateClient(request, id);
+        ClientResponse updatedClient = toResponse(clientService.updateClient(request, id));
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Client updated successfully", updatedClient)
@@ -99,5 +99,20 @@ public class ClientController {
         );
     }
 
-}
+    private ClientResponse toResponse(Client client) {
+        if (client == null) {
+            return null;
+        }
+        return new ClientResponse(
+                client.getId(),
+                client.getName(),
+                client.getSurname(),
+                client.getPhoneNumber(),
+                client.getPersonalId(),
+                client.getEmail(),
+                client.getCreatedAt(),
+                client.isActive()
+        );
+    }
 
+}
