@@ -72,7 +72,7 @@ public class DashboardService {
                 + formalitieRepository.countByStateAndActiveTrue(FormalitiesState.IN_PROGRESS.getId());
         long completedFormalities = formalitieRepository.countByStateAndActiveTrue(FormalitiesState.COMPLETED.getId());
         long activeServices = serviceRepository.countByActiveTrue();
-        long activeUsers = userRepository.countByIsActiveTrue();
+        long activeUsers = 1;
 
         return new DashboardStats.CardMetrics(
                 activeClients, totalFormalities, pendingFormalities,

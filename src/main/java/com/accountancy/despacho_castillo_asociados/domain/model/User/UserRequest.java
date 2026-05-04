@@ -27,60 +27,12 @@ public class UserRequest {
 
     public UserRequest (){}
 
-    public String getName() {
-        return name;
+    public String getAddress() {
+        return address;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getPhotoProfileUrl() {
-        return photoProfileUrl;
-    }
-
-    public void setPhotoProfileUrl(String photoProfileUrl) {
-        this.photoProfileUrl = photoProfileUrl;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getPersonalId() {
-        return personalId;
-    }
-
-    public void setPersonalId(String personalId) {
-        this.personalId = personalId;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public int getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getPassword() {
@@ -91,11 +43,59 @@ public class UserRequest {
         this.password = password;
     }
 
-    public String getAddress() {
-        return address;
+    public int getRoleId() {
+        return roleId;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPersonalId() {
+        return personalId;
+    }
+
+    public void setPersonalId(String personalId) {
+        this.personalId = personalId;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPhotoProfileUrl() {
+        return photoProfileUrl;
+    }
+
+    public void setPhotoProfileUrl(String photoProfileUrl) {
+        this.photoProfileUrl = photoProfileUrl;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

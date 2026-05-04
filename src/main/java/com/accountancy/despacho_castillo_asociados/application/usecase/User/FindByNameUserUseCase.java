@@ -20,7 +20,7 @@ public class FindByNameUserUseCase {
             throw new IllegalArgumentException("User name cannot be null or empty");
         }
 
-        Optional<User> user = userRepository.fintByNameAndIsActive(name);
+        Optional<User> user = userRepository.fintByEmailAndIsActive(name);
 
         if (user.isEmpty()) {
             throw new EntityNotFoundException("User with name " + name + " not found");

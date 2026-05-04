@@ -18,7 +18,7 @@ public interface UserRepository {
     Optional<User> findById(int id);
     Optional<User> findByEmail(String email);
     Optional<User> fintByName(String name);
-    Optional<User> fintByNameAndIsActive(String name);
+    Optional<User> fintByEmailAndIsActive(String name);
     Optional<User> fintByNameAndIsInactive(String name);
     Optional<User> fintBySurname(String surname);
     Optional<User> fintBySurnameAndIsActive(String surname);

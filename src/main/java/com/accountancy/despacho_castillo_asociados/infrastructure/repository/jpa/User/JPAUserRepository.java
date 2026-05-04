@@ -1,5 +1,6 @@
 package com.accountancy.despacho_castillo_asociados.infrastructure.repository.jpa.User;
 
+import aj.org.objectweb.asm.commons.Remapper;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.User.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,10 +20,12 @@ public interface JPAUserRepository extends JpaRepository<UserEntity, Integer> {
     Optional<UserEntity> findBySurnameAndIsActiveTrue(String surname);
     Optional<UserEntity> findBySurnameAndIsActiveFalse(String surname);
     Optional<UserEntity> findByEmail(String email);
-    Page<UserEntity> findAll(Pageable pageable);
 
     @Query("select u from UserEntity u left join fetch u.role where u.email = :email")
     Optional<UserEntity> findByEmailWithRole(@Param("email") String email);
+
+    @Query("select u from UserEntity u left join fetch u.role  where u.id = :id")
+    Optional<UserEntity> findByIdWithRole(@Param("id") int id);
 
     // Nuevo: cargar role y sus permisos y permisos -> permission para evitar LazyInitializationException
     @Query("select distinct u from UserEntity u " +
@@ -31,8 +34,8 @@ public interface JPAUserRepository extends JpaRepository<UserEntity, Integer> {
             "left join fetch pr.permission p " +
             "where u.email = :email")
     Optional<UserEntity> findByEmailWithRoleAndPermissions(@Param("email") String email);
-}
 
-    // --- Dashboard queries ---
-    long countByIsActiveTrue();
+    Optional<UserEntity> findByEmailAndIsActiveTrue(String email, boolean isActive);
+
+    Page<UserEntity> findByIsActiveIsTrue(boolean isActive, Pageable pageable);
 }

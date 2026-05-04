@@ -36,10 +36,10 @@ public class CreateUserUseCase {
         UserValidationsHelper.validateEmail(userRequest.getEmail());
         UserValidationsHelper.validatePassword(userRequest.getPassword());
 
-        boolean existingUser = userRepository.fintByNameAndIsActive(userRequest.getName()).isPresent();
+        boolean existingUser = userRepository.fintByEmailAndIsActive(userRequest.getName()).isPresent();
 
         if (existingUser) {
-            throw new BadRequestException("User with name " + userRequest.getName() + " already exists");
+            throw new BadRequestException("User with email " + userRequest.getEmail() + " already exists");
         }
 
         Optional<User> inactiveUser = userRepository.fintByNameAndIsInactive(userRequest.getName());

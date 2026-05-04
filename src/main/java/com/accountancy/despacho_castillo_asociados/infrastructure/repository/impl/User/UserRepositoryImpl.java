@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,7 +107,7 @@ public class  UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> findById(int id) {
-        return jpaUserRepository.findById(id)
+        return jpaUserRepository.findByIdWithRole(id)
                 .map(this::getUserFromEntity);
     }
 
@@ -123,8 +124,8 @@ public class  UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> fintByNameAndIsActive(String name) {
-        return jpaUserRepository.findByNameAndIsActiveTrue(name)
+    public Optional<User> fintByEmailAndIsActive(String name) {
+        return jpaUserRepository.findByEmailAndIsActiveTrue(name, true)
                 .map(this::getUserFromEntity);
     }
 
@@ -136,26 +137,26 @@ public class  UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> fintBySurname(String surname) {
-        return jpaUserRepository.findBySuername(surname)
+        return jpaUserRepository.findBySurname(surname)
                 .map(this::getUserFromEntity);
     }
 
     @Override
     public Optional<User> fintBySurnameAndIsActive(String surname) {
-        return jpaUserRepository.findBySuernameAndIsActiveTrue(surname)
+        return jpaUserRepository.findBySurnameAndIsActiveTrue(surname)
                 .map(this::getUserFromEntity);
     }
 
     @Override
     public Optional<User> fintBySurnameAndIsInactive(String surname) {
-        return jpaUserRepository.findBySuernameAndIsActiveFalse(surname)
+        return jpaUserRepository.findBySurnameAndIsActiveFalse(surname)
                 .map(this::getUserFromEntity);
     }
 
     @Override
     public PageResult<User> findAll(int page, int size) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
-        Page<UserEntity> entityPage = jpaUserRepository.findAll(pageable);
+        Page<UserEntity> entityPage = jpaUserRepository.findByIsActiveIsTrue(true, pageable);
 
         List<UserEntity> users = entityPage.getContent();
 
