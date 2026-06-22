@@ -49,6 +49,10 @@ public class FormalitieController {
                             null));
         }
 
+        System.out.println("Received parameters: clientId=" + clientId + ", serviceName=" + serviceName +
+                ", state=" + state + ", clientName=" + clientName + ", userName=" + userName +
+                ", dateFrom=" + dateFrom + ", dateTo=" + dateTo);
+
         SearchFormalitie search = new SearchFormalitie();
         search.setClientId(clientId);
         search.setServiceName(serviceName);

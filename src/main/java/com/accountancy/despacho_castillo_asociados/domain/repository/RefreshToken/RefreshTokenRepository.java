@@ -5,10 +5,13 @@ import com.accountancy.despacho_castillo_asociados.domain.model.User.User;
 import com.accountancy.despacho_castillo_asociados.infrastructure.entity.RefreshToken.RefreshTokenEntity;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Ref;
+
 @Repository
 public interface RefreshTokenRepository {
 
     RefreshToken save(RefreshToken refreshToken);
+    RefreshToken revoke(RefreshToken refreshToken);
     RefreshToken findByToken(String token);
 
 }

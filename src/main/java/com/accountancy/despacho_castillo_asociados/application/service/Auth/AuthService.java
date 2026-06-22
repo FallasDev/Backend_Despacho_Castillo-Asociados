@@ -100,7 +100,7 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
         String newAccessToken = jwtService.generateToken(userDetails);
 
         rt.setRevoked(true);
-        refreshTokenRepository.save(rt);
+        refreshTokenRepository.revoke(rt);
 
         RefreshToken newRefreshToken = createRefreshToken(user);
 
@@ -135,7 +135,7 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
             throw new BadRequestException("El cliente no ha verificado su cuenta");
         }
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+        UserDetails userDetails = userDetailsService.loadClientByUsername(request.getEmail());
         System.out.println("UserDetails cargados para cliente: " + userDetails.getUsername() + ", Authorities: " + userDetails.getAuthorities());
 
         String token = jwtService.generateToken(userDetails);
@@ -246,7 +246,7 @@ public class AuthService implements ILoginUseCase, IRefreshTokenUseCase, ILoginC
 
         String roleName = user.getRole() != null ? user.getRole().getName() : null;
 
-        return new UserSummary(user.getId(), user.getName(), user.getEmail(), roleName);
+        return new UserSummary(user.getId(), user.getName(), user.getEmail(), roleName, user.getRole() != null ? user.getRole().getId() : 0);
     }
 
     @Override

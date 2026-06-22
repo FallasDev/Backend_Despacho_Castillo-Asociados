@@ -53,7 +53,25 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
         savedRefreshToken.setRevoked(savedEntity.isRevoked());
         return savedRefreshToken;
 
+    }
 
+    @Override
+    public RefreshToken revoke(RefreshToken refreshToken) {
+        Optional<RefreshTokenEntity> opt = refreshTokenJPARepository.findById(refreshToken.getId());
+        if (opt.isEmpty()) {
+            return null;
+        }
+        RefreshTokenEntity e = opt.get();
+        e.setRevoked(true);
+        RefreshTokenEntity revokedEntity = refreshTokenJPARepository.save(e);
+
+        RefreshToken revokedRefreshToken = new RefreshToken();
+        revokedRefreshToken.setId(revokedEntity.getId());
+        revokedRefreshToken.setToken(revokedEntity.getToken());
+        revokedRefreshToken.setUser(refreshToken.getUser());
+        revokedRefreshToken.setExpiryDate(revokedEntity.getExpiryDate());
+        revokedRefreshToken.setRevoked(revokedEntity.isRevoked());
+        return revokedRefreshToken;
     }
 
     @Override

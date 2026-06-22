@@ -33,6 +33,10 @@ public class FindServicesUseCase {
 
         PageResult<DomainService> domainServices = serviceRepository.findAll(page, size);
 
+        for (DomainService service : domainServices.content()) {
+            System.out.println("Fetched service: " + service.getName());
+        }
+
         if (domainServices.content().isEmpty()) {
             throw new EmptyListException(messages.get("service.exception.fetch.all.none"));
         }

@@ -139,9 +139,8 @@ public class ServiceCustomFieldImpl implements ServiceCustomFieldsRepository {
     @Override
     @Transactional
     public boolean deactivateByCustomFieldId(int customFieldId) {
-//        int updatedRows = jpaServiceCustomField.deactivateByCustomFieldId(customFieldId);
-//        return updatedRows > 0;
-        return false;
+        int updatedRows = jpaServiceCustomField.deactivateByServiceId(customFieldId);
+        return updatedRows > 0;
     }
 
     @Override

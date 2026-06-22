@@ -163,7 +163,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     public PageResult<DomainService> findAll(int page, int size) {
 
         Pageable pageable = Pageable.ofSize(size).withPage(page);
-        Page<ServiceEntity> serviceEntityPage = jpaServiceRepository.findAll(pageable);
+        Page<ServiceEntity> serviceEntityPage = jpaServiceRepository.findAllByActiveTrue(true,pageable);
 
         return getDomainServicePageResult(page, size, serviceEntityPage);
     }

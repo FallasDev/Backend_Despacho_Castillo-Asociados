@@ -149,7 +149,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleAuth(AuthenticationException ex) {
         System.out.println("AuthenticationException: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                new ApiResponse<>(false, "Unauthorized", null)
+                new ApiResponse<>(false, ex.getMessage(), null)
         );
     }
 

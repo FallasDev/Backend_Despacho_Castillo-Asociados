@@ -48,19 +48,24 @@ public class CustomUserDetailsService implements UserDetailsService {
         System.out.println("Cliente encontrado: " + client.size());
 
         if (!client.isEmpty()) {
-            return new CustomClientDetails(client.get(0));
+            return new CustomClientDetails(client.getFirst());
         }
 
         throw new UsernameNotFoundException("Usuario no encontrado");
     }
 
-    public @NonNull UserDetails loadClientByUserName(String username) throws UsernameNotFoundException {
-        ClientEntity client = clientRepository.findByEmailAndIsActive(username, true)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new UsernameNotFoundException("Cliente no encontrado"));
 
-        return new CustomClientDetails(client);
+
+    public UserDetails loadClientByUsername(String username) {
+
+        List<ClientEntity> clients =
+                clientRepository.findByEmailAndIsActive(username, true);
+
+        if (!clients.isEmpty()) {
+            return new CustomClientDetails(clients.getFirst());
+        }
+
+        throw new UsernameNotFoundException("Cliente no encontrado");
     }
 
 

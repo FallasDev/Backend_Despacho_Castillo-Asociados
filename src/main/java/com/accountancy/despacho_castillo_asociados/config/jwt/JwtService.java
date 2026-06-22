@@ -1,5 +1,6 @@
 package com.accountancy.despacho_castillo_asociados.config.jwt;
 
+import com.accountancy.despacho_castillo_asociados.infrastructure.security.CustomClientDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -32,11 +33,19 @@ public class JwtService {
 
         Map<String, Object> claims = new HashMap<>();
 
-        // Añadimos permisos al token
-        claims.put("permissions", userDetails.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList());
+        claims.put(
+                "permissions",
+                userDetails.getAuthorities()
+                        .stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .toList()
+        );
+
+        String type = userDetails instanceof CustomClientDetails
+                ? "CLIENT"
+                : "USER";
+
+        claims.put("type", type);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -75,6 +84,8 @@ public class JwtService {
     public String extractClientFromContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+
+        System.out.println("Autenticación actual: " + authentication);
         if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
             return null;
         }
@@ -111,5 +122,9 @@ public class JwtService {
 
     private SecretKey getSignKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
+    }
+
+    public String extractType(String token) {
+        return extractClaim(token, claims -> claims.get("type", String.class));
     }
 }

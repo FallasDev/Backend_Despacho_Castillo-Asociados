@@ -22,7 +22,10 @@ public class CustomClientDetails implements UserDetails  {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(
-                new SimpleGrantedAuthority("ROLE_CLIENT")
+                new SimpleGrantedAuthority("ROLE_CLIENT"),
+                new SimpleGrantedAuthority("Obtener_Servicios"),
+                new SimpleGrantedAuthority("Obtener_un_Servicio"),
+                new SimpleGrantedAuthority("Obtener_Campos_Personalizados_Servicio")
         );
     }
 

@@ -38,6 +38,8 @@ public class CreateServiceUseCase {
 
         Optional<DomainService> inactiveService = serviceRepository.findByNameAndIsInactive(service.getName());
 
+
+
         if (inactiveService.isPresent()) {
             DomainService reactivatedDomainService = inactiveService.get();
             reactivatedDomainService.setActive(true);

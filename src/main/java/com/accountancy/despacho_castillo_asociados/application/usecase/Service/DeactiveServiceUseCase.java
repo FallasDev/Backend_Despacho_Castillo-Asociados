@@ -21,15 +21,13 @@ public class DeactiveServiceUseCase {
     public void execute(int id) {
         boolean result = serviceRepository.deactivate(id);
 
+        System.out.println("Deactivating service with ID: " + id + ", result: " + result);
+
         if (!result) {
             throw new BadRequestException(messages.get("service.exception.deactive", new Object[]{id}));
         }
 
-        boolean customFieldsResult = serviceCustomFieldsRepository.deactivateByServiceId(id);
-
-        if (!customFieldsResult) {
-            throw new BadRequestException(messages.get("service.exception.deactive.custom_fields", new Object[]{id}));
-        }
+        serviceCustomFieldsRepository.deactivateByServiceId(id);
     }
 
 }

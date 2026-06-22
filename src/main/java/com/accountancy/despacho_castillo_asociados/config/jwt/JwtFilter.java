@@ -50,16 +50,20 @@ public class JwtFilter extends OncePerRequestFilter {
 
             final String username = jwtService.extractUsername(token);
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (username != null &&
+                    SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                String type = jwtService.extractType(token);
+
+                UserDetails userDetails;
+
+                if ("CLIENT".equals(type)) {
+                    userDetails = userDetailsService.loadClientByUsername(username);
+                } else {
+                    userDetails = userDetailsService.loadUserByUsername(username);
+                }
 
                 if (jwtService.isTokenValid(token, userDetails)) {
-
-                    // Extraemos permisos del token
-                    Claims claims = jwtService.extractAllClaims(token);
-
-
 
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(
@@ -68,10 +72,10 @@ public class JwtFilter extends OncePerRequestFilter {
                                     userDetails.getAuthorities()
                             );
 
-
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
+
 
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
             // 🔥 CLAVE: token expirado = NO autenticado, pero no error

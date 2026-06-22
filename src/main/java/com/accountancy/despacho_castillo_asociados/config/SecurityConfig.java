@@ -64,7 +64,7 @@ public class SecurityConfig {
                         // protegidas - requieren JWT
                         .requestMatchers("/auth/me").authenticated()
                         .requestMatchers("/auth/me/client").authenticated()
-                        .requestMatchers("/auth/refresh").authenticated()
+                        .requestMatchers("/auth/refresh").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/**")
                         .hasAuthority("Obtener_Usuarios")
 
